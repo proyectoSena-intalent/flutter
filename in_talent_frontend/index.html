@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InTalent - Conecta con Profesionales y Oficios</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <!-- Menú de Navegación -->
+    <header>
+        <div class="logo">In<span>Talent</span></div>
+        <nav>
+            <a href="index.html">Inicio</a>
+            <a href="#">Servicios</a>
+            <a href="login.html" class="btn-login">Iniciar Sesión</a>
+        </nav>
+    </header>
+
+    <!-- Sección Principal (Hero) -->
+    <section class="hero">
+        <h1>Encuentra al profesional u oficio ideal para tu hogar</h1>
+        <p>Plomeros, cerrajeros, carpinteros, profesores y expertos calificados al alcance de un clic</p>
+        <div class="search-box">
+            <input type="text" placeholder="¿Qué servicio u oficio necesitas? Ej. Plomero, carpintero...">
+            <button>Buscar</button>
+        </div>
+    </section>
+
+    <!-- Catálogo de Servicios -->
+    <main class="container">
+        <h2>Servicios y Oficios Disponibles</h2>
+        <div class="grid">
+            
+            <!-- Tarjeta 1 -->
+            <div class="card">
+                <span class="badge">Oficios y Hogar</span>
+                <h3>Plomería y Reparaciones</h3>
+                <p>Solución de fugas, destape de tuberías, instalación de grifería y sanitarios a domicilio.</p>
+                <div class="price">Tarifa promedio: $50.000</div>
+                <a href="login.html" class="btn-card">Solicitar Servicio</a>
+            </div>
+
+            <!-- Tarjeta 2 -->
+            <div class="card">
+                <span class="badge">Seguridad</span>
+                <h3>Cerrajería Residencial 24/7</h3>
+                <p>Apertura de puertas, cambio de guardas, cerraduras de seguridad y duplicado de llaves.</p>
+                <div class="price">Tarifa promedio: $45.000</div>
+                <a href="login.html" class="btn-card">Solicitar Servicio</a>
+            </div>
+
+            <!-- Tarjeta 3 -->
+            <div class="card">
+                <span class="badge">Madera y Diseño</span>
+                <h3>Carpintería y Muebles</h3>
+                <p>Fabricación y reparación de muebles a medida, puertas, closets y acabados en madera.</p>
+                <div class="price">Tarifa promedio: $80.000</div>
+                <a href="login.html" class="btn-card">Solicitar Servicio</a>
+            </div>
+
+            <!-- Tarjeta 4 -->
+            <div class="card">
+                <span class="badge">Servicios Generales</span>
+                <h3>Aseo y Apoyo Doméstico</h3>
+                <p>Personal calificado y de confianza para labores de limpieza profunda y mantenimiento del hogar por días.</p>
+                <div class="price">Tarifa promedio: $70.000</div>
+                <a href="login.html" class="btn-card">Solicitar Servicio</a>
+            </div>
+
+            <!-- Tarjeta 5 -->
+            <div class="card">
+                <span class="badge">Educación</span>
+                <h3>Clases Particulares</h3>
+                <p>Profesores expertos para refuerzo escolar, matemáticas, ciencias, música e idiomas a domicilio o virtual.</p>
+                <div class="price">Tarifa promedio: $40.000</div>
+                <a href="login.html" class="btn-card">Solicitar Servicio</a>
+            </div>
+
+            <!-- Tarjeta 6 -->
+            <div class="card">
+                <span class="badge">Especializados</span>
+                <h3>Restauración de Arte y Antigüedades</h3>
+                <p>Expertos en la conservación y reparación de piezas de arte, cuadros y objetos decorativos delicados.</p>
+                <div class="price">Tarifa promedio: $110.000</div>
+                <a href="login.html" class="btn-card">Solicitar Servicio</a>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- BURBUJA Y VENTANA DEL CHATBOT -->
+    <div class="chat-bubble-btn" onclick="toggleChat()" title="Soporte InTalent">
+        <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+    </div>
+
+    <div class="chat-container" id="chatContainer">
+        <div class="chat-header">
+            <span>Chat InTalent</span>
+            <button class="close-btn" onclick="toggleChat()">&times;</button>
+        </div>
+        <div class="chat-box" id="chatBox">
+            <div class="message bot">¡Hola! Soy LuLu tu chat de intalent. ¿En qué te puedo ayudar hoy?</div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="userInput" placeholder="Escribe un mensaje..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()">Enviar</button>
+        </div>
+    </div>
+
+    <!-- Scripts de la aplicación -->
+    <script src="js/app.js"></script>
+    <script src="js/register.js"></script>
+
+    <!-- Lógica del Chatbot -->
+    <!-- Lógica del Chatbot Corregida -->
+    <script>
+        function toggleChat() {
+            const chatContainer = document.getElementById('chatContainer');
+            chatContainer.classList.toggle('active');
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            // 1. Mostrar mensaje del usuario
+            appendMsg(text, 'user');
+            input.value = '';
+
+            // 2. Generar respuesta dinámica del bot
+            setTimeout(() => {
+                const botResponse = getBotResponse(text);
+                appendMsg(botResponse, 'bot');
+            }, 500);
+        }
+
+        function getBotResponse(userText) {
+            const text = userText.toLowerCase();
+
+            // Saludos
+            if (text.includes('hola') || text.includes('buenas') || text.includes('inicio')) {
+                return "¡Hola! ¿En qué puedo ayudarte hoy? Puedes preguntarme por plomería, cerrajería, carpintería, precios o cómo registrarte.";
+            }
+
+            // Plomería
+            if (text.includes('plomero') || text.includes('plomería') || text.includes('fuga') || text.includes('tubo') || text.includes('agua')) {
+                return "Contamos con expertos en plomería para solución de fugas, destapes e instalación de sanitarios. La tarifa promedio es de $50.000 COP.";
+            }
+
+            // Cerrajería
+            if (text.includes('cerrajero') || text.includes('cerrajería') || text.includes('llave') || text.includes('chapa') || text.includes('puerta')) {
+                return "Ofrecemos cerrajería residencial 24/7, apertura de puertas y cambio de guardas. La tarifa promedio es de $45.000 COP.";
+            }
+
+            // Carpintería
+            if (text.includes('carpintero') || text.includes('carpintería') || text.includes('mueble') || text.includes('madera')) {
+                return "Nuestros carpinteros realizan fabricación y reparación de muebles a medida, closets y puertas. La tarifa promedio es de $80.000 COP.";
+            }
+
+            // Aseo
+            if (text.includes('aseo') || text.includes('limpieza') || text.includes('domestico') || text.includes('casa')) {
+                return "Ofrecemos personal de confianza para labores de limpieza profunda y mantenimiento del hogar por días. La tarifa promedio es de $70.000 COP.";
+            }
+
+            // Clases o Educación
+            if (text.includes('clase') || text.includes('profesor') || text.includes('curso') || text.includes('tarea') || text.includes('estudio')) {
+                return "Tenemos profesores particulares para refuerzo escolar, matemáticas, ciencias e idiomas. La tarifa promedio es de $40.000 COP/hora.";
+            }
+
+            // Arte y Antigüedades
+            if (text.includes('arte') || text.includes('cuadro') || text.includes('restauración') || text.includes('antigüedad')) {
+                return "Contamos con expertos en conservación y reparación de piezas de arte y objetos delicados. La tarifa promedio es de $110.000 COP.";
+            }
+
+            // Precios / Tarifas
+            if (text.includes('precio') || text.includes('cuanto cuesta') || text.includes('costo') || text.includes('tarifa') || text.includes('valor')) {
+                return "Los precios varían según el servicio: Plomería ($50k), Cerrajería ($45k), Aseo ($70k), Carpintería ($80k), Clases ($40k). ¿Cuál te interesa?";
+            }
+
+            // Registro / Login
+            if (text.includes('cuenta') || text.includes('registro') || text.includes('registrarse') || text.includes('iniciar') || text.includes('login')) {
+                return "Puedes hacer clic en el botón 'Iniciar Sesión' en el menú superior para acceder o crear tu cuenta como cliente o profesional.";
+            }
+
+            // Agradecimientos
+            if (text.includes('gracias') || text.includes('vale') || text.includes('ok') || text.includes('listo')) {
+                return "¡Con mucho gusto! Estoy aquí para lo que necesites.";
+            }
+
+            // Respuesta por defecto si no coincide con las palabras clave anteriores
+            return "Entiendo. ¿Te gustaría información sobre algún servicio específico como plomería, cerrajería, aseo o tarifas?";
+        }
+
+        function appendMsg(text, sender) {
+            const box = document.getElementById('chatBox');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${sender}`;
+
+            if (sender === 'bot') {
+                msgDiv.innerHTML = `
+                    <div class="msg-avatar">🤖</div>
+                    <div class="msg-text">${text}</div>
+                `;
+            } else {
+                msgDiv.innerHTML = `
+                    <div class="msg-text">${text}</div>
+                `;
+            }
+
+            box.appendChild(msgDiv);
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') sendMessage();
+        }
+    </script>
+</body>
+</html>

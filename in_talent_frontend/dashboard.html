@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InTalent - Mi Panel</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="dashboard-body">
+
+    <!-- Menú Lateral -->
+    <aside class="sidebar">
+        <div class="logo-sidebar">In<span>Talent</span></div>
+        <nav class="sidebar-nav">
+            <a href="#" id="nav-inicio" class="active">🏠 Inicio / Resumen</a>
+            <a href="#" id="nav-solicitudes">📋 Mis Solicitudes</a>
+            <a href="#" id="nav-calificaciones">⭐ Mis Calificaciones</a>
+            <a href="#" id="nav-perfil">👤 Mi Perfil</a>
+            <a href="index.html" class="logout-link" id="nav-logout">🚪 Cerrar Sesión</a>
+        </nav>
+    </aside>
+
+    <!-- Contenido Principal del Panel -->
+    <main class="dashboard-content">
+        <header class="dashboard-header">
+            <h1>Bienvenido a tu Panel, <span id="user-name">Usuario</span></h1>
+            <p>Aquí puedes gestionar tus solicitudes y ver el estado de tus servicios.</p>
+        </header>
+
+        <section class="dashboard-stats">
+            <div class="stat-card">
+                <h3>Solicitudes Activas</h3>
+                <p class="stat-number">2</p>
+            </div>
+            <div class="stat-card">
+                <h3>Servicios Completados</h3>
+                <p class="stat-number">5</p>
+            </div>
+            <div class="stat-card">
+                <h3>Calificación Promedio</h3>
+                <p class="stat-number">⭐ 4.9</p>
+            </div>
+        </section>
+
+        <section class="recent-activity">
+            <h2>Últimas Solicitudes</h2>
+            <div class="table-container">
+                <table class="styled-table">
+                    <thead>
+                        <tr>
+                            <th>Servicio</th>
+                            <th>Profesional</th>
+                            <th>Tarifa</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-solicitudes">
+                        <!-- Aquí es donde el JavaScript llenará las solicitudes de la base de datos -->
+                        <tr>
+                            <td>Plomería y Reparaciones</td>
+                            <td>Carlos Pérez</td>
+                            <td>$50.000</td>
+                            <td><span class="status-badge pending">En proceso</span></td>
+                        </tr>
+                        <tr>
+                            <td>Cerrajería Residencial</td>
+                            <td>Ana Gómez</td>
+                            <td>$45.000</td>
+                            <td><span class="status-badge completed">Completado</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- Script para conectar con el backend -->
+    <script src="js/dashboard.js"></script>
+
+</body>
+</html>

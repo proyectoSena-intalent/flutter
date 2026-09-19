@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - InTalent</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="login-body">
+
+    <!-- Contenedor Principal en Pantalla Dividida (Formulario + Imagen) -->
+    <div class="login-wrapper">
+        
+        <!-- Lado Izquierdo: Formulario de Acceso -->
+        <div class="login-form-container">
+            <div class="login-header-center">
+                <div class="logo-large">In<span>Talent</span></div>
+                <p class="tagline">Trabajamos para darte la mejor experiencia</p>
+            </div>
+            
+            <!-- Formulario conectado a nuestro JavaScript con un ID -->
+            <form id="login-form">
+                <div class="form-group">
+                    <label>Correo Electrónico</label>
+                    <input type="email" id="email" name="correo" placeholder="ejemplo@correo.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="password" name="contrasena" placeholder="********" required>
+                </div>
+
+                <button type="submit" class="btn-submit">Iniciar Sesión</button>
+            </form>
+
+            <div class="auth-footer" style="margin-top: 20px; text-align: center;">
+                <p>¿Aún no tienes una cuenta? <a href="register.html">Regístrate aquí</a></p>
+                <p style="margin-top: 10px;"><a href="index.html">← Volver al inicio</a></p>
+            </div>
+        </div>
+
+        <!-- Lado Derecho: Imagen o Ilustración Corporativa -->
+        <div class="login-image-container">
+            <div class="image-overlay-content">
+                <h2>Conectando talento y confianza</h2>
+                <p>Encuentra a los mejores profesionales y expertos locales para cada necesidad de tu hogar o proyecto.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Archivo JavaScript vinculado al final para que funcione el login -->
+    <script src="js/login.js"></script>
+</body>
+</html>
