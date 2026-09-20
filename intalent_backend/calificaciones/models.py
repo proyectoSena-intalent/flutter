@@ -12,6 +12,14 @@ class Calificacion(models.Model):
         (5, '5 estrellas'),
     ]
 
+    solicitud = models.ForeignKey(
+        'usuarios.Solicitud',
+        on_delete=models.CASCADE,
+        related_name='calificaciones',
+        null=True,
+        blank=True
+    )
+
     calificador = models.ForeignKey(
         Usuario,
         on_delete=models.CASCADE,

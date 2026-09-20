@@ -308,13 +308,13 @@ def mis_solicitudes(request):
         'servicio__profesional'
     ).order_by('-fecha_solicitud')
 
-    # Verificar cuáles servicios ya fueron calificados
+    # Verificar qué solicitudes ya fueron calificadas
     from calificaciones.models import Calificacion
 
     calificaciones_realizadas = Calificacion.objects.filter(
         calificador=usuario
     ).values_list(
-        'calificado_id',
+        'solicitud_id',
         flat=True
     )
 
