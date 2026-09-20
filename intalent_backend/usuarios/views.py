@@ -301,3 +301,31 @@ def cambiar_estado_solicitud(request, solicitud_id):
             solicitud.save()
 
     return redirect('solicitudes_recibidas')
+
+def invitado(request):
+
+    texto_busqueda = request.GET.get('buscar', '')
+    categoria = request.GET.get('categoria', '')
+
+    servicios = Servicio.objects.all()
+
+    if texto_busqueda:
+        servicios = servicios.filter(
+            models.Q(nombre__icontains=texto_busqueda) |
+            models.Q(descripcion__icontains=texto_busqueda)
+        )
+
+    if categoria:
+        servicios = servicios.filter(
+            categoria=categoria
+        )
+
+    return render(
+        request,
+        'buscar_servicios.html',
+        {
+            'usuario': None,
+            'invitado': True,
+            'servicios': servicios
+        }
+    )

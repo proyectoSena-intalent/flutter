@@ -1,105 +1,168 @@
 <!DOCTYPE html>
+
 <html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Iniciar sesión - InTalent</title>
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f2f4f7;
-            margin: 0;
-            padding: 0;
-        }
+<title>Iniciar sesión - InTalent</title>
 
-        .contenedor {
-            width: 350px;
-            margin: 80px auto;
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f2f4f7;
+        margin: 0;
+        padding: 0;
+    }
 
-        h1 {
-            text-align: center;
-            color: #222;
-        }
+    .contenedor {
+        width: 350px;
+        margin: 80px auto;
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
 
-        label {
-            display: block;
-            margin-top: 15px;
-            margin-bottom: 5px;
-        }
+    h1 {
+        text-align: center;
+        color: #222;
+    }
 
-        input {
-            width: 100%;
-            padding: 10px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
+    h2 {
+        text-align: center;
+    }
 
-        button {
-            width: 100%;
-            margin-top: 20px;
-            padding: 12px;
-            border: none;
-            border-radius: 5px;
-            background-color: #007bff;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-        }
+    label {
+        display: block;
+        margin-top: 15px;
+        margin-bottom: 5px;
+    }
 
-        button:hover {
-            background-color: #0056b3;
-        }
-    </style>
+    input {
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    button {
+        width: 100%;
+        margin-top: 20px;
+        padding: 12px;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    .enlace {
+        display: block;
+        text-align: center;
+        margin-top: 15px;
+        text-decoration: none;
+        color: #007bff;
+    }
+
+    .enlace:hover {
+        text-decoration: underline;
+    }
+
+    .separador {
+        text-align: center;
+        margin: 20px 0;
+        color: #777;
+    }
+
+    .invitado {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 12px;
+        text-align: center;
+        border-radius: 5px;
+        background-color: #6c757d;
+        color: white;
+        text-decoration: none;
+    }
+
+    .invitado:hover {
+        background-color: #545b62;
+    }
+
+    .mensaje {
+        color: #dc3545;
+        text-align: center;
+    }
+</style>
+
+
 </head>
 
 <body>
 
-    <div class="contenedor">
 
-        <h1>InTalent</h1>
+<div class="contenedor">
 
-        <h2>Iniciar sesión</h2>
-        
-        {% if mensaje %}
-            <p>{{ mensaje }}</p>
-        {% endif %}
-        
-        <form method="POST">
+    <h1>InTalent</h1>
 
-            {% csrf_token %}
+    <h2>Iniciar sesión</h2>
 
-            <label for="correo">Correo electrónico</label>
-            <input
-                type="email"
-                id="correo"
-                name="correo"
-                required
-            >
+    {% if mensaje %}
+        <p class="mensaje">{{ mensaje }}</p>
+    {% endif %}
 
-            <label for="contraseña">Contraseña</label>
-            <input
-                type="password"
-                id="contraseña"
-                name="contraseña"
-                required
-            >
+    <form method="POST">
 
-            <button type="submit">
-                Iniciar sesión
-            </button>
+        {% csrf_token %}
 
-        </form>
+        <label for="correo">Correo electrónico</label>
 
+        <input
+            type="email"
+            id="correo"
+            name="correo"
+            required
+        >
+
+        <label for="contraseña">Contraseña</label>
+
+        <input
+            type="password"
+            id="contraseña"
+            name="contraseña"
+            required
+        >
+
+        <button type="submit">
+            Iniciar sesión
+        </button>
+
+    </form>
+
+    <a href="{% url 'registro' %}" class="enlace">
+        👤 Registrar usuario nuevo
+    </a>
+
+    <div class="separador">
+        ───── o ─────
     </div>
+
+    <a href="{% url 'invitado' %}" class="invitado">
+        👀 Entrar como invitado
+    </a>
+
+</div>
+
 
 </body>
 
