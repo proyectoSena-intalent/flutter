@@ -150,6 +150,8 @@ def ver_calificaciones(request, usuario_id):
 
     calificaciones = Calificacion.objects.filter(
         calificado=usuario
+    ).select_related(
+        'calificador'
     ).order_by('-fecha')
 
     promedio = 0

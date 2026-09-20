@@ -5,9 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Calificaciones - InTalent</title>
+    <title>Mis calificaciones - InTalent</title>
 
     <style>
+
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f6f8;
@@ -17,7 +18,7 @@
 
         .contenedor {
             width: 90%;
-            max-width: 700px;
+            max-width: 800px;
             margin: 40px auto;
         }
 
@@ -31,152 +32,204 @@
         }
 
         .cabecera h1 {
-            margin-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .usuario {
+            color: #555;
         }
 
         .promedio {
-            font-size: 28px;
-            font-weight: bold;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff8dc;
+            border-radius: 8px;
         }
 
-        .estrellas {
-            font-size: 25px;
-            margin: 10px 0;
+        .promedio-numero {
+            font-size: 30px;
+            font-weight: bold;
         }
 
         .calificacion {
             background-color: white;
             padding: 20px;
-            margin-bottom: 15px;
-            border-radius: 10px;
+            margin-bottom: 20px;
+            border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
-        .calificacion h3 {
+        .calificacion h2 {
             margin-top: 0;
+        }
+
+        .estrellas {
+            font-size: 24px;
+            margin: 10px 0;
+        }
+
+        .comentario {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
         }
 
         .fecha {
             color: #777;
             font-size: 14px;
+            margin-top: 10px;
         }
 
         .sin-calificaciones {
             background-color: white;
-            padding: 25px;
+            padding: 30px;
+            border-radius: 12px;
             text-align: center;
-            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
+
+        .boton {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 18px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+        .boton:hover {
+            background-color: #0056b3;
+        }
+
     </style>
+
 </head>
 
 <body>
 
-    <div class="contenedor">
+<div class="contenedor">
 
-        <div class="cabecera">
+    <div class="cabecera">
 
-            <h1>
-                Calificaciones de
-                {{ usuario.nombre }}
-                {{ usuario.apellido }}
-            </h1>
+        <h1>⭐ Mis calificaciones</h1>
 
-            <div class="estrellas">
+        <p class="usuario">
 
-                {% if promedio >= 5 %}
-                    ⭐⭐⭐⭐⭐
-                {% elif promedio >= 4 %}
-                    ⭐⭐⭐⭐
-                {% elif promedio >= 3 %}
-                    ⭐⭐⭐
-                {% elif promedio >= 2 %}
-                    ⭐⭐
-                {% elif promedio >= 1 %}
-                    ⭐
-                {% else %}
-                    Sin calificaciones
-                {% endif %}
+            <strong>Usuario:</strong>
 
-            </div>
+            {{ usuario.nombre }}
+            {{ usuario.apellido }}
 
-            <div class="promedio">
-                {{ promedio }} / 5
-            </div>
-
-            <p>
-                Promedio de calificaciones
-            </p>
-
-        </div>
-
+        </p>
 
         {% if calificaciones %}
 
-            {% for calificacion in calificaciones %}
+            <div class="promedio">
 
-                <div class="calificacion">
-
-                    <h3>
-                        {{ calificacion.calificador.nombre }}
-                        {{ calificacion.calificador.apellido }}
-                    </h3>
-
-                    <div class="estrellas">
-
-                        {% if calificacion.puntuacion == 5 %}
-                            ⭐⭐⭐⭐⭐
-                        {% elif calificacion.puntuacion == 4 %}
-                            ⭐⭐⭐⭐
-                        {% elif calificacion.puntuacion == 3 %}
-                            ⭐⭐⭐
-                        {% elif calificacion.puntuacion == 2 %}
-                            ⭐⭐
-                        {% elif calificacion.puntuacion == 1 %}
-                            ⭐
-                        {% endif %}
-
-                    </div>
-
-                    {% if calificacion.comentario %}
-
-                        <p>
-                            "{{ calificacion.comentario }}"
-                        </p>
-
-                    {% else %}
-
-                        <p>
-                            Sin comentario.
-                        </p>
-
-                    {% endif %}
-
-                    <p class="fecha">
-                        {{ calificacion.fecha }}
-                    </p>
-
+                <div>
+                    Promedio recibido
                 </div>
 
-            {% endfor %}
+                <div class="promedio-numero">
+                    ⭐ {{ promedio }} / 5
+                </div>
 
-        {% else %}
-
-            <div class="sin-calificaciones">
-
-                <h2>
-                    Aún no hay calificaciones
-                </h2>
-
-                <p>
-                    Este usuario todavía no ha recibido calificaciones.
-                </p>
+                <div>
+                    {{ calificaciones|length }} calificación(es)
+                </div>
 
             </div>
 
         {% endif %}
 
+        <a href="{% url 'inicio' %}" class="boton">
+            🏠 Volver al inicio
+        </a>
+
     </div>
+
+
+    {% if calificaciones %}
+
+        {% for calificacion in calificaciones %}
+
+            <div class="calificacion">
+
+                <h2>
+
+                    👤
+                    {{ calificacion.calificador.nombre }}
+                    {{ calificacion.calificador.apellido }}
+
+                </h2>
+
+                <div class="estrellas">
+
+                    {% if calificacion.puntuacion >= 1 %}⭐{% endif %}
+                    {% if calificacion.puntuacion >= 2 %}⭐{% endif %}
+                    {% if calificacion.puntuacion >= 3 %}⭐{% endif %}
+                    {% if calificacion.puntuacion >= 4 %}⭐{% endif %}
+                    {% if calificacion.puntuacion >= 5 %}⭐{% endif %}
+
+                </div>
+
+                <p>
+                    <strong>Puntuación:</strong>
+                    {{ calificacion.puntuacion }} / 5
+                </p>
+
+                {% if calificacion.comentario %}
+
+                    <div class="comentario">
+
+                        <strong>Comentario:</strong>
+
+                        <p>
+                            {{ calificacion.comentario }}
+                        </p>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="comentario">
+
+                        Sin comentario.
+
+                    </div>
+
+                {% endif %}
+
+                <div class="fecha">
+
+                    📅
+                    {{ calificacion.fecha|date:"d/m/Y H:i" }}
+
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="sin-calificaciones">
+
+            <h2>📭 Aún no tienes calificaciones</h2>
+
+            <p>
+                Cuando otro usuario califique uno de tus servicios,
+                la calificación aparecerá aquí.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+
+</div>
 
 </body>
 
