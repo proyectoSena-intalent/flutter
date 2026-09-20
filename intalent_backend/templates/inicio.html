@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Inicio - InTalent</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f2f4f7;
+        }
+
+        .barra-superior {
+            background-color: #007bff;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .usuario {
+            font-size: 16px;
+        }
+
+        .contenedor {
+            width: 90%;
+            max-width: 1100px;
+            margin: 30px auto;
+        }
+
+        .bienvenida {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .bienvenida h1 {
+            margin-top: 0;
+        }
+
+        .menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .opcion {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .opcion h2 {
+            margin-top: 0;
+            color: #007bff;
+        }
+
+        .opcion p {
+            color: #555;
+        }
+
+        .boton {
+            display: inline-block;
+            padding: 10px 18px;
+            margin-top: 10px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .boton:hover {
+            background-color: #0056b3;
+        }
+
+        .cerrar {
+            background-color: #dc3545;
+        }
+
+        .cerrar:hover {
+            background-color: #b02a37;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="barra-superior">
+
+        <div class="logo">
+            InTalent
+        </div>
+
+        <div class="usuario">
+            {{ usuario.nombre }} {{ usuario.apellido }}
+        </div>
+
+    </div>
+
+
+    <div class="contenedor">
+
+        <div class="bienvenida">
+
+            <h1>Bienvenido a InTalent</h1>
+
+            <p>
+                Encuentra personas que ofrecen los servicios que necesitas
+                o publica tus propios servicios.
+            </p>
+
+        </div>
+
+
+        <div class="menu">
+
+            <div class="opcion">
+
+                <h2>🔎 Buscar servicios</h2>
+
+                <p>
+                    Encuentra profesionales y personas que ofrecen
+                    diferentes servicios.
+                </p>
+
+                <a href="{% url 'buscar_servicios' %}" class="boton">
+                    Buscar
+                </a>
+
+            </div>
+
+
+            <div class="opcion">
+
+                <h2>🛠️ Ofrecer mis servicios</h2>
+
+                <p>
+                    Publica los servicios que puedes ofrecer
+                    a otras personas.
+                </p>
+
+                <a href="{% url 'ofrecer_servicio' %}" class="boton">
+                    Ofrecer servicio
+                </a>
+
+            </div>
+
+
+            <div class="opcion">
+
+                <h2>👤 Mi perfil</h2>
+
+                <p>
+                    Consulta y administra tu información personal.
+                </p>
+
+                <a href="{% url 'perfil' %}" class="boton">
+                    Ver perfil
+                </a>
+
+            </div>
+
+
+            <div class="opcion">
+
+                <h2>📋 Mis solicitudes</h2>
+
+                <p>
+                    Consulta los servicios que has solicitado.
+                </p>
+
+                <a href="{% url 'mis_solicitudes' %}" class="boton">
+                    Ver solicitudes
+                </a>
+
+            </div>
+
+
+            <div class="opcion">
+
+                <h2>⭐ Calificaciones</h2>
+
+                <p>
+                    Consulta las calificaciones y opiniones
+                    de tus servicios.
+                </p>
+
+                <a href="#" class="boton">
+                    Ver calificaciones
+                </a>
+
+            </div>
+
+
+            <div class="opcion">
+
+                <h2>🚪 Cerrar sesión</h2>
+
+                <p>
+                    Salir de tu cuenta de InTalent.
+                </p>
+
+                <a href="{% url 'logout' %}" class="boton cerrar">
+                    Cerrar sesión
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        window.addEventListener('pageshow', function (event) {
+
+            if (event.persisted) {
+                window.location.reload();
+            }
+
+        });
+
+    </script>
+
+</body>
+
+</html>

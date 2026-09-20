@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Solicitudes recibidas - InTalent</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        .contenedor {
+            width: 90%;
+            max-width: 900px;
+            margin: 40px auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #222;
+        }
+
+        .subtitulo {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .solicitud {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .solicitud h2 {
+            margin-top: 0;
+            color: #222;
+        }
+
+        .dato {
+            margin: 8px 0;
+            color: #444;
+        }
+
+        .estado {
+            font-weight: bold;
+        }
+
+        .pendiente {
+            color: #d68910;
+        }
+
+        .aceptada {
+            color: #218838;
+        }
+
+        .rechazada {
+            color: #c82333;
+        }
+
+        .finalizada {
+            color: #0069d9;
+        }
+
+        .sin-solicitudes {
+            background-color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 10px;
+            color: #666;
+        }
+
+        .boton {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 18px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+        .boton:hover {
+            background-color: #0056b3;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="contenedor">
+
+        <h1>📩 Solicitudes recibidas</h1>
+
+        <p class="subtitulo">
+            Solicitudes recibidas por
+            <strong>
+                {{ usuario.nombre }} {{ usuario.apellido }}
+            </strong>
+        </p>
+
+
+        {% if solicitudes %}
+
+            {% for solicitud in solicitudes %}
+
+                <div class="solicitud">
+
+                    <h2>
+                        {{ solicitud.servicio.nombre }}
+                    </h2>
+
+                    <div class="dato">
+                        <strong>Cliente:</strong>
+                        {{ solicitud.cliente.nombre }}
+                        {{ solicitud.cliente.apellido }}
+                    </div>
+
+                    <div class="dato">
+                        <strong>Correo:</strong>
+                        {{ solicitud.cliente.correo }}
+                    </div>
+
+                    <div class="dato">
+                        <strong>Teléfono:</strong>
+                        {{ solicitud.cliente.telefono }}
+                    </div>
+
+                    <div class="dato">
+                        <strong>Precio:</strong>
+                        ${{ solicitud.servicio.precio }}
+                    </div>
+
+                    <div class="dato">
+                        <strong>Fecha de solicitud:</strong>
+                        {{ solicitud.fecha_solicitud|date:"d/m/Y H:i" }}
+                    </div>
+
+                    <div class="dato">
+
+    <strong>Estado:</strong>
+
+    {% if solicitud.estado == 'pendiente' %}
+
+        <span class="estado pendiente">
+            🟡 Pendiente
+        </span>
+
+        <div style="margin-top: 15px;">
+
+            <form
+                method="POST"
+                action="{% url 'cambiar_estado_solicitud' solicitud.id %}"
+                style="display: inline;"
+            >
+
+                {% csrf_token %}
+
+                <input
+                    type="hidden"
+                    name="estado"
+                    value="aceptada"
+                >
+
+                <button
+                    type="submit"
+                    style="
+                        padding: 10px 15px;
+                        background-color: #28a745;
+                        color: white;
+                        border: none;
+                        border-radius: 6px;
+                        cursor: pointer;
+                    "
+                >
+                    ✅ Aceptar solicitud
+                </button>
+
+            </form>
+
+
+            <form
+                method="POST"
+                action="{% url 'cambiar_estado_solicitud' solicitud.id %}"
+                style="display: inline; margin-left: 10px;"
+            >
+
+                {% csrf_token %}
+
+                <input
+                    type="hidden"
+                    name="estado"
+                    value="rechazada"
+                >
+
+                <button
+                    type="submit"
+                    style="
+                        padding: 10px 15px;
+                        background-color: #dc3545;
+                        color: white;
+                        border: none;
+                        border-radius: 6px;
+                        cursor: pointer;
+                    "
+                >
+                    ❌ Rechazar solicitud
+                </button>
+
+            </form>
+
+        </div>
+
+    {% elif solicitud.estado == 'aceptada' %}
+
+        <span class="estado aceptada">
+            🟢 Aceptada
+        </span>
+
+    {% elif solicitud.estado == 'rechazada' %}
+
+        <span class="estado rechazada">
+            🔴 Rechazada
+        </span>
+
+    {% elif solicitud.estado == 'finalizada' %}
+
+        <span class="estado finalizada">
+            🔵 Finalizada
+        </span>
+
+    {% endif %}
+
+</div>
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <div class="sin-solicitudes">
+
+                <h2>📭 No tienes solicitudes</h2>
+
+                <p>
+                    Cuando un cliente solicite uno de tus servicios,
+                    aparecerá aquí.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+
+        <a href="{% url 'inicio' %}" class="boton">
+            ← Volver al inicio
+        </a>
+
+    </div>
+
+</body>
+
+</html>
