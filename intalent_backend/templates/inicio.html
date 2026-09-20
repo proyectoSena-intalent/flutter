@@ -182,19 +182,38 @@
             </div>
 
 
-            <div class="opcion">
+          <div class="opcion">
 
-                <h2>📋 Mis solicitudes</h2>
+    <h2>📋 Mis solicitudes</h2>
 
-                <p>
-                    Consulta los servicios que has solicitado.
-                </p>
+    <p>
+        Consulta los servicios que has solicitado.
+    </p>
 
-                <a href="{% url 'mis_solicitudes' %}" class="boton">
-                    Ver solicitudes
-                </a>
+    <a href="{% url 'mis_solicitudes' %}" class="boton">
+        Ver mis solicitudes
+    </a>
 
-            </div>
+</div>
+
+
+{% if usuario.es_profesional %}
+
+<div class="opcion">
+
+    <h2>📥 Solicitudes recibidas</h2>
+
+    <p>
+        Consulta y gestiona las solicitudes que recibes de tus clientes.
+    </p>
+
+    <a href="{% url 'solicitudes_recibidas' %}" class="boton">
+        Ver solicitudes recibidas
+    </a>
+
+</div>
+
+{% endif %}
 
 
             <div class="opcion">

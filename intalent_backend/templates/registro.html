@@ -79,6 +79,12 @@
             Crea tu cuenta
         </p>
 
+        {% if mensaje %}
+            <p style="color: red; text-align: center; font-weight: bold;">
+                {{ mensaje }}
+            </p>
+        {% endif %}
+
         <form method="POST">
             {% csrf_token %}
 
@@ -120,17 +126,18 @@
                 id="contraseña" 
                 required>
 
-            <label for="tipo_usuario">Tipo de usuario</label>
+            <div class="campo">
+                <label for="confirmar_contraseña">Confirmar contraseña</label>
+                <input
+                     type="password"
+                    id="confirmar_contraseña"
+                    name="confirmar_contraseña"
+                    placeholder="Confirma tu contraseña"
+                    required
+                >
+            </div>
 
-            <select
-                id="tipo_usuario"
-                name="tipo_usuario"
-                required
-            >
-                <option value="">Selecciona una opción</option>
-                <option value="cliente">Cliente</option>
-                <option value="profesional">Profesional</option>
-            </select>
+            
 
             <button type="submit">
                 Registrarme

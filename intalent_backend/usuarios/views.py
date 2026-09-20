@@ -7,16 +7,35 @@ from .forms import ServicioForm
 
 
 def registro(request):
+    mensaje = ''
 
     if request.method == 'POST':
-
         nombre = request.POST.get('nombre')
         apellido = request.POST.get('apellido')
         correo = request.POST.get('correo')
         telefono = request.POST.get('telefono')
         contraseña = request.POST.get('contraseña')
+        confirmar_contraseña = request.POST.get('confirmar_contraseña')
+
+        if contraseña != confirmar_contraseña:
+            mensaje = 'Las contraseñas no coinciden.'
+
+            return render(
+                request,
+                'registro.html',
+                {'mensaje': mensaje}
+            )
+
+        if Usuario.objects.filter(correo=correo).exists():
+            mensaje = 'Ya existe una cuenta registrada con este correo.'
+
+            return render(
+                request,
+                'registro.html',
+                {'mensaje': mensaje}
+            )
+
         contraseña_segura = make_password(contraseña)
-        tipo_usuario = request.POST.get('tipo_usuario')
 
         Usuario.objects.create(
             nombre=nombre,
@@ -24,12 +43,19 @@ def registro(request):
             correo=correo,
             telefono=telefono,
             contraseña=contraseña_segura,
-            tipo_usuario=tipo_usuario
+            tipo_usuario='cliente'
         )
 
-        return redirect('registro')
+        return render(
+            request,
+            'registro_exitoso.html'
+)
 
-    return render(request, 'registro.html')
+    return render(
+        request,
+        'registro.html',
+        {'mensaje': mensaje}
+    )
 
 def login(request):
 

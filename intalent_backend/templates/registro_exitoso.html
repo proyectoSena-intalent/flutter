@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Registro exitoso - InTalent</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        .contenedor {
+            width: 400px;
+            margin: 100px auto;
+            background-color: white;
+            padding: 35px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+            text-align: center;
+        }
+
+        .icono {
+            font-size: 55px;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            color: #16a34a;
+            margin-bottom: 15px;
+        }
+
+        p {
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .boton {
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 25px;
+            padding: 12px;
+            border-radius: 5px;
+            background-color: #2563eb;
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .boton:hover {
+            background-color: #1d4ed8;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="contenedor">
+
+        <div class="icono">✅</div>
+
+        <h1>¡Registro exitoso!</h1>
+
+        <p>
+            Tu cuenta de InTalent ha sido creada correctamente.
+        </p>
+
+        <p>
+            Ahora puedes iniciar sesión para comenzar a utilizar la plataforma.
+        </p>
+
+        <a href="{% url 'login' %}" class="boton">
+            Ir a iniciar sesión
+        </a>
+
+    </div>
+
+</body>
+
+</html>
+
+
