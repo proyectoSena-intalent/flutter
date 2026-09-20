@@ -163,13 +163,46 @@
                                 🔴 Rechazada
                             </span>
 
-                        {% elif solicitud.estado == 'finalizada' %}
+{% elif solicitud.estado == 'finalizada' %}
 
-                            <span class="estado finalizada">
-                                🔵 Finalizada
-                            </span>
+    <span class="estado finalizada">
+        🔵 Servicio finalizado
+    </span>
 
-                        {% endif %}
+    <div style="margin-top: 15px;">
+
+        <form
+            method="POST"
+            action="{% url 'confirmar_servicio' solicitud.id %}"
+        >
+
+            {% csrf_token %}
+
+            <button
+                type="submit"
+                style="
+                    padding: 10px 15px;
+                    background-color: #28a745;
+                    color: white;
+                    border: none;
+                    border-radius: 6px;
+                    cursor: pointer;
+                "
+            >
+                ✅ Confirmar servicio recibido
+            </button>
+
+        </form>
+
+    </div>
+
+{% elif solicitud.estado == 'confirmada' %}
+
+    <span class="estado aceptada">
+        🟢 Servicio confirmado
+    </span>
+
+{% endif %}
 
                     </div>
 

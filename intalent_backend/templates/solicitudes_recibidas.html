@@ -109,7 +109,6 @@
             </strong>
         </p>
 
-
         {% if solicitudes %}
 
             {% for solicitud in solicitudes %}
@@ -148,100 +147,138 @@
 
                     <div class="dato">
 
-    <strong>Estado:</strong>
+                        <strong>Estado:</strong>
 
-    {% if solicitud.estado == 'pendiente' %}
+                        {% if solicitud.estado == 'pendiente' %}
 
-        <span class="estado pendiente">
-            🟡 Pendiente
-        </span>
+                            <span class="estado pendiente">
+                                🟡 Pendiente
+                            </span>
 
-        <div style="margin-top: 15px;">
+                            <div style="margin-top: 15px;">
 
-            <form
-                method="POST"
-                action="{% url 'cambiar_estado_solicitud' solicitud.id %}"
-                style="display: inline;"
-            >
+                                <form
+                                    method="POST"
+                                    action="{% url 'cambiar_estado_solicitud' solicitud.id %}"
+                                    style="display: inline;"
+                                >
 
-                {% csrf_token %}
+                                    {% csrf_token %}
 
-                <input
-                    type="hidden"
-                    name="estado"
-                    value="aceptada"
-                >
+                                    <input
+                                        type="hidden"
+                                        name="estado"
+                                        value="aceptada"
+                                    >
 
-                <button
-                    type="submit"
-                    style="
-                        padding: 10px 15px;
-                        background-color: #28a745;
-                        color: white;
-                        border: none;
-                        border-radius: 6px;
-                        cursor: pointer;
-                    "
-                >
-                    ✅ Aceptar solicitud
-                </button>
+                                    <button
+                                        type="submit"
+                                        style="
+                                            padding: 10px 15px;
+                                            background-color: #28a745;
+                                            color: white;
+                                            border: none;
+                                            border-radius: 6px;
+                                            cursor: pointer;
+                                        "
+                                    >
+                                        ✅ Aceptar solicitud
+                                    </button>
 
-            </form>
+                                </form>
 
+                                <form
+                                    method="POST"
+                                    action="{% url 'cambiar_estado_solicitud' solicitud.id %}"
+                                    style="display: inline; margin-left: 10px;"
+                                >
 
-            <form
-                method="POST"
-                action="{% url 'cambiar_estado_solicitud' solicitud.id %}"
-                style="display: inline; margin-left: 10px;"
-            >
+                                    {% csrf_token %}
 
-                {% csrf_token %}
+                                    <input
+                                        type="hidden"
+                                        name="estado"
+                                        value="rechazada"
+                                    >
 
-                <input
-                    type="hidden"
-                    name="estado"
-                    value="rechazada"
-                >
+                                    <button
+                                        type="submit"
+                                        style="
+                                            padding: 10px 15px;
+                                            background-color: #dc3545;
+                                            color: white;
+                                            border: none;
+                                            border-radius: 6px;
+                                            cursor: pointer;
+                                        "
+                                    >
+                                        ❌ Rechazar solicitud
+                                    </button>
 
-                <button
-                    type="submit"
-                    style="
-                        padding: 10px 15px;
-                        background-color: #dc3545;
-                        color: white;
-                        border: none;
-                        border-radius: 6px;
-                        cursor: pointer;
-                    "
-                >
-                    ❌ Rechazar solicitud
-                </button>
+                                </form>
 
-            </form>
+                            </div>
 
-        </div>
+                        {% elif solicitud.estado == 'aceptada' %}
 
-    {% elif solicitud.estado == 'aceptada' %}
+                            <span class="estado aceptada">
+                                🟢 Aceptada
+                            </span>
 
-        <span class="estado aceptada">
-            🟢 Aceptada
-        </span>
+                            <div style="margin-top: 15px;">
 
-    {% elif solicitud.estado == 'rechazada' %}
+                                <form
+                                    method="POST"
+                                    action="{% url 'cambiar_estado_solicitud' solicitud.id %}"
+                                >
 
-        <span class="estado rechazada">
-            🔴 Rechazada
-        </span>
+                                    {% csrf_token %}
 
-    {% elif solicitud.estado == 'finalizada' %}
+                                    <input
+                                        type="hidden"
+                                        name="estado"
+                                        value="finalizada"
+                                    >
 
-        <span class="estado finalizada">
-            🔵 Finalizada
-        </span>
+                                    <button
+                                        type="submit"
+                                        style="
+                                            padding: 10px 15px;
+                                            background-color: #0069d9;
+                                            color: white;
+                                            border: none;
+                                            border-radius: 6px;
+                                            cursor: pointer;
+                                        "
+                                    >
+                                        🔵 Finalizar servicio
+                                    </button>
 
-    {% endif %}
+                                </form>
 
-</div>
+                            </div>
+
+                        {% elif solicitud.estado == 'rechazada' %}
+
+                            <span class="estado rechazada">
+                                🔴 Rechazada
+                            </span>
+
+                        {% elif solicitud.estado == 'finalizada' %}
+
+                            <span class="estado finalizada">
+                                🔵 Finalizada
+                            </span>
+
+                        {% elif solicitud.estado == 'confirmada' %}
+
+                            <span class="estado aceptada">
+                                🟢 Servicio confirmado por el cliente
+                            </span>
+
+                        {% endif %}
+
+                    </div>
 
                 </div>
 
@@ -262,7 +299,6 @@
 
         {% endif %}
 
-
         <a href="{% url 'inicio' %}" class="boton">
             ← Volver al inicio
         </a>
@@ -272,3 +308,4 @@
 </body>
 
 </html>
+

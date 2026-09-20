@@ -84,6 +84,7 @@ class Solicitud(models.Model):
         ('aceptada', 'Aceptada'),
         ('rechazada', 'Rechazada'),
         ('finalizada', 'Finalizada'),
+        ('confirmada', 'Confirmada'),
     ]
 
     cliente = models.ForeignKey(

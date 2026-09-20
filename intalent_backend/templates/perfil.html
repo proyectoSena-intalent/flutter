@@ -167,13 +167,36 @@
             </div>
 
             {% if usuario.es_profesional %}
-            <div class="dato">
-                <strong>Saldo pendiente</strong>
 
-                ${{ usuario.saldo_pendiente|floatformat:2 }}
+<div class="dato">
+    <strong>Saldo pendiente</strong>
+    ${{ usuario.saldo_pendiente|floatformat:2 }}
+</div>
 
-            </div>
-            {% endif %}
+{% if usuario.saldo_pendiente > 0 %}
+
+<div style="margin-top: 20px;">
+
+    <a
+        href="{% url 'pagar_deuda' %}"
+        style="
+            display: inline-block;
+            padding: 12px 20px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+        "
+    >
+        💳 Pagar deuda
+    </a>
+
+</div>
+
+{% endif %}
+
+{% endif %}
 
             <div class="dato">
 

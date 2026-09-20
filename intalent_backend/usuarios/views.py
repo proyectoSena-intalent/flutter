@@ -5,6 +5,10 @@ from django.db import models
 from .models import Usuario, Servicio, Solicitud
 from .forms import ServicioForm
 
+from decimal import Decimal
+
+COMISION_IN_TALENT = Decimal('0.10')
+
 
 def registro(request):
     mensaje = ''
@@ -198,6 +202,35 @@ def perfil(request):
         }
     )
 
+def pagar_deuda(request):
+
+    usuario_id = request.session.get('usuario_id')
+
+    if not usuario_id:
+        return redirect('login')
+
+    usuario = Usuario.objects.get(id=usuario_id)
+
+    if not usuario.es_profesional:
+        return redirect('perfil')
+
+    if request.method == 'POST':
+
+        usuario.saldo_pendiente = Decimal('0.00')
+        usuario.estado_profesional = 'activo'
+
+        usuario.save()
+
+        return redirect('perfil')
+
+    return render(
+        request,
+        'pagar_deuda.html',
+        {
+            'usuario': usuario
+        }
+    )
+
 def activar_profesional(request):
 
     usuario_id = request.session.get('usuario_id')
@@ -321,12 +354,66 @@ def cambiar_estado_solicitud(request, solicitud_id):
 
         estado = request.POST.get('estado')
 
-        if estado in ['aceptada', 'rechazada']:
+        print("ESTADO RECIBIDO:", estado)
+
+        if estado in ['aceptada', 'rechazada', 'finalizada']:
+
+            # Verificar si el profesional tiene deuda pendiente
+            if estado == 'aceptada' and usuario.saldo_pendiente > 0:
+                return redirect('solicitudes_recibidas')
 
             solicitud.estado = estado
+
+            if estado == 'finalizada':
+
+                if solicitud.precio_acordado is None:
+                    solicitud.precio_acordado = solicitud.servicio.precio
+
+                solicitud.comision_in_talent = (
+                    solicitud.precio_acordado * COMISION_IN_TALENT
+                )
+
+                solicitud.valor_profesional = (
+                    solicitud.precio_acordado
+                    - solicitud.comision_in_talent
+                )
+
             solicitud.save()
 
     return redirect('solicitudes_recibidas')
+
+def confirmar_servicio(request, solicitud_id):
+
+    usuario_id = request.session.get('usuario_id')
+
+    if not usuario_id:
+        return redirect('login')
+
+    usuario = Usuario.objects.get(id=usuario_id)
+
+    solicitud = Solicitud.objects.get(id=solicitud_id)
+
+    if solicitud.cliente != usuario:
+        return redirect('mis_solicitudes')
+
+    if solicitud.estado == 'finalizada':
+
+        profesional = solicitud.servicio.profesional
+
+        # Sumar la comisión pendiente al profesional
+        profesional.saldo_pendiente += solicitud.comision_in_talent
+
+        # Mantener al profesional activo hasta que se implemente
+        # el bloqueo por deuda
+        profesional.estado_profesional = 'activo'
+
+        profesional.save()
+
+        solicitud.estado = 'confirmada'
+        solicitud.estado_pago = 'pendiente'
+        solicitud.save()
+
+    return redirect('mis_solicitudes')
 
 def invitado(request):
 

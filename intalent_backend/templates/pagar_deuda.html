@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Pagar deuda - InTalent</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        .contenedor {
+            width: 90%;
+            max-width: 600px;
+            margin: 50px auto;
+        }
+
+        .tarjeta {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        h1 {
+            color: #222;
+            margin-bottom: 10px;
+        }
+
+        .texto {
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .deuda {
+            font-size: 32px;
+            font-weight: bold;
+            color: #dc3545;
+            margin: 25px 0;
+        }
+
+        .boton {
+            display: inline-block;
+            padding: 12px 20px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .boton:hover {
+            background-color: #218838;
+        }
+
+        .volver {
+            display: inline-block;
+            margin-top: 20px;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="contenedor">
+
+        <div class="tarjeta">
+
+            <h1>💳 Pagar deuda</h1>
+
+            <p class="texto">
+                Hola {{ usuario.nombre }}.
+            </p>
+
+            <p>
+                Tu saldo pendiente con InTalent es:
+            </p>
+
+            <div class="deuda">
+                ${{ usuario.saldo_pendiente|floatformat:2 }}
+            </div>
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="boton"
+             >
+                    💰 Pagar ahora
+                </button>
+
+            </form>
+
+            <br>
+
+            <a
+                href="{% url 'perfil' %}"
+                class="volver"
+            >
+                ← Volver al perfil
+            </a>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>
