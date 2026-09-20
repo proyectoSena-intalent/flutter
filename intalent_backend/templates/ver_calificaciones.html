@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Calificaciones - InTalent</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        .contenedor {
+            width: 90%;
+            max-width: 700px;
+            margin: 40px auto;
+        }
+
+        .cabecera {
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .cabecera h1 {
+            margin-bottom: 10px;
+        }
+
+        .promedio {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .estrellas {
+            font-size: 25px;
+            margin: 10px 0;
+        }
+
+        .calificacion {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .calificacion h3 {
+            margin-top: 0;
+        }
+
+        .fecha {
+            color: #777;
+            font-size: 14px;
+        }
+
+        .sin-calificaciones {
+            background-color: white;
+            padding: 25px;
+            text-align: center;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="contenedor">
+
+        <div class="cabecera">
+
+            <h1>
+                Calificaciones de
+                {{ usuario.nombre }}
+                {{ usuario.apellido }}
+            </h1>
+
+            <div class="estrellas">
+
+                {% if promedio >= 5 %}
+                    ⭐⭐⭐⭐⭐
+                {% elif promedio >= 4 %}
+                    ⭐⭐⭐⭐
+                {% elif promedio >= 3 %}
+                    ⭐⭐⭐
+                {% elif promedio >= 2 %}
+                    ⭐⭐
+                {% elif promedio >= 1 %}
+                    ⭐
+                {% else %}
+                    Sin calificaciones
+                {% endif %}
+
+            </div>
+
+            <div class="promedio">
+                {{ promedio }} / 5
+            </div>
+
+            <p>
+                Promedio de calificaciones
+            </p>
+
+        </div>
+
+
+        {% if calificaciones %}
+
+            {% for calificacion in calificaciones %}
+
+                <div class="calificacion">
+
+                    <h3>
+                        {{ calificacion.calificador.nombre }}
+                        {{ calificacion.calificador.apellido }}
+                    </h3>
+
+                    <div class="estrellas">
+
+                        {% if calificacion.puntuacion == 5 %}
+                            ⭐⭐⭐⭐⭐
+                        {% elif calificacion.puntuacion == 4 %}
+                            ⭐⭐⭐⭐
+                        {% elif calificacion.puntuacion == 3 %}
+                            ⭐⭐⭐
+                        {% elif calificacion.puntuacion == 2 %}
+                            ⭐⭐
+                        {% elif calificacion.puntuacion == 1 %}
+                            ⭐
+                        {% endif %}
+
+                    </div>
+
+                    {% if calificacion.comentario %}
+
+                        <p>
+                            "{{ calificacion.comentario }}"
+                        </p>
+
+                    {% else %}
+
+                        <p>
+                            Sin comentario.
+                        </p>
+
+                    {% endif %}
+
+                    <p class="fecha">
+                        {{ calificacion.fecha }}
+                    </p>
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <div class="sin-calificaciones">
+
+                <h2>
+                    Aún no hay calificaciones
+                </h2>
+
+                <p>
+                    Este usuario todavía no ha recibido calificaciones.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</body>
+
+</html>

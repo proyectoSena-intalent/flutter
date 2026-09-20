@@ -202,6 +202,46 @@
         🟢 Servicio confirmado
     </span>
 
+    {% if solicitud.servicio.profesional.id in calificaciones_realizadas %}
+
+        <div style="margin-top: 15px;">
+
+            <span style="
+                display: inline-block;
+                padding: 10px 15px;
+                background-color: #e8f5e9;
+                color: #218838;
+                border-radius: 6px;
+                font-weight: bold;
+            ">
+                ✅ Profesional calificado
+            </span>
+
+        </div>
+
+    {% else %}
+
+        <div style="margin-top: 15px;">
+
+            <a
+                href="{% url 'crear_calificacion' %}"
+                style="
+                    display: inline-block;
+                    padding: 10px 15px;
+                    background-color: #ffc107;
+                    color: #212529;
+                    text-decoration: none;
+                    border-radius: 6px;
+                    font-weight: bold;
+                "
+            >
+                ⭐ Calificar profesional
+            </a>
+
+        </div>
+
+    {% endif %}
+
 {% endif %}
 
                     </div>

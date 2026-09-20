@@ -100,10 +100,23 @@ def inicio(request):
 
     usuario = Usuario.objects.get(id=usuario_id)
 
+    # Contar solicitudes pendientes recibidas
+    solicitudes_pendientes = 0
+
+    if usuario.es_profesional:
+
+        solicitudes_pendientes = Solicitud.objects.filter(
+            servicio__profesional=usuario,
+            estado='pendiente'
+        ).count()
+
     return render(
         request,
         'inicio.html',
-        {'usuario': usuario}
+        {
+            'usuario': usuario,
+            'solicitudes_pendientes': solicitudes_pendientes
+        }
     )
 def logout(request):
 
@@ -295,12 +308,25 @@ def mis_solicitudes(request):
         'servicio__profesional'
     ).order_by('-fecha_solicitud')
 
+    # Verificar cuáles servicios ya fueron calificados
+    from calificaciones.models import Calificacion
+
+    calificaciones_realizadas = Calificacion.objects.filter(
+        calificador=usuario
+    ).values_list(
+        'calificado_id',
+        flat=True
+    )
+
     return render(
         request,
         'mis_solicitudes.html',
         {
             'usuario': usuario,
-            'solicitudes': solicitudes
+            'solicitudes': solicitudes,
+            'calificaciones_realizadas': list(
+                calificaciones_realizadas
+            )
         }
     )
 def solicitudes_recibidas(request):
@@ -322,12 +348,25 @@ def solicitudes_recibidas(request):
         'servicio'
     ).order_by('-fecha_solicitud')
 
+    # Verificar cuáles clientes ya fueron calificados
+    from calificaciones.models import Calificacion
+
+    calificaciones_realizadas = Calificacion.objects.filter(
+        calificador=usuario
+    ).values_list(
+        'calificado_id',
+        flat=True
+    )
+
     return render(
         request,
         'solicitudes_recibidas.html',
         {
             'usuario': usuario,
-            'solicitudes': solicitudes
+            'solicitudes': solicitudes,
+            'calificaciones_realizadas': list(
+                calificaciones_realizadas
+            )
         }
     )
 
@@ -360,7 +399,26 @@ def cambiar_estado_solicitud(request, solicitud_id):
 
             # Verificar si el profesional tiene deuda pendiente
             if estado == 'aceptada' and usuario.saldo_pendiente > 0:
-                return redirect('solicitudes_recibidas')
+
+                return render(
+                    request,
+                    'solicitudes_recibidas.html',
+                    {
+                        'usuario': usuario,
+                        'solicitudes': Solicitud.objects.filter(
+                            servicio__profesional=usuario
+                        ).select_related(
+                            'cliente',
+                            'servicio'
+                        ).order_by('-fecha_solicitud'),
+                        'calificaciones_realizadas': [],
+                        'error_pago': True,
+                        'mensaje_pago': (
+                            'No puedes aceptar esta solicitud porque '
+                            'tienes un saldo pendiente con InTalent.'
+                        )
+                    }
+                )
 
             solicitud.estado = estado
 

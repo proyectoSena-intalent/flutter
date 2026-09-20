@@ -102,6 +102,45 @@
 
         <h1>📩 Solicitudes recibidas</h1>
 
+        {% if error_pago %}
+
+    <div style="
+        background-color: #fff3cd;
+        color: #856404;
+        padding: 20px;
+        margin-bottom: 25px;
+        border-radius: 10px;
+        border: 1px solid #ffeeba;
+        text-align: center;
+    ">
+
+        <h2 style="margin-top: 0;">
+            ⚠️ No puedes aceptar mas solicitudes
+        </h2>
+
+        <p>
+            {{ mensaje_pago }}
+        </p>
+
+        <a
+            href="{% url 'pagar_deuda' %}"
+            style="
+                display: inline-block;
+                padding: 10px 18px;
+                background-color: #dc3545;
+                color: white;
+                text-decoration: none;
+                border-radius: 6px;
+                font-weight: bold;
+            "
+        >
+            💳 Ir a pagar deuda
+        </a>
+
+    </div>
+
+{% endif %}
+
         <p class="subtitulo">
             Solicitudes recibidas por
             <strong>

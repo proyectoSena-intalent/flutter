@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Calificaciones - InTalent</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        .contenedor {
+            width: 90%;
+            max-width: 700px;
+            margin: 40px auto;
+        }
+
+        .cabecera {
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .cabecera h1 {
+            margin-bottom: 10px;
+        }
+
+        .usuario {
+            color: #555;
+        }
+
+        .pendiente {
+            background-color: white;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .pendiente h2 {
+            margin-top: 0;
+        }
+
+        .rol {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 15px;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .estrellas {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .estrellas label {
+            margin: 0;
+            cursor: pointer;
+            font-size: 25px;
+        }
+
+        .boton {
+            margin-top: 20px;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            background-color: #222;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .boton:hover {
+            background-color: #444;
+        }
+
+        .mensaje {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .sin-pendientes {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="contenedor">
+
+    <div class="cabecera">
+
+        <h1>Calificaciones</h1>
+
+        <p class="usuario">
+
+            <strong>Calificando como:</strong>
+
+            {{ usuario.nombre }}
+            {{ usuario.apellido }}
+
+        </p>
+
+        <a href="{% url 'inicio' %}" class="boton">
+            🏠 Inicio
+        </a>
+
+    </div>
+
+
+    {% if error %}
+
+        <div class="mensaje">
+
+            {{ error }}
+
+        </div>
+
+    {% endif %}
+
+
+    {% if pendientes %}
+
+        {% for pendiente in pendientes %}
+
+            <div class="pendiente">
+
+                <h2>
+
+                    {{ pendiente.persona.nombre }}
+                    {{ pendiente.persona.apellido }}
+
+                </h2>
+
+                <p class="rol">
+
+                    Tipo de usuario:
+                    <strong>
+                        {{ pendiente.rol }}
+                    </strong>
+
+                </p>
+
+
+                <form method="POST">
+
+                    {% csrf_token %}
+
+
+                    <input
+                        type="hidden"
+                        name="calificado"
+                        value="{{ pendiente.persona.id }}"
+                    >
+
+
+                    <label>
+                        Calificación
+                    </label>
+
+                    <select
+                        name="puntuacion"
+                        required
+                    >
+
+                        <option value="">
+                            Seleccione una puntuación
+                        </option>
+
+                        <option value="5">
+                            ⭐⭐⭐⭐⭐ - Excelente
+                        </option>
+
+                        <option value="4">
+                            ⭐⭐⭐⭐ - Muy bueno
+                        </option>
+
+                        <option value="3">
+                            ⭐⭐⭐ - Bueno
+                        </option>
+
+                        <option value="2">
+                            ⭐⭐ - Regular
+                        </option>
+
+                        <option value="1">
+                            ⭐ - Malo
+                        </option>
+
+                    </select>
+
+
+                    <label>
+                        Comentario
+                    </label>
+
+                    <textarea
+                        name="comentario"
+                        placeholder="Escriba un comentario (opcional)"
+                    ></textarea>
+
+
+                    <button
+                        type="submit"
+                        class="boton"
+                    >
+
+                        Enviar calificación
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        {% endfor %}
+
+
+    {% else %}
+
+        <div class="sin-pendientes">
+
+            <h2>
+                🎉 No tienes calificaciones pendientes
+            </h2>
+
+            <p>
+                Cuando finalices un servicio podrás calificar a la otra persona.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+
+</div>
+
+</body>
+
+</html>
