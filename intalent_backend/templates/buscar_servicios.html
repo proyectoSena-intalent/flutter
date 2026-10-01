@@ -1,190 +1,436 @@
 <!DOCTYPE html>
-
 <html lang="es">
 
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Buscar servicios - InTalent</title>
+    <title>Buscar servicios - InTalent</title>
 
-<style>
-    * {
-        box-sizing: border-box;
-    }
+    <style>
 
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background-color: #f2f4f7;
-    }
+        * {
+            box-sizing: border-box;
+        }
 
-    .barra-superior {
-        background-color: #007bff;
-        color: white;
-        padding: 20px;
-    }
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f5f7fb;
+            color: #1f2937;
+        }
 
-    .logo {
-        font-size: 24px;
-        font-weight: bold;
-    }
 
-    .modo-invitado {
-        margin-top: 8px;
-        font-size: 14px;
-    }
+        /* =========================
+           BARRA SUPERIOR
+        ========================= */
 
-    .contenedor {
-        width: 90%;
-        max-width: 1000px;
-        margin: 30px auto;
-    }
+        .barra-superior {
+            min-height: 72px;
+            padding: 0 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            position: relative;
+            z-index: 10;
+        }
 
-    .tarjeta {
-        background-color: white;
-        padding: 30px;
-        border-radius: 10px;
-        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-    }
+        .barra-superior.usuario {
+            background: linear-gradient(135deg, #0066ff, #00a8ff);
+        }
 
-    h1 {
-        margin-top: 0;
-        color: #333;
-    }
+        .barra-superior.invitado {
+            background: linear-gradient(135deg, #4b5563, #6b7280);
+        }
 
-    p {
-        color: #555;
-    }
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
 
-    .buscador {
-        display: flex;
-        gap: 10px;
-        margin-top: 25px;
-        flex-wrap: wrap;
-    }
+        .navegacion {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-    .buscador input {
-        flex: 1;
-        min-width: 220px;
-        padding: 12px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        font-size: 16px;
-    }
+        .boton-inicio {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 9px 14px;
+            border-radius: 9px;
+            background: rgba(255,255,255,0.15);
+            transition: 0.2s;
+        }
 
-    .buscador select {
-        padding: 12px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        font-size: 16px;
-    }
+        .boton-inicio:hover {
+            background: rgba(255,255,255,0.25);
+        }
 
-    .boton {
-        display: inline-block;
-        padding: 12px 20px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 16px;
-        text-decoration: none;
-    }
+        .usuario-enlace {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: white;
+            text-decoration: none;
+            padding: 5px 9px;
+            border-radius: 12px;
+            transition: 0.2s;
+        }
 
-    .boton:hover {
-        background-color: #0056b3;
-    }
+        .usuario-enlace:hover {
+            background: rgba(255,255,255,0.15);
+        }
 
-    .servicio {
-        margin-top: 20px;
-        padding: 20px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        background-color: #f8f9fa;
-    }
+        .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255,255,255,0.85);
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 19px;
+        }
 
-    .servicio h3 {
-        margin-top: 0;
-        color: #007bff;
-    }
+        .usuario-nombre {
+            font-size: 15px;
+            font-weight: 600;
+        }
 
-    .servicio p {
-        margin: 8px 0;
-    }
 
-    .sin-resultados {
-        margin-top: 20px;
-        padding: 20px;
-        border-radius: 8px;
-        background-color: #fff3cd;
-        border: 1px solid #ffe69c;
-    }
+        /* =========================
+           CONTENEDOR
+        ========================= */
 
-    .sin-resultados h3 {
-        margin-top: 0;
-    }
+        .contenedor {
+            width: 90%;
+            max-width: 1000px;
+            margin: 35px auto;
+            padding-bottom: 50px;
+        }
 
-    .aviso-invitado {
-        margin-top: 20px;
-        padding: 15px;
-        border-radius: 8px;
-        background-color: #e9f2ff;
-        border: 1px solid #b8d7ff;
-    }
 
-    .acciones {
-        margin-top: 25px;
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-    }
+        /* =========================
+           TARJETA PRINCIPAL
+        ========================= */
 
-    .boton-secundario {
-        background-color: #6c757d;
-    }
+        .tarjeta {
+            background-color: white;
+            padding: 30px;
+            border-radius: 18px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
 
-    .boton-secundario:hover {
-        background-color: #545b62;
-    }
-</style>
+        h1 {
+            margin-top: 0;
+            color: #111827;
+        }
 
+        h2 {
+            margin-top: 35px;
+            color: #111827;
+        }
+
+        p {
+            color: #555;
+            line-height: 1.5;
+        }
+
+
+        /* =========================
+           BUSCADOR
+        ========================= */
+
+        .buscador {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .buscador input {
+            flex: 1;
+            min-width: 220px;
+            padding: 13px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .buscador input:focus {
+            border-color: #0066ff;
+            box-shadow: 0 0 0 3px rgba(0,102,255,0.10);
+        }
+
+        .buscador select {
+            padding: 13px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+            background: white;
+        }
+
+
+        /* =========================
+           BOTONES
+        ========================= */
+
+        .boton {
+            display: inline-block;
+            padding: 12px 20px;
+            background-color: #0066ff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .boton:hover {
+            background-color: #0052cc;
+            transform: translateY(-1px);
+        }
+
+        .boton-secundario {
+            background-color: #6c757d;
+        }
+
+        .boton-secundario:hover {
+            background-color: #545b62;
+        }
+
+
+        /* =========================
+           SERVICIOS
+        ========================= */
+
+        .servicio {
+            margin-top: 20px;
+            padding: 22px;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            background-color: #f8f9fa;
+            transition: 0.2s;
+        }
+
+        .servicio:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+        }
+
+        .servicio h3 {
+            margin-top: 0;
+            color: #0066ff;
+            font-size: 20px;
+        }
+
+        .servicio p {
+            margin: 8px 0;
+        }
+
+
+        /* =========================
+           SIN RESULTADOS
+        ========================= */
+
+        .sin-resultados {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #fff3cd;
+            border: 1px solid #ffe69c;
+        }
+
+        .sin-resultados h3 {
+            margin-top: 0;
+        }
+
+
+        /* =========================
+           MODO INVITADO
+        ========================= */
+
+        .aviso-invitado {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: #e9f2ff;
+            border: 1px solid #b8d7ff;
+        }
+
+        .aviso-invitado p {
+            margin-bottom: 5px;
+        }
+
+
+        /* =========================
+           ACCIONES
+        ========================= */
+
+        .acciones {
+            margin-top: 25px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+
+        /* =========================
+           CELULAR
+        ========================= */
+
+        @media (max-width: 650px) {
+
+            .barra-superior {
+                padding: 12px 5%;
+            }
+
+            .logo {
+                font-size: 24px;
+            }
+
+            .usuario-nombre {
+                display: none;
+            }
+
+            .boton-inicio {
+                padding: 8px 10px;
+            }
+
+            .contenedor {
+                width: 92%;
+                margin-top: 20px;
+            }
+
+            .tarjeta {
+                padding: 22px;
+            }
+
+            .buscador {
+                flex-direction: column;
+            }
+
+            .buscador input,
+            .buscador select,
+            .buscador .boton {
+                width: 100%;
+            }
+
+        }
+
+    </style>
 
 </head>
+
 
 <body>
 
 
-<div class="barra-superior">
+<!-- =========================
+     BARRA SUPERIOR
+========================== -->
 
-    <div class="logo">
-        InTalent
+{% if invitado %}
+
+    <div class="barra-superior invitado">
+
+        <div class="logo">
+            InTalent
+        </div>
+
+        <div class="navegacion">
+
+            <a
+                href="{% url 'login' %}"
+                class="boton-inicio"
+            >
+                🔐 Iniciar sesión
+            </a>
+
+        </div>
+
     </div>
 
-    {% if invitado %}
-        <div class="modo-invitado">
-            👀 Modo invitado
-        </div>
-    {% else %}
-        <div class="modo-invitado">
-            👤 {{ usuario.nombre }} {{ usuario.apellido }}
-        </div>
-    {% endif %}
+{% else %}
 
-</div>
+    <div class="barra-superior usuario">
+
+        <div class="logo">
+            InTalent
+        </div>
+
+        <div class="navegacion">
+
+            <a
+                href="{% url 'inicio' %}"
+                class="boton-inicio"
+            >
+                🏠 Inicio
+            </a>
+
+            <a
+                href="{% url 'perfil' %}"
+                class="usuario-enlace"
+            >
+
+                {% if usuario.foto %}
+
+                    <img
+                        src="{{ usuario.foto.url }}"
+                        alt="Foto de {{ usuario.nombre }}"
+                        class="avatar"
+                    >
+
+                {% else %}
+
+                    <div class="avatar">
+                        👤
+                    </div>
+
+                {% endif %}
+
+                <span class="usuario-nombre">
+                    {{ usuario.nombre }} {{ usuario.apellido }}
+                </span>
+
+            </a>
+
+        </div>
+
+    </div>
+
+{% endif %}
 
 
 <div class="contenedor">
 
     <div class="tarjeta">
 
-        <h1>🔎 Buscar servicios</h1>
+
+        <h1>
+            🔎 Buscar servicios
+        </h1>
+
 
         {% if invitado %}
 
             <div class="aviso-invitado">
 
-                <strong>👀 Estás navegando como invitado</strong>
+                <strong>
+                    👀 Estás navegando como invitado
+                </strong>
 
                 <p>
                     Puedes consultar y buscar los servicios disponibles
@@ -208,6 +454,10 @@
         {% endif %}
 
 
+        <!-- =========================
+             FORMULARIO DE BÚSQUEDA
+        ========================== -->
+
         <form method="GET" class="buscador">
 
             <input
@@ -217,57 +467,92 @@
                 value="{{ request.GET.buscar }}"
             >
 
+
             <select name="categoria">
 
                 <option value="">
                     Todas las categorías
                 </option>
 
-                <option value="plomeria"
-                    {% if request.GET.categoria == "plomeria" %}selected{% endif %}>
+                <option
+                    value="plomeria"
+                    {% if request.GET.categoria == "plomeria" %}
+                        selected
+                    {% endif %}
+                >
                     Plomería
                 </option>
 
-                <option value="electricidad"
-                    {% if request.GET.categoria == "electricidad" %}selected{% endif %}>
+                <option
+                    value="electricidad"
+                    {% if request.GET.categoria == "electricidad" %}
+                        selected
+                    {% endif %}
+                >
                     Electricidad
                 </option>
 
-                <option value="tecnologia"
-                    {% if request.GET.categoria == "tecnologia" %}selected{% endif %}>
+                <option
+                    value="tecnologia"
+                    {% if request.GET.categoria == "tecnologia" %}
+                        selected
+                    {% endif %}
+                >
                     Tecnología
                 </option>
 
-                <option value="limpieza"
-                    {% if request.GET.categoria == "limpieza" %}selected{% endif %}>
+                <option
+                    value="limpieza"
+                    {% if request.GET.categoria == "limpieza" %}
+                        selected
+                    {% endif %}
+                >
                     Limpieza
                 </option>
 
-                <option value="mascotas"
-                    {% if request.GET.categoria == "mascotas" %}selected{% endif %}>
+                <option
+                    value="mascotas"
+                    {% if request.GET.categoria == "mascotas" %}
+                        selected
+                    {% endif %}
+                >
                     Mascotas
                 </option>
 
-                <option value="abogados"
-                    {% if request.GET.categoria == "abogados" %}selected{% endif %}>
+                <option
+                    value="abogados"
+                    {% if request.GET.categoria == "abogados" %}
+                        selected
+                    {% endif %}
+                >
                     Abogados
                 </option>
 
-                <option value="construccion"
-                    {% if request.GET.categoria == "construccion" %}selected{% endif %}>
+                <option
+                    value="construccion"
+                    {% if request.GET.categoria == "construccion" %}
+                        selected
+                    {% endif %}
+                >
                     Construcción
                 </option>
 
             </select>
 
-            <button type="submit" class="boton">
-                Buscar
+
+            <button
+                type="submit"
+                class="boton"
+            >
+                🔎 Buscar
             </button>
 
         </form>
 
 
-        <h2>Servicios disponibles</h2>
+        <h2>
+            Servicios disponibles
+        </h2>
 
 
         {% if servicios %}
@@ -275,6 +560,7 @@
             <p>
                 Se encontraron {{ servicios|length }} servicio(s).
             </p>
+
 
             {% for servicio in servicios %}
 
@@ -284,32 +570,55 @@
                         {{ servicio.nombre }}
                     </h3>
 
+
                     <p>
-                        <strong>Categoría:</strong>
+
+                        <strong>
+                            Categoría:
+                        </strong>
+
                         {{ servicio.get_categoria_display }}
+
                     </p>
+
 
                     <p>
                         {{ servicio.descripcion }}
                     </p>
 
-                    <p>
-                        <strong>Precio:</strong>
-                        ${{ servicio.precio }}
-                    </p>
 
                     <p>
-                        <strong>Profesional:</strong>
+
+                        <strong>
+                            Precio:
+                        </strong>
+
+                        ${{ servicio.precio }}
+
+                    </p>
+
+
+                    <p>
+
+                        <strong>
+                            Profesional:
+                        </strong>
+
                         {{ servicio.profesional.nombre }}
                         {{ servicio.profesional.apellido }}
+
                     </p>
 
 
                     {% if invitado %}
 
                         <p style="color: #666; font-weight: bold;">
-                            👀 Inicia sesión o regístrate para solicitar este servicio.
+
+                            👀 Inicia sesión o regístrate
+                            para solicitar este servicio.
+
                         </p>
+
 
                     {% elif servicio.profesional != usuario %}
 
@@ -320,10 +629,13 @@
                             📩 Solicitar servicio
                         </a>
 
+
                     {% else %}
 
                         <p style="color: #666; font-weight: bold;">
+
                             🛠️ Este es tu propio servicio
+
                         </p>
 
                     {% endif %}
@@ -354,33 +666,37 @@
         {% endif %}
 
 
+        <!-- =========================
+             ACCIONES
+        ========================== -->
+
         {% if invitado %}
 
             <div class="acciones">
 
-                <a href="{% url 'login' %}" class="boton">
+                <a
+                    href="{% url 'login' %}"
+                    class="boton"
+                >
                     🔐 Iniciar sesión
                 </a>
 
-                <a href="{% url 'registro' %}" class="boton boton-secundario">
+                <a
+                    href="{% url 'registro' %}"
+                    class="boton boton-secundario"
+                >
                     👤 Registrar usuario
                 </a>
 
             </div>
 
-        {% else %}
-
-            <a href="{% url 'inicio' %}" class="boton boton-secundario"
-               style="margin-top: 25px;">
-                ← Volver al inicio
-            </a>
-
         {% endif %}
+
 
     </div>
 
 </div>
-```
+
 
 </body>
 

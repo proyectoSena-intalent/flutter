@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Nueva contraseña - InTalent</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+            margin: 0;
+
+            min-height: 100vh;
+
+            font-family: Arial, sans-serif;
+
+            background: #f4f6f8;
+        }
+
+
+        /* =========================
+           BARRA SUPERIOR
+        ========================= */
+
+        .barra-superior {
+            width: 100%;
+
+            background-color: #007bff;
+
+            color: white;
+
+            padding: 15px 25px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            box-shadow:
+                0 2px 8px
+                rgba(0, 0, 0, 0.15);
+        }
+
+
+        .logo {
+            font-size: 24px;
+
+            font-weight: bold;
+        }
+
+
+        .boton-login {
+            color: white;
+
+            text-decoration: none;
+
+            background-color:
+                rgba(255, 255, 255, 0.15);
+
+            padding: 9px 15px;
+
+            border-radius: 6px;
+
+            font-weight: bold;
+        }
+
+
+        .boton-login:hover {
+            background-color:
+                rgba(255, 255, 255, 0.30);
+        }
+
+
+        /* =========================
+           ZONA DEL FORMULARIO
+        ========================= */
+
+        .zona-contenido {
+            min-height:
+                calc(100vh - 72px);
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            padding: 30px 15px;
+        }
+
+
+        .contenedor {
+            width: 90%;
+
+            max-width: 420px;
+
+            background: white;
+
+            padding: 35px;
+
+            border-radius: 12px;
+
+            box-shadow:
+                0 5px 20px
+                rgba(0, 0, 0, 0.15);
+
+            text-align: center;
+        }
+
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+
+        .descripcion {
+            color: #666;
+
+            line-height: 1.5;
+
+            margin-bottom: 25px;
+        }
+
+
+        /* =========================
+           CAMPOS
+        ========================= */
+
+        .campo {
+            position: relative;
+
+            margin-bottom: 15px;
+        }
+
+
+        input {
+            width: 100%;
+
+            padding:
+                12px
+                45px
+                12px
+                12px;
+
+            border: 1px solid #ccc;
+
+            border-radius: 6px;
+
+            font-size: 16px;
+        }
+
+
+        input:focus {
+            outline: none;
+
+            border-color: #007bff;
+        }
+
+
+        .mostrar {
+            position: absolute;
+
+            right: 10px;
+
+            top: 50%;
+
+            transform:
+                translateY(-50%);
+
+            border: none;
+
+            background: none;
+
+            cursor: pointer;
+
+            font-size: 18px;
+
+            padding: 5px;
+        }
+
+
+        /* =========================
+           ESTADOS DE VALIDACIÓN
+        ========================= */
+
+        .estado {
+            display: block;
+
+            margin-top: -8px;
+
+            margin-bottom: 15px;
+
+            font-size: 14px;
+
+            text-align: left;
+        }
+
+
+        .estado.error {
+            color: #dc3545;
+        }
+
+
+        .estado.correcto {
+            color: #198754;
+        }
+
+
+        /* =========================
+           BOTÓN CAMBIAR
+        ========================= */
+
+        button.cambiar {
+            width: 100%;
+
+            padding: 12px;
+
+            border: none;
+
+            border-radius: 6px;
+
+            background: #007bff;
+
+            color: white;
+
+            font-size: 16px;
+
+            cursor: pointer;
+        }
+
+
+        button.cambiar:hover {
+            background: #0056b3;
+        }
+
+
+        /* =========================
+           MENSAJES
+        ========================= */
+
+        .error {
+            margin-bottom: 20px;
+
+            padding: 12px;
+
+            background: #ffebee;
+
+            color: #c62828;
+
+            border-radius: 6px;
+        }
+
+
+        .exito {
+            margin-bottom: 20px;
+
+            padding: 12px;
+
+            background: #e8f5e9;
+
+            color: #2e7d32;
+
+            border-radius: 6px;
+        }
+
+
+        .exito a {
+            color: #007bff;
+
+            text-decoration: none;
+
+            font-weight: bold;
+        }
+
+
+        .volver {
+            display: block;
+
+            margin-top: 20px;
+
+            color: #007bff;
+
+            text-decoration: none;
+        }
+
+
+        .volver:hover {
+            text-decoration: underline;
+        }
+
+
+        /* =========================
+           CELULARES
+        ========================= */
+
+        @media (max-width: 600px) {
+
+            .barra-superior {
+                padding: 12px 15px;
+            }
+
+            .logo {
+                font-size: 21px;
+            }
+
+            .boton-login {
+                padding: 8px 10px;
+
+                font-size: 14px;
+            }
+
+            .contenedor {
+                padding: 25px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         BARRA SUPERIOR
+    ========================= -->
+
+    <div class="barra-superior">
+
+        <div class="logo">
+            InTalent
+        </div>
+
+
+        <a
+            href="{% url 'login' %}"
+            class="boton-login"
+        >
+            🔐 Iniciar sesión
+        </a>
+
+    </div>
+
+
+
+    <!-- =========================
+         CONTENIDO
+    ========================= -->
+
+    <div class="zona-contenido">
+
+
+        <div class="contenedor">
+
+
+            <h1>
+                Nueva contraseña
+            </h1>
+
+
+
+            {% if error %}
+
+                <div class="error">
+                    {{ error }}
+                </div>
+
+            {% endif %}
+
+
+
+            {% if exito %}
+
+                <div class="exito">
+
+                    {{ exito }}
+
+                    <br><br>
+
+                    <a href="{% url 'login' %}">
+                        Ir al inicio de sesión
+                    </a>
+
+                </div>
+
+
+            {% else %}
+
+
+                <p class="descripcion">
+
+                    Crea una nueva contraseña para tu
+                    cuenta de InTalent.
+
+                </p>
+
+
+
+                <form
+                    method="POST"
+                    id="formulario-password"
+                >
+
+                    {% csrf_token %}
+
+
+
+                    <div class="campo">
+
+                        <input
+                            type="password"
+                            id="nueva_contrasena"
+                            name="nueva_contrasena"
+                            placeholder="Nueva contraseña"
+                            minlength="8"
+                            required
+                        >
+
+
+                        <button
+                            type="button"
+                            class="mostrar"
+                            onclick="mostrarPassword(
+                                'nueva_contrasena',
+                                this
+                            )"
+                        >
+                            👁️
+                        </button>
+
+                    </div>
+
+
+
+                    <div
+                        id="estado-password"
+                        class="estado"
+                    ></div>
+
+
+
+                    <div class="campo">
+
+                        <input
+                            type="password"
+                            id="confirmar_contrasena"
+                            name="confirmar_contrasena"
+                            placeholder="Confirmar contraseña"
+                            minlength="8"
+                            required
+                        >
+
+
+                        <button
+                            type="button"
+                            class="mostrar"
+                            onclick="mostrarPassword(
+                                'confirmar_contrasena',
+                                this
+                            )"
+                        >
+                            👁️
+                        </button>
+
+                    </div>
+
+
+
+                    <div
+                        id="estado-confirmacion"
+                        class="estado"
+                    ></div>
+
+
+
+                    <button
+                        type="submit"
+                        class="cambiar"
+                    >
+                        Cambiar contraseña
+                    </button>
+
+
+                </form>
+
+
+            {% endif %}
+
+
+
+            {% if not exito %}
+
+                <a
+                    href="{% url 'login' %}"
+                    class="volver"
+                >
+                    ← Volver al inicio de sesión
+                </a>
+
+            {% endif %}
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- =========================
+         JAVASCRIPT ORIGINAL
+    ========================= -->
+
+    <script>
+
+        function mostrarPassword(id, boton) {
+
+            const campo =
+                document.getElementById(id);
+
+
+            if (campo.type === "password") {
+
+                campo.type = "text";
+
+                boton.textContent = "🙈";
+
+            } else {
+
+                campo.type = "password";
+
+                boton.textContent = "👁️";
+
+            }
+
+        }
+
+
+        const nuevaPassword =
+            document.getElementById(
+                "nueva_contrasena"
+            );
+
+
+        const confirmarPassword =
+            document.getElementById(
+                "confirmar_contrasena"
+            );
+
+
+        const estadoPassword =
+            document.getElementById(
+                "estado-password"
+            );
+
+
+        const estadoConfirmacion =
+            document.getElementById(
+                "estado-confirmacion"
+            );
+
+
+        function validarPassword() {
+
+            if (!nuevaPassword.value) {
+
+                estadoPassword.textContent = "";
+
+                return;
+            }
+
+
+            if (nuevaPassword.value.length < 8) {
+
+                estadoPassword.textContent =
+                    "❌ La contraseña debe tener mínimo 8 caracteres.";
+
+                estadoPassword.className =
+                    "estado error";
+
+            } else {
+
+                estadoPassword.textContent =
+                    "✓ Contraseña válida.";
+
+                estadoPassword.className =
+                    "estado correcto";
+
+            }
+
+        }
+
+
+        function validarConfirmacion() {
+
+            if (!confirmarPassword.value) {
+
+                estadoConfirmacion.textContent = "";
+
+                return;
+            }
+
+
+            if (
+                nuevaPassword.value !==
+                confirmarPassword.value
+            ) {
+
+                estadoConfirmacion.textContent =
+                    "❌ Las contraseñas no coinciden.";
+
+                estadoConfirmacion.className =
+                    "estado error";
+
+            } else {
+
+                estadoConfirmacion.textContent =
+                    "✓ Las contraseñas coinciden.";
+
+                estadoConfirmacion.className =
+                    "estado correcto";
+
+            }
+
+        }
+
+
+        nuevaPassword.addEventListener(
+            "input",
+            function () {
+
+                validarPassword();
+
+                validarConfirmacion();
+
+            }
+        );
+
+
+        confirmarPassword.addEventListener(
+            "input",
+            validarConfirmacion
+        );
+
+
+        document
+            .getElementById("formulario-password")
+            .addEventListener(
+                "submit",
+                function(event) {
+
+                    if (
+                        nuevaPassword.value !==
+                        confirmarPassword.value
+                    ) {
+
+                        event.preventDefault();
+
+                        alert(
+                            "Las contraseñas no coinciden."
+                        );
+
+                        return;
+                    }
+
+
+                    if (
+                        nuevaPassword.value.length < 8
+                    ) {
+
+                        event.preventDefault();
+
+                        alert(
+                            "La contraseña debe tener mínimo 8 caracteres."
+                        );
+
+                    }
+
+                }
+            );
+
+    </script>
+
+
+</body>
+
+</html>

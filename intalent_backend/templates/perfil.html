@@ -22,27 +22,73 @@
         }
 
         .barra-superior {
-            background-color: #007bff;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
             color: white;
-            padding: 20px;
+            padding: 18px 30px;
+        }
+
+        .barra-contenido {
+            max-width: 1100px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         .logo {
-            font-size: 24px;
+            font-size: 25px;
             font-weight: bold;
+        }
+
+        .inicio {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 10px 16px;
+            border-radius: 8px;
+            background-color: rgba(255,255,255,0.15);
+        }
+
+        .inicio:hover {
+            background-color: rgba(255,255,255,0.25);
         }
 
         .contenedor {
             width: 90%;
             max-width: 700px;
-            margin: 30px auto;
+            margin: 35px auto;
         }
 
         .tarjeta {
             background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            padding: 35px;
+            border-radius: 18px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .cabecera-perfil {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .foto-perfil {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #2563eb;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .nombre-perfil {
+            margin: 15px 0 5px;
+            font-size: 27px;
+            color: #1f2937;
+        }
+
+        .subtitulo {
+            margin: 0;
+            color: #6b7280;
         }
 
         h1 {
@@ -51,16 +97,16 @@
         }
 
         .dato {
-            margin-top: 20px;
-            padding: 15px;
+            margin-top: 18px;
+            padding: 16px;
             background-color: #f8f9fa;
-            border-radius: 8px;
-            border: 1px solid #ddd;
+            border-radius: 10px;
+            border: 1px solid #e1e5ea;
         }
 
         .dato strong {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
             color: #333;
         }
 
@@ -71,7 +117,8 @@
             background-color: #007bff;
             color: white;
             text-decoration: none;
-            border-radius: 5px;
+            border-radius: 7px;
+            font-weight: bold;
         }
 
         .boton:hover {
@@ -80,16 +127,45 @@
 
         .volver {
             display: inline-block;
-            margin-top: 15px;
-            padding: 10px 18px;
+            margin-top: 25px;
+            padding: 11px 18px;
             background-color: #6c757d;
             color: white;
             text-decoration: none;
-            border-radius: 5px;
+            border-radius: 7px;
         }
 
         .volver:hover {
             background-color: #545b62;
+        }
+
+        .sin-foto {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            background-color: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: auto;
+            font-size: 55px;
+        }
+
+        @media (max-width: 600px) {
+
+            .barra-superior {
+                padding: 15px;
+            }
+
+            .barra-contenido {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .tarjeta {
+                padding: 25px 20px;
+            }
+
         }
 
     </style>
@@ -101,8 +177,16 @@
 
     <div class="barra-superior">
 
-        <div class="logo">
-            InTalent
+        <div class="barra-contenido">
+
+            <div class="logo">
+                InTalent
+            </div>
+
+            <a href="{% url 'inicio' %}" class="inicio">
+                🏠 Inicio
+            </a>
+
         </div>
 
     </div>
@@ -112,21 +196,57 @@
 
         <div class="tarjeta">
 
-            <h1>👤 Mi perfil</h1>
+            <div class="cabecera-perfil">
 
-            <div class="dato">
+                {% if usuario.foto %}
+    <img src="{{ usuario.foto.url }}" alt="Foto de perfil" class="foto-perfil">
+{% else %}
+    <div class="sin-foto">👤</div>
+{% endif %}
 
-                <strong>Nombre completo</strong>
+<form method="POST" enctype="multipart/form-data" style="margin-top: 15px;">
+    {% csrf_token %}
 
-                {{ usuario.nombre }}
-                {{ usuario.apellido }}
+    <input
+        type="file"
+        name="foto"
+        accept="image/*"
+        required
+    >
+
+    <br><br>
+
+    <button
+        type="submit"
+        style="
+            padding: 10px 18px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            font-weight: bold;
+            cursor: pointer;
+        "
+    >
+        📷 Cambiar foto
+    </button>
+</form>
+
+
+                <h1 class="nombre-perfil">
+                    {{ usuario.nombre }} {{ usuario.apellido }}
+                </h1>
+
+                <p class="subtitulo">
+                    Mi perfil de InTalent
+                </p>
 
             </div>
 
 
             <div class="dato">
 
-                <strong>Correo electrónico</strong>
+                <strong>📧 Correo electrónico</strong>
 
                 {{ usuario.correo }}
 
@@ -135,7 +255,7 @@
 
             <div class="dato">
 
-                <strong>Teléfono</strong>
+                <strong>📱 Teléfono</strong>
 
                 {{ usuario.telefono }}
 
@@ -144,87 +264,120 @@
 
             <div class="dato">
 
-                <strong>Tipo de usuario</strong>
+                <strong>👤 Tipo de usuario</strong>
 
                 {{ usuario.get_tipo_usuario_display }}
 
             </div>
 
+
             <div class="dato">
-                <strong>Estado profesional</strong>
+
+                <strong>🛠️ Estado profesional</strong>
 
                 {% if usuario.es_profesional %}
 
                     {% if usuario.estado_profesional == 'activo' %}
+
                         🟢 Profesional activo
+
                     {% else %}
+
                         🔴 Profesional bloqueado
+
                     {% endif %}
 
                 {% else %}
+
                     ⚪ Solo cliente
+
                 {% endif %}
+
             </div>
+
 
             {% if usuario.es_profesional %}
 
-<div class="dato">
-    <strong>Saldo pendiente</strong>
-    ${{ usuario.saldo_pendiente|floatformat:2 }}
-</div>
+                <div class="dato">
 
-{% if usuario.saldo_pendiente > 0 %}
+                    <strong>💰 Saldo pendiente</strong>
 
-<div style="margin-top: 20px;">
+                    ${{ usuario.saldo_pendiente|floatformat:2 }}
 
-    <a
-        href="{% url 'pagar_deuda' %}"
-        style="
-            display: inline-block;
-            padding: 12px 20px;
-            background-color: #28a745;
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            font-weight: bold;
-        "
-    >
-        💳 Pagar deuda
-    </a>
+                </div>
 
-</div>
 
-{% endif %}
+                {% if usuario.saldo_pendiente > 0 %}
 
-{% endif %}
+                    <div style="margin-top: 20px;">
+
+                        <a
+                            href="{% url 'pagar_deuda' %}"
+                            style="
+                                display: inline-block;
+                                padding: 12px 20px;
+                                background-color: #28a745;
+                                color: white;
+                                text-decoration: none;
+                                border-radius: 7px;
+                                font-weight: bold;
+                            "
+                        >
+
+                            💳 Pagar deuda
+
+                        </a>
+
+                    </div>
+
+                {% endif %}
+
+            {% endif %}
+
 
             <div class="dato">
 
-                <strong>Fecha de registro</strong>
+                <strong>📅 Fecha de registro</strong>
 
                 {{ usuario.fecha_registro|date:"d/m/Y H:i" }}
 
             </div>
 
 
-            {% if usuario.es_profesional %} 
-                <div class="dato"> 
+            {% if usuario.es_profesional %}
+
+                <div class="dato">
+
                     <strong>Estado</strong>
-                    🟢 Ya eres profesional y puedes ofrecer tus servicios. 
-                </div> 
-            {% else %} 
-                <a href="{% url 'activar_profesional' %}" class="boton"> 
-                    🛠️ Convertirme en profesional 
-                </a> 
+
+                    🟢 Ya eres profesional y puedes ofrecer tus servicios.
+
+                </div>
+
+            {% else %}
+
+                <a
+                    href="{% url 'activar_profesional' %}"
+                    class="boton"
+                >
+
+                    🛠️ Convertirme en profesional
+
+                </a>
+
             {% endif %}
-            </a>
 
 
             <br>
 
 
-            <a href="{% url 'inicio' %}" class="volver">
+            <a
+                href="{% url 'inicio' %}"
+                class="volver"
+            >
+
                 ← Volver al inicio
+
             </a>
 
         </div>

@@ -14,6 +14,7 @@ def registro(request):
     mensaje = ''
 
     if request.method == 'POST':
+
         nombre = request.POST.get('nombre')
         apellido = request.POST.get('apellido')
         correo = request.POST.get('correo')
@@ -21,6 +22,20 @@ def registro(request):
         contraseña = request.POST.get('contraseña')
         confirmar_contraseña = request.POST.get('confirmar_contraseña')
 
+        # Obtener la foto enviada
+        foto = request.FILES.get('foto')
+
+        # Verificar que se haya seleccionado una foto
+        if not foto:
+            mensaje = 'Debes seleccionar una foto de perfil.'
+
+            return render(
+                request,
+                'registro.html',
+                {'mensaje': mensaje}
+            )
+
+        # Verificar que las contraseñas coincidan
         if contraseña != confirmar_contraseña:
             mensaje = 'Las contraseñas no coinciden.'
 
@@ -30,6 +45,7 @@ def registro(request):
                 {'mensaje': mensaje}
             )
 
+        # Verificar si el correo ya existe
         if Usuario.objects.filter(correo=correo).exists():
             mensaje = 'Ya existe una cuenta registrada con este correo.'
 
@@ -39,21 +55,24 @@ def registro(request):
                 {'mensaje': mensaje}
             )
 
+        # Encriptar contraseña
         contraseña_segura = make_password(contraseña)
 
+        # Crear usuario y guardar foto
         Usuario.objects.create(
             nombre=nombre,
             apellido=apellido,
             correo=correo,
             telefono=telefono,
             contraseña=contraseña_segura,
-            tipo_usuario='cliente'
+            tipo_usuario='cliente',
+            foto=foto
         )
 
         return render(
             request,
             'registro_exitoso.html'
-)
+        )
 
     return render(
         request,
@@ -90,6 +109,7 @@ def login(request):
         'login.html',
         {'mensaje': mensaje}
     )
+
 @never_cache
 def inicio(request):
 
@@ -206,6 +226,17 @@ def perfil(request):
         return redirect('login')
 
     usuario = Usuario.objects.get(id=usuario_id)
+
+    # Cambiar foto de perfil
+    if request.method == 'POST':
+
+        foto = request.FILES.get('foto')
+
+        if foto:
+            usuario.foto = foto
+            usuario.save()
+
+        return redirect('perfil')
 
     return render(
         request,
@@ -440,6 +471,28 @@ def cambiar_estado_solicitud(request, solicitud_id):
 
     return redirect('solicitudes_recibidas')
 
+def cancelar_solicitud(request, solicitud_id):
+
+    usuario_id = request.session.get('usuario_id')
+
+    try:
+        solicitud = Solicitud.objects.get(
+            id=solicitud_id,
+            cliente_id=usuario_id
+        )
+
+    except Solicitud.DoesNotExist:
+
+        return redirect('mis_solicitudes')
+
+    # Solo se puede cancelar una solicitud pendiente
+    if solicitud.estado == 'pendiente':
+
+        solicitud.estado = 'cancelada'
+        solicitud.save()
+
+    return redirect('mis_solicitudes')
+
 def confirmar_servicio(request, solicitud_id):
 
     usuario_id = request.session.get('usuario_id')
@@ -498,5 +551,258 @@ def invitado(request):
             'usuario': None,
             'invitado': True,
             'servicios': servicios
+        }
+    )
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.hashers import check_password
+import json
+
+import secrets
+
+from django.core.mail import send_mail
+from django.utils import timezone
+from datetime import timedelta
+
+from .models import RecuperacionContraseña
+
+
+@csrf_exempt
+def api_login(request):
+
+    if request.method != 'POST':
+        return JsonResponse({
+            'success': False,
+            'mensaje': 'Método no permitido'
+        }, status=405)
+
+    try:
+        datos = json.loads(request.body)
+
+        correo = datos.get('correo')
+        contraseña = datos.get('contraseña')
+
+        if not correo or not contraseña:
+            return JsonResponse({
+                'success': False,
+                'mensaje': 'Correo y contraseña son obligatorios'
+            }, status=400)
+
+        try:
+            usuario = Usuario.objects.get(correo=correo)
+
+        except Usuario.DoesNotExist:
+            return JsonResponse({
+                'success': False,
+                'mensaje': 'Correo o contraseña incorrectos'
+            }, status=401)
+
+        if not usuario.contraseña or not check_password(
+            contraseña,
+            usuario.contraseña
+        ):
+            return JsonResponse({
+                'success': False,
+                'mensaje': 'Correo o contraseña incorrectos'
+            }, status=401)
+
+        return JsonResponse({
+            'success': True,
+            'mensaje': 'Inicio de sesión correcto',
+            'usuario': {
+                'id': usuario.id,
+                'nombre': usuario.nombre,
+                'apellido': usuario.apellido,
+                'correo': usuario.correo,
+                'tipo_usuario': usuario.tipo_usuario,
+                'es_profesional': usuario.es_profesional,
+            }
+        })
+
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'success': False,
+            'mensaje': 'Los datos enviados no son válidos'
+        }, status=400)
+
+def recuperar_contraseña(request):
+
+    mensaje = ''
+
+    if request.method == 'POST':
+
+        correo = request.POST.get('correo')
+
+        try:
+            usuario = Usuario.objects.get(correo=correo)
+
+            # Invalidar recuperaciones anteriores
+            RecuperacionContraseña.objects.filter(
+                usuario=usuario,
+                usado=False
+            ).update(
+                usado=True
+            )
+
+            # Crear token seguro
+            token = secrets.token_urlsafe(48)
+
+            RecuperacionContraseña.objects.create(
+                usuario=usuario,
+                token=token
+            )
+
+            enlace = (
+                request.build_absolute_uri(
+                    f'/restablecer-contrasena/{token}/'
+                )
+            )
+
+            send_mail(
+                'Recuperación de contraseña - InTalent',
+                f'''
+Hola {usuario.nombre},
+
+Has solicitado recuperar tu contraseña de InTalent.
+
+Ingresa al siguiente enlace para establecer una nueva contraseña:
+
+{enlace}
+
+Si tú no solicitaste este cambio, puedes ignorar este mensaje.
+''',
+                None,
+                [usuario.correo],
+            )
+
+            mensaje = (
+                'Si el correo está registrado, '
+                'recibirás instrucciones para recuperar tu contraseña.'
+            )
+
+        except Usuario.DoesNotExist:
+
+            # No revelar si el correo existe o no
+            mensaje = (
+                'Si el correo está registrado, '
+                'recibirás instrucciones para recuperar tu contraseña.'
+            )
+
+    return render(
+        request,
+        'recuperar_contrasena.html',
+        {
+            'mensaje': mensaje
+        }
+    )
+
+def restablecer_contrasena(request, token):
+
+    try:
+        recuperacion = RecuperacionContraseña.objects.get(
+            token=token,
+            usado=False
+        )
+
+    except RecuperacionContraseña.DoesNotExist:
+
+        return render(
+            request,
+            'restablecer_contrasena.html',
+            {
+                'error': 'El enlace de recuperación no es válido.'
+            }
+        )
+
+    # Verificar que el token no tenga más de 30 minutos
+    tiempo_limite = timezone.now() - timedelta(minutes=30)
+
+    if recuperacion.fecha_creacion < tiempo_limite:
+
+        recuperacion.usado = True
+        recuperacion.save()
+
+        return render(
+            request,
+            'restablecer_contrasena.html',
+            {
+                'error': 'El enlace de recuperación ha expirado.'
+            }
+        )
+
+    if request.method == 'POST':
+
+        nueva_contrasena = request.POST.get(
+            'nueva_contrasena'
+        )
+
+        confirmar_contrasena = request.POST.get(
+            'confirmar_contrasena'
+        )
+
+        if not nueva_contrasena or not confirmar_contrasena:
+
+            return render(
+                request,
+                'restablecer_contrasena.html',
+                {
+                    'error': 'Debes completar todos los campos.',
+                    'token': token
+                }
+            )
+
+        if nueva_contrasena != confirmar_contrasena:
+
+            return render(
+                request,
+                'restablecer_contrasena.html',
+                {
+                    'error': 'Las contraseñas no coinciden.',
+                    'token': token
+                }
+            )
+
+        if len(nueva_contrasena) < 8:
+
+            return render(
+                request,
+                'restablecer_contrasena.html',
+                {
+                    'error': (
+                        'La contraseña debe tener '
+                        'mínimo 8 caracteres.'
+                    ),
+                    'token': token
+                }
+            )
+
+        # Guardar la nueva contraseña de forma segura
+        recuperacion.usuario.contraseña = make_password(
+            nueva_contrasena
+        )
+
+        recuperacion.usuario.save()
+
+        # Marcar el token como utilizado
+        recuperacion.usado = True
+        recuperacion.save()
+
+        return render(
+            request,
+            'restablecer_contrasena.html',
+            {
+                'exito': (
+                    'Tu contraseña fue cambiada correctamente. '
+                    'Ya puedes iniciar sesión.'
+                )
+            }
+        )
+
+    return render(
+        request,
+        'restablecer_contrasena.html',
+        {
+            'token': token
         }
     )

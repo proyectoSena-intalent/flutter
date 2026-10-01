@@ -85,7 +85,7 @@
             </p>
         {% endif %}
 
-        <form method="POST">
+        <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
 
             <label for="nombre">Nombre</label>
@@ -119,6 +119,16 @@
                 name="telefono"
                 required
             >
+
+            <label for="foto">Foto de perfil</label>
+
+            <input
+                type="file"
+                id="foto"
+                name="foto"
+                accept="image/*"
+                required
+>
 
             <label for="contraseña">Contraseña</label>
             <input type="password" 

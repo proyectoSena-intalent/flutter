@@ -11,16 +11,15 @@ class Usuario(models.Model):
     apellido = models.CharField(max_length=100)
     correo = models.EmailField(unique=True)
     telefono = models.CharField(max_length=20)
-    contraseña = models.CharField(max_length=128, null=True, blank=True)
-    tipo_usuario = models.CharField(
-        max_length=20,
-        choices=TIPO_USUARIO
+    foto = models.ImageField(
+        upload_to='usuarios/',
+        null=True,
+        blank=True
     )
+    contraseña = models.CharField(max_length=128, null=True, blank=True)
+    tipo_usuario = models.CharField(max_length=20,choices=TIPO_USUARIO)
     es_profesional = models.BooleanField(default=False)
-
-    estado_profesional = models.CharField(
-        max_length=20,
-        choices=[
+    estado_profesional = models.CharField(max_length=20,choices=[
             ('activo', 'Activo'),
             ('bloqueado', 'Bloqueado'),
     ],
@@ -85,6 +84,7 @@ class Solicitud(models.Model):
         ('rechazada', 'Rechazada'),
         ('finalizada', 'Finalizada'),
         ('confirmada', 'Confirmada'),
+        ('cancelada', 'Cancelada'),
     ]
 
     cliente = models.ForeignKey(
@@ -145,3 +145,28 @@ class Solicitud(models.Model):
 
     def __str__(self):
         return f"Solicitud de {self.cliente} - {self.servicio}"
+
+    
+class RecuperacionContraseña(models.Model):
+
+    usuario = models.ForeignKey(
+        Usuario,
+        on_delete=models.CASCADE
+    )
+
+    token = models.CharField(
+        max_length=128,
+        unique=True
+    )
+
+    fecha_creacion = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    usado = models.BooleanField(
+        default=False
+    )
+
+    def __str__(self):
+        return f"Recuperación de contraseña - {self.usuario.correo}"
+

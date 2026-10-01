@@ -21,3 +21,8 @@ db.sqlite3
 Thumbs.db
 # Dependencias de Node.js
 node_modules/
+# Archivos multimedia de usuarios
+media/
+
+# Proyecto Flutter administrado por otra integrante
+intalent_flutter/

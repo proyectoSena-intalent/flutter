@@ -2,6 +2,7 @@
 <html lang="es">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -9,12 +10,100 @@
 
     <style>
 
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f6f8;
             margin: 0;
             padding: 0;
         }
+
+
+        /* =========================
+           BARRA SUPERIOR
+        ========================= */
+
+        .barra-superior {
+            background-color: #007bff;
+            color: white;
+            padding: 15px 20px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .navegacion {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .boton-inicio {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.15);
+
+            padding: 9px 14px;
+
+            border-radius: 6px;
+
+            text-decoration: none;
+
+            font-weight: bold;
+        }
+
+        .boton-inicio:hover {
+            background-color: rgba(255, 255, 255, 0.25);
+        }
+
+        .usuario-enlace {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            color: white;
+            text-decoration: none;
+
+            font-weight: bold;
+        }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+
+            border-radius: 50%;
+
+            object-fit: cover;
+
+            border: 2px solid white;
+
+            background-color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 20px;
+        }
+
+        .usuario-nombre {
+            font-size: 15px;
+        }
+
+
+        /* =========================
+           CONTENEDOR
+        ========================= */
 
         .contenedor {
             width: 90%;
@@ -32,6 +121,11 @@
             color: #666;
             margin-bottom: 30px;
         }
+
+
+        /* =========================
+           SOLICITUD
+        ========================= */
 
         .solicitud {
             background-color: white;
@@ -71,6 +165,11 @@
             color: #0069d9;
         }
 
+
+        /* =========================
+           SIN SOLICITUDES
+        ========================= */
+
         .sin-solicitudes {
             background-color: white;
             padding: 30px;
@@ -78,6 +177,11 @@
             border-radius: 10px;
             color: #666;
         }
+
+
+        /* =========================
+           BOTÓN VOLVER
+        ========================= */
 
         .boton {
             display: inline-block;
@@ -93,60 +197,168 @@
             background-color: #0056b3;
         }
 
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 650px) {
+
+            .barra-superior {
+                padding: 12px 15px;
+            }
+
+            .logo {
+                font-size: 21px;
+            }
+
+            .usuario-nombre {
+                display: none;
+            }
+
+            .boton-inicio {
+                padding: 8px 10px;
+                font-size: 14px;
+            }
+
+            .contenedor {
+                width: 94%;
+                margin: 25px auto;
+            }
+
+        }
+
     </style>
+
 </head>
+
 
 <body>
 
-    <div class="contenedor">
 
-        <h1>📩 Solicitudes recibidas</h1>
+    <!-- =========================
+         BARRA SUPERIOR
+    ========================= -->
 
-        {% if error_pago %}
+    <div class="barra-superior">
 
-    <div style="
-        background-color: #fff3cd;
-        color: #856404;
-        padding: 20px;
-        margin-bottom: 25px;
-        border-radius: 10px;
-        border: 1px solid #ffeeba;
-        text-align: center;
-    ">
+        <div class="logo">
+            InTalent
+        </div>
 
-        <h2 style="margin-top: 0;">
-            ⚠️ No puedes aceptar mas solicitudes
-        </h2>
 
-        <p>
-            {{ mensaje_pago }}
-        </p>
+        <div class="navegacion">
 
-        <a
-            href="{% url 'pagar_deuda' %}"
-            style="
-                display: inline-block;
-                padding: 10px 18px;
-                background-color: #dc3545;
-                color: white;
-                text-decoration: none;
-                border-radius: 6px;
-                font-weight: bold;
-            "
-        >
-            💳 Ir a pagar deuda
-        </a>
+            <!-- INICIO -->
+
+            <a
+                href="{% url 'inicio' %}"
+                class="boton-inicio"
+            >
+                🏠 Inicio
+            </a>
+
+
+            <!-- FOTO Y NOMBRE -->
+
+            <a
+                href="{% url 'perfil' %}"
+                class="usuario-enlace"
+            >
+
+                {% if usuario.foto %}
+
+                    <img
+                        src="{{ usuario.foto.url }}"
+                        alt="Foto de {{ usuario.nombre }}"
+                        class="avatar"
+                    >
+
+                {% else %}
+
+                    <div class="avatar">
+                        👤
+                    </div>
+
+                {% endif %}
+
+
+                <span class="usuario-nombre">
+
+                    {{ usuario.nombre }}
+                    {{ usuario.apellido }}
+
+                </span>
+
+            </a>
+
+        </div>
 
     </div>
 
-{% endif %}
+
+
+    <!-- =========================
+         CONTENIDO ORIGINAL
+    ========================= -->
+
+    <div class="contenedor">
+
+        <h1>
+            📩 Solicitudes recibidas
+        </h1>
+
+
+        {% if error_pago %}
+
+            <div style="
+                background-color: #fff3cd;
+                color: #856404;
+                padding: 20px;
+                margin-bottom: 25px;
+                border-radius: 10px;
+                border: 1px solid #ffeeba;
+                text-align: center;
+            ">
+
+                <h2 style="margin-top: 0;">
+                    ⚠️ No puedes aceptar mas solicitudes
+                </h2>
+
+                <p>
+                    {{ mensaje_pago }}
+                </p>
+
+                <a
+                    href="{% url 'pagar_deuda' %}"
+                    style="
+                        display: inline-block;
+                        padding: 10px 18px;
+                        background-color: #dc3545;
+                        color: white;
+                        text-decoration: none;
+                        border-radius: 6px;
+                        font-weight: bold;
+                    "
+                >
+                    💳 Ir a pagar deuda
+                </a>
+
+            </div>
+
+        {% endif %}
+
 
         <p class="subtitulo">
+
             Solicitudes recibidas por
+
             <strong>
                 {{ usuario.nombre }} {{ usuario.apellido }}
             </strong>
+
         </p>
+
 
         {% if solicitudes %}
 
@@ -158,35 +370,57 @@
                         {{ solicitud.servicio.nombre }}
                     </h2>
 
+
                     <div class="dato">
+
                         <strong>Cliente:</strong>
+
                         {{ solicitud.cliente.nombre }}
                         {{ solicitud.cliente.apellido }}
+
                     </div>
 
+
                     <div class="dato">
+
                         <strong>Correo:</strong>
+
                         {{ solicitud.cliente.correo }}
+
                     </div>
 
+
                     <div class="dato">
+
                         <strong>Teléfono:</strong>
+
                         {{ solicitud.cliente.telefono }}
+
                     </div>
 
+
                     <div class="dato">
+
                         <strong>Precio:</strong>
+
                         ${{ solicitud.servicio.precio }}
+
                     </div>
 
+
                     <div class="dato">
+
                         <strong>Fecha de solicitud:</strong>
+
                         {{ solicitud.fecha_solicitud|date:"d/m/Y H:i" }}
+
                     </div>
+
 
                     <div class="dato">
 
                         <strong>Estado:</strong>
+
 
                         {% if solicitud.estado == 'pendiente' %}
 
@@ -194,12 +428,14 @@
                                 🟡 Pendiente
                             </span>
 
+
                             <div style="margin-top: 15px;">
 
                                 <form
                                     method="POST"
                                     action="{% url 'cambiar_estado_solicitud' solicitud.id %}"
                                     style="display: inline;"
+                                    onsubmit="return confirmarAceptar();"
                                 >
 
                                     {% csrf_token %}
@@ -209,6 +445,7 @@
                                         name="estado"
                                         value="aceptada"
                                     >
+
 
                                     <button
                                         type="submit"
@@ -226,10 +463,12 @@
 
                                 </form>
 
+
                                 <form
                                     method="POST"
                                     action="{% url 'cambiar_estado_solicitud' solicitud.id %}"
                                     style="display: inline; margin-left: 10px;"
+                                    onsubmit="return confirmarRechazar();"
                                 >
 
                                     {% csrf_token %}
@@ -239,6 +478,7 @@
                                         name="estado"
                                         value="rechazada"
                                     >
+
 
                                     <button
                                         type="submit"
@@ -258,17 +498,20 @@
 
                             </div>
 
+
                         {% elif solicitud.estado == 'aceptada' %}
 
                             <span class="estado aceptada">
                                 🟢 Aceptada
                             </span>
 
+
                             <div style="margin-top: 15px;">
 
                                 <form
                                     method="POST"
                                     action="{% url 'cambiar_estado_solicitud' solicitud.id %}"
+                                    onsubmit="return confirmarFinalizar();"
                                 >
 
                                     {% csrf_token %}
@@ -278,6 +521,7 @@
                                         name="estado"
                                         value="finalizada"
                                     >
+
 
                                     <button
                                         type="submit"
@@ -297,11 +541,13 @@
 
                             </div>
 
+
                         {% elif solicitud.estado == 'rechazada' %}
 
                             <span class="estado rechazada">
                                 🔴 Rechazada
                             </span>
+
 
                         {% elif solicitud.estado == 'finalizada' %}
 
@@ -309,53 +555,56 @@
                                 🔵 Finalizada
                             </span>
 
+
                         {% elif solicitud.estado == 'confirmada' %}
 
-    <span class="estado aceptada">
-        🟢 Servicio confirmado por el cliente
-    </span>
+                            <span class="estado aceptada">
+                                🟢 Servicio confirmado por el cliente
+                            </span>
 
-    {% if solicitud.id in calificaciones_realizadas %}
 
-        <div style="margin-top: 15px;">
+                            {% if solicitud.id in calificaciones_realizadas %}
 
-            <span style="
-                display: inline-block;
-                padding: 10px 15px;
-                background-color: #e8f5e9;
-                color: #218838;
-                border-radius: 6px;
-                font-weight: bold;
-            ">
-                ✅ Cliente calificado
-            </span>
+                                <div style="margin-top: 15px;">
 
-        </div>
+                                    <span style="
+                                        display: inline-block;
+                                        padding: 10px 15px;
+                                        background-color: #e8f5e9;
+                                        color: #218838;
+                                        border-radius: 6px;
+                                        font-weight: bold;
+                                    ">
+                                        ✅ Cliente calificado
+                                    </span>
 
-    {% else %}
+                                </div>
 
-        <div style="margin-top: 15px;">
 
-            <a
-                href="{% url 'crear_calificacion' %}"
-                style="
-                    display: inline-block;
-                    padding: 10px 15px;
-                    background-color: #ffc107;
-                    color: #212529;
-                    text-decoration: none;
-                    border-radius: 6px;
-                    font-weight: bold;
-                "
-            >
-                ⭐ Calificar cliente
-            </a>
+                            {% else %}
 
-        </div>
+                                <div style="margin-top: 15px;">
 
-    {% endif %}
+                                    <a
+                                        href="{% url 'crear_calificacion' %}"
+                                        style="
+                                            display: inline-block;
+                                            padding: 10px 15px;
+                                            background-color: #ffc107;
+                                            color: #212529;
+                                            text-decoration: none;
+                                            border-radius: 6px;
+                                            font-weight: bold;
+                                        "
+                                    >
+                                        ⭐ Calificar cliente
+                                    </a>
 
-{% endif %}
+                                </div>
+
+                            {% endif %}
+
+                        {% endif %}
 
                     </div>
 
@@ -363,11 +612,14 @@
 
             {% endfor %}
 
+
         {% else %}
 
             <div class="sin-solicitudes">
 
-                <h2>📭 No tienes solicitudes</h2>
+                <h2>
+                    📭 No tienes solicitudes
+                </h2>
 
                 <p>
                     Cuando un cliente solicite uno de tus servicios,
@@ -378,13 +630,49 @@
 
         {% endif %}
 
-        <a href="{% url 'inicio' %}" class="boton">
+
+        <a
+            href="{% url 'inicio' %}"
+            class="boton"
+        >
             ← Volver al inicio
         </a>
 
     </div>
 
+
+
+    <script>
+
+        function confirmarAceptar() {
+
+            return confirm(
+                "¿Estás seguro de que deseas aceptar esta solicitud?"
+            );
+
+        }
+
+
+        function confirmarRechazar() {
+
+            return confirm(
+                "¿Estás seguro de que deseas rechazar esta solicitud?"
+            );
+
+        }
+
+
+        function confirmarFinalizar() {
+
+            return confirm(
+                "¿Confirmas que el servicio ya fue realizado y deseas finalizarlo?"
+            );
+
+        }
+
+    </script>
+
+
 </body>
 
 </html>
-

@@ -21,16 +21,86 @@
             background-color: #f2f4f7;
         }
 
+        /* =========================
+           BARRA SUPERIOR
+        ========================= */
+
         .barra-superior {
             background-color: #007bff;
             color: white;
-            padding: 20px;
+            padding: 15px 20px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .logo {
             font-size: 24px;
             font-weight: bold;
         }
+
+        .navegacion {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .boton-inicio {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.15);
+
+            padding: 9px 14px;
+
+            border-radius: 6px;
+
+            text-decoration: none;
+
+            font-weight: bold;
+        }
+
+        .boton-inicio:hover {
+            background-color: rgba(255, 255, 255, 0.25);
+        }
+
+        .usuario-enlace {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            color: white;
+            text-decoration: none;
+
+            font-weight: bold;
+        }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+
+            border-radius: 50%;
+
+            object-fit: cover;
+
+            border: 2px solid white;
+
+            background-color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 20px;
+        }
+
+        .usuario-nombre {
+            font-size: 15px;
+        }
+
+
+        /* =========================
+           CONTENEDOR
+        ========================= */
 
         .contenedor {
             width: 90%;
@@ -54,6 +124,11 @@
             color: #555;
             line-height: 1.5;
         }
+
+
+        /* =========================
+           FORMULARIO
+        ========================= */
 
         .campo {
             margin-top: 20px;
@@ -80,6 +155,11 @@
             resize: vertical;
         }
 
+
+        /* =========================
+           BOTÓN
+        ========================= */
+
         .boton {
             margin-top: 25px;
             padding: 12px 20px;
@@ -95,6 +175,11 @@
             background-color: #0056b3;
         }
 
+
+        /* =========================
+           VOLVER
+        ========================= */
+
         .volver {
             display: inline-block;
             margin-top: 20px;
@@ -109,6 +194,11 @@
             background-color: #545b62;
         }
 
+
+        /* =========================
+           ERROR
+        ========================= */
+
         .error {
             margin-top: 20px;
             padding: 15px;
@@ -118,6 +208,40 @@
             color: #842029;
         }
 
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 650px) {
+
+            .barra-superior {
+                padding: 12px 15px;
+            }
+
+            .logo {
+                font-size: 21px;
+            }
+
+            .usuario-nombre {
+                display: none;
+            }
+
+            .boton-inicio {
+                padding: 8px 10px;
+                font-size: 14px;
+            }
+
+            .contenedor {
+                width: 94%;
+            }
+
+            .tarjeta {
+                padding: 20px;
+            }
+
+        }
+
     </style>
 
 </head>
@@ -125,43 +249,122 @@
 
 <body>
 
+
+    <!-- =========================
+         BARRA SUPERIOR
+    ========================= -->
+
     <div class="barra-superior">
 
         <div class="logo">
             InTalent
         </div>
 
+
+        <div class="navegacion">
+
+            <!-- BOTÓN INICIO -->
+
+            <a
+                href="{% url 'inicio' %}"
+                class="boton-inicio"
+            >
+                🏠 Inicio
+            </a>
+
+
+            <!-- FOTO Y NOMBRE -->
+
+            <a
+                href="{% url 'perfil' %}"
+                class="usuario-enlace"
+            >
+
+                {% if usuario.foto %}
+
+                    <img
+                        src="{{ usuario.foto.url }}"
+                        alt="Foto de {{ usuario.nombre }}"
+                        class="avatar"
+                    >
+
+                {% else %}
+
+                    <div class="avatar">
+                        👤
+                    </div>
+
+                {% endif %}
+
+
+                <span class="usuario-nombre">
+
+                    {{ usuario.nombre }}
+                    {{ usuario.apellido }}
+
+                </span>
+
+            </a>
+
+        </div>
+
     </div>
 
+
+
+    <!-- =========================
+         CONTENIDO ORIGINAL
+    ========================= -->
 
     <div class="contenedor">
 
         <div class="tarjeta">
 
-            <h1>🛠️ Ofrecer mis servicios</h1>
+            <h1>
+                🛠️ Ofrecer mis servicios
+            </h1>
+
 
             <p>
+
                 Publicando como:
+
                 <strong>
-                    {{ usuario.nombre }} {{ usuario.apellido }}
+
+                    {{ usuario.nombre }}
+                    {{ usuario.apellido }}
+
                 </strong>
+
             </p>
+
 
             <p class="descripcion">
+
                 Publica un servicio para que otras personas
                 puedan encontrarlo en InTalent.
+
             </p>
 
+
+
+            <!-- =========================
+                 FORMULARIO ORIGINAL
+            ========================= -->
 
             <form method="POST">
 
                 {% csrf_token %}
 
 
+                <!-- NOMBRE -->
+
                 <div class="campo">
 
                     <label for="{{ formulario.nombre.id_for_label }}">
+
                         {{ formulario.nombre.label }}
+
                     </label>
 
                     {{ formulario.nombre }}
@@ -169,10 +372,15 @@
                 </div>
 
 
+
+                <!-- CATEGORÍA -->
+
                 <div class="campo">
 
                     <label for="{{ formulario.categoria.id_for_label }}">
+
                         {{ formulario.categoria.label }}
+
                     </label>
 
                     {{ formulario.categoria }}
@@ -180,10 +388,15 @@
                 </div>
 
 
+
+                <!-- DESCRIPCIÓN -->
+
                 <div class="campo">
 
                     <label for="{{ formulario.descripcion.id_for_label }}">
+
                         {{ formulario.descripcion.label }}
+
                     </label>
 
                     {{ formulario.descripcion }}
@@ -191,16 +404,24 @@
                 </div>
 
 
+
+                <!-- PRECIO -->
+
                 <div class="campo">
 
                     <label for="{{ formulario.precio.id_for_label }}">
+
                         {{ formulario.precio.label }}
+
                     </label>
 
                     {{ formulario.precio }}
 
                 </div>
 
+
+
+                <!-- ERRORES -->
 
                 {% if formulario.errors %}
 
@@ -213,20 +434,37 @@
                 {% endif %}
 
 
-                <button type="submit" class="boton">
+
+                <!-- BOTÓN -->
+
+                <button
+                    type="submit"
+                    class="boton"
+                >
+
                     Publicar servicio
+
                 </button>
 
             </form>
 
 
-            <a href="{% url 'inicio' %}" class="volver">
+
+            <!-- VOLVER -->
+
+            <a
+                href="{% url 'inicio' %}"
+                class="volver"
+            >
+
                 ← Volver al inicio
+
             </a>
 
         </div>
 
     </div>
+
 
 </body>
 

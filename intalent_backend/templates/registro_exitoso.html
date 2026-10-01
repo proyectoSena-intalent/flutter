@@ -2,87 +2,276 @@
 <html lang="es">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Registro exitoso - InTalent</title>
 
+
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f2f2f2;
-            margin: 0;
-            padding: 0;
+
+        * {
+            box-sizing: border-box;
         }
 
+
+        body {
+            font-family: Arial, sans-serif;
+
+            background-color: #f2f2f2;
+
+            margin: 0;
+
+            padding: 0;
+
+            min-height: 100vh;
+        }
+
+
+        /* =========================
+           BARRA SUPERIOR
+        ========================= */
+
+        .barra-superior {
+            width: 100%;
+
+            background-color: #007bff;
+
+            color: white;
+
+            padding: 15px 25px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            box-shadow:
+                0 2px 8px
+                rgba(0, 0, 0, 0.15);
+        }
+
+
+        .logo {
+            font-size: 24px;
+
+            font-weight: bold;
+        }
+
+
+        .boton-login {
+            color: white;
+
+            text-decoration: none;
+
+            background-color:
+                rgba(255, 255, 255, 0.15);
+
+            padding: 9px 15px;
+
+            border-radius: 6px;
+
+            font-weight: bold;
+        }
+
+
+        .boton-login:hover {
+            background-color:
+                rgba(255, 255, 255, 0.30);
+        }
+
+
+        /* =========================
+           CONTENIDO
+        ========================= */
+
+        .zona-contenido {
+            min-height:
+                calc(100vh - 72px);
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            padding: 30px 15px;
+        }
+
+
         .contenedor {
-            width: 400px;
-            margin: 100px auto;
+            width: 90%;
+
+            max-width: 420px;
+
             background-color: white;
+
             padding: 35px;
+
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+
+            box-shadow:
+                0 5px 20px
+                rgba(0, 0, 0, 0.15);
+
             text-align: center;
         }
 
+
         .icono {
             font-size: 55px;
+
             margin-bottom: 10px;
         }
 
+
         h1 {
             color: #16a34a;
+
             margin-bottom: 15px;
         }
 
+
         p {
             color: #555;
+
             line-height: 1.5;
         }
 
+
         .boton {
             display: block;
+
             width: 100%;
-            box-sizing: border-box;
+
             margin-top: 25px;
+
             padding: 12px;
+
             border-radius: 5px;
+
             background-color: #2563eb;
+
             color: white;
+
             text-decoration: none;
+
             font-size: 16px;
         }
+
 
         .boton:hover {
             background-color: #1d4ed8;
         }
+
+
+        /* =========================
+           CELULARES
+        ========================= */
+
+        @media (max-width: 600px) {
+
+            .barra-superior {
+                padding: 12px 15px;
+            }
+
+            .logo {
+                font-size: 21px;
+            }
+
+            .boton-login {
+                padding: 8px 10px;
+
+                font-size: 14px;
+            }
+
+            .contenedor {
+                padding: 25px;
+            }
+
+        }
+
     </style>
+
 </head>
+
 
 <body>
 
-    <div class="contenedor">
 
-        <div class="icono">✅</div>
+    <!-- =========================
+         BARRA SUPERIOR
+    ========================= -->
 
-        <h1>¡Registro exitoso!</h1>
+    <div class="barra-superior">
 
-        <p>
-            Tu cuenta de InTalent ha sido creada correctamente.
-        </p>
+        <div class="logo">
+            InTalent
+        </div>
 
-        <p>
-            Ahora puedes iniciar sesión para comenzar a utilizar la plataforma.
-        </p>
 
-        <a href="{% url 'login' %}" class="boton">
-            Ir a iniciar sesión
+        <a
+            href="{% url 'login' %}"
+            class="boton-login"
+        >
+            🔐 Iniciar sesión
         </a>
 
     </div>
 
+
+
+    <!-- =========================
+         CONTENIDO
+    ========================= -->
+
+    <div class="zona-contenido">
+
+
+        <div class="contenedor">
+
+
+            <div class="icono">
+                ✅
+            </div>
+
+
+            <h1>
+                ¡Registro exitoso!
+            </h1>
+
+
+            <p>
+                Tu cuenta de InTalent ha sido creada correctamente.
+            </p>
+
+
+            <p>
+                Ahora puedes iniciar sesión para comenzar
+                a utilizar la plataforma.
+            </p>
+
+
+            <a
+                href="{% url 'login' %}"
+                class="boton"
+            >
+                Ir a iniciar sesión
+            </a>
+
+
+        </div>
+
+
+    </div>
+
+
 </body>
 
 </html>
-
-
