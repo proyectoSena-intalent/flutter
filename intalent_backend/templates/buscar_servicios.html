@@ -1,16 +1,13 @@
+
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Buscar servicios - InTalent</title>
 
     <style>
-
         * {
             box-sizing: border-box;
         }
@@ -22,10 +19,7 @@
             color: #1f2937;
         }
 
-
-        /* =========================
-           BARRA SUPERIOR
-        ========================= */
+        /* BARRA SUPERIOR */
 
         .barra-superior {
             min-height: 72px;
@@ -105,10 +99,7 @@
             font-weight: 600;
         }
 
-
-        /* =========================
-           CONTENEDOR
-        ========================= */
+        /* CONTENEDOR */
 
         .contenedor {
             width: 90%;
@@ -117,10 +108,7 @@
             padding-bottom: 50px;
         }
 
-
-        /* =========================
-           TARJETA PRINCIPAL
-        ========================= */
+        /* TARJETA PRINCIPAL */
 
         .tarjeta {
             background-color: white;
@@ -144,10 +132,7 @@
             line-height: 1.5;
         }
 
-
-        /* =========================
-           BUSCADOR
-        ========================= */
+        /* BUSCADOR */
 
         .buscador {
             display: flex;
@@ -179,10 +164,7 @@
             background: white;
         }
 
-
-        /* =========================
-           BOTONES
-        ========================= */
+        /* BOTONES */
 
         .boton {
             display: inline-block;
@@ -211,10 +193,7 @@
             background-color: #545b62;
         }
 
-
-        /* =========================
-           SERVICIOS
-        ========================= */
+        /* SERVICIOS */
 
         .servicio {
             margin-top: 20px;
@@ -240,10 +219,7 @@
             margin: 8px 0;
         }
 
-
-        /* =========================
-           SIN RESULTADOS
-        ========================= */
+        /* SIN RESULTADOS */
 
         .sin-resultados {
             margin-top: 20px;
@@ -257,10 +233,7 @@
             margin-top: 0;
         }
 
-
-        /* =========================
-           MODO INVITADO
-        ========================= */
+        /* MODO INVITADO */
 
         .aviso-invitado {
             margin-top: 20px;
@@ -274,10 +247,7 @@
             margin-bottom: 5px;
         }
 
-
-        /* =========================
-           ACCIONES
-        ========================= */
+        /* ACCIONES */
 
         .acciones {
             margin-top: 25px;
@@ -286,13 +256,9 @@
             flex-wrap: wrap;
         }
 
-
-        /* =========================
-           CELULAR
-        ========================= */
+        /* CELULAR */
 
         @media (max-width: 650px) {
-
             .barra-superior {
                 padding: 12px 5%;
             }
@@ -303,6 +269,12 @@
 
             .usuario-nombre {
                 display: none;
+            }
+
+            .navegacion {
+                gap: 7px;
+                flex-wrap: wrap;
+                justify-content: center;
             }
 
             .boton-inicio {
@@ -327,377 +299,282 @@
             .buscador .boton {
                 width: 100%;
             }
-
         }
-
     </style>
-
 </head>
-
 
 <body>
 
+    <!-- BARRA SUPERIOR -->
 
-<!-- =========================
-     BARRA SUPERIOR
-========================== -->
+    {% if invitado %}
 
-{% if invitado %}
+        <div class="barra-superior invitado">
 
-    <div class="barra-superior invitado">
-
-        <div class="logo">
-            InTalent
-        </div>
-
-        <div class="navegacion">
-
-            <a
-                href="{% url 'login' %}"
-                class="boton-inicio"
-            >
-                🔐 Iniciar sesión
-            </a>
-
-        </div>
-
-    </div>
-
-{% else %}
-
-    <div class="barra-superior usuario">
-
-        <div class="logo">
-            InTalent
-        </div>
-
-        <div class="navegacion">
-
-            <a
-                href="{% url 'inicio' %}"
-                class="boton-inicio"
-            >
-                🏠 Inicio
-            </a>
-
-            <a
-                href="{% url 'perfil' %}"
-                class="usuario-enlace"
-            >
-
-                {% if usuario.foto %}
-
-                    <img
-                        src="{{ usuario.foto.url }}"
-                        alt="Foto de {{ usuario.nombre }}"
-                        class="avatar"
-                    >
-
-                {% else %}
-
-                    <div class="avatar">
-                        👤
-                    </div>
-
-                {% endif %}
-
-                <span class="usuario-nombre">
-                    {{ usuario.nombre }} {{ usuario.apellido }}
-                </span>
-
-            </a>
-
-        </div>
-
-    </div>
-
-{% endif %}
-
-
-<div class="contenedor">
-
-    <div class="tarjeta">
-
-
-        <h1>
-            🔎 Buscar servicios
-        </h1>
-
-
-        {% if invitado %}
-
-            <div class="aviso-invitado">
-
-                <strong>
-                    👀 Estás navegando como invitado
-                </strong>
-
-                <p>
-                    Puedes consultar y buscar los servicios disponibles
-                    en InTalent.
-                </p>
-
-                <p>
-                    Para solicitar un servicio necesitas crear una cuenta
-                    o iniciar sesión.
-                </p>
-
+            <div class="logo">
+                InTalent
             </div>
 
-        {% else %}
+            <div class="navegacion">
 
-            <p>
-                Busca profesionales y personas que ofrecen
-                los servicios que necesitas.
-            </p>
-
-        {% endif %}
-
-
-        <!-- =========================
-             FORMULARIO DE BÚSQUEDA
-        ========================== -->
-
-        <form method="GET" class="buscador">
-
-            <input
-                type="text"
-                name="buscar"
-                placeholder="Ejemplo: plomero, electricista, abogado..."
-                value="{{ request.GET.buscar }}"
-            >
-
-
-            <select name="categoria">
-
-                <option value="">
-                    Todas las categorías
-                </option>
-
-                <option
-                    value="plomeria"
-                    {% if request.GET.categoria == "plomeria" %}
-                        selected
-                    {% endif %}
-                >
-                    Plomería
-                </option>
-
-                <option
-                    value="electricidad"
-                    {% if request.GET.categoria == "electricidad" %}
-                        selected
-                    {% endif %}
-                >
-                    Electricidad
-                </option>
-
-                <option
-                    value="tecnologia"
-                    {% if request.GET.categoria == "tecnologia" %}
-                        selected
-                    {% endif %}
-                >
-                    Tecnología
-                </option>
-
-                <option
-                    value="limpieza"
-                    {% if request.GET.categoria == "limpieza" %}
-                        selected
-                    {% endif %}
-                >
-                    Limpieza
-                </option>
-
-                <option
-                    value="mascotas"
-                    {% if request.GET.categoria == "mascotas" %}
-                        selected
-                    {% endif %}
-                >
-                    Mascotas
-                </option>
-
-                <option
-                    value="abogados"
-                    {% if request.GET.categoria == "abogados" %}
-                        selected
-                    {% endif %}
-                >
-                    Abogados
-                </option>
-
-                <option
-                    value="construccion"
-                    {% if request.GET.categoria == "construccion" %}
-                        selected
-                    {% endif %}
-                >
-                    Construcción
-                </option>
-
-            </select>
-
-
-            <button
-                type="submit"
-                class="boton"
-            >
-                🔎 Buscar
-            </button>
-
-        </form>
-
-
-        <h2>
-            Servicios disponibles
-        </h2>
-
-
-        {% if servicios %}
-
-            <p>
-                Se encontraron {{ servicios|length }} servicio(s).
-            </p>
-
-
-            {% for servicio in servicios %}
-
-                <div class="servicio">
-
-                    <h3>
-                        {{ servicio.nombre }}
-                    </h3>
-
-
-                    <p>
-
-                        <strong>
-                            Categoría:
-                        </strong>
-
-                        {{ servicio.get_categoria_display }}
-
-                    </p>
-
-
-                    <p>
-                        {{ servicio.descripcion }}
-                    </p>
-
-
-                    <p>
-
-                        <strong>
-                            Precio:
-                        </strong>
-
-                        ${{ servicio.precio }}
-
-                    </p>
-
-
-                    <p>
-
-                        <strong>
-                            Profesional:
-                        </strong>
-
-                        {{ servicio.profesional.nombre }}
-                        {{ servicio.profesional.apellido }}
-
-                    </p>
-
-
-                    {% if invitado %}
-
-                        <p style="color: #666; font-weight: bold;">
-
-                            👀 Inicia sesión o regístrate
-                            para solicitar este servicio.
-
-                        </p>
-
-
-                    {% elif servicio.profesional != usuario %}
-
-                        <a
-                            href="{% url 'solicitar_servicio' servicio.id %}"
-                            class="boton"
-                        >
-                            📩 Solicitar servicio
-                        </a>
-
-
-                    {% else %}
-
-                        <p style="color: #666; font-weight: bold;">
-
-                            🛠️ Este es tu propio servicio
-
-                        </p>
-
-                    {% endif %}
-
-                </div>
-
-            {% endfor %}
-
-
-        {% else %}
-
-            <div class="sin-resultados">
-
-                <h3>
-                    No se encontraron servicios
-                </h3>
-
-                <p>
-                    No encontramos servicios relacionados con tu búsqueda.
-                </p>
-
-                <p>
-                    Intenta utilizar otra palabra.
-                </p>
-
-            </div>
-
-        {% endif %}
-
-
-        <!-- =========================
-             ACCIONES
-        ========================== -->
-
-        {% if invitado %}
-
-            <div class="acciones">
-
-                <a
-                    href="{% url 'login' %}"
-                    class="boton"
-                >
+                <a href="{% url 'login' %}" class="boton-inicio">
                     🔐 Iniciar sesión
                 </a>
 
-                <a
-                    href="{% url 'registro' %}"
-                    class="boton boton-secundario"
-                >
-                    👤 Registrar usuario
+            </div>
+
+        </div>
+
+    {% else %}
+
+        <div class="barra-superior usuario">
+
+            <div class="logo">
+                InTalent
+            </div>
+
+            <div class="navegacion">
+
+                <a href="{% url 'inicio' %}" class="boton-inicio">
+                    🏠 Inicio
+                </a>
+
+                {% include 'includes/notificaciones.html' %}
+
+                <a href="{% url 'perfil' %}" class="usuario-enlace">
+
+                    {% if usuario.foto %}
+
+                        <img
+                            src="{{ usuario.foto.url }}"
+                            alt="Foto de {{ usuario.nombre }}"
+                            class="avatar"
+                        >
+
+                    {% else %}
+
+                        <div class="avatar">
+                            👤
+                        </div>
+
+                    {% endif %}
+
+                    <span class="usuario-nombre">
+                        {{ usuario.nombre }} {{ usuario.apellido }}
+                    </span>
+
                 </a>
 
             </div>
 
-        {% endif %}
+        </div>
 
+    {% endif %}
+
+    <div class="contenedor">
+
+        <div class="tarjeta">
+
+            <h1>
+                🔎 Buscar servicios
+            </h1>
+
+            {% if invitado %}
+
+                <div class="aviso-invitado">
+
+                    <strong>
+                        👀 Estás navegando como invitado
+                    </strong>
+
+                    <p>
+                        Puedes consultar y buscar los servicios disponibles
+                        en InTalent.
+                    </p>
+
+                    <p>
+                        Para solicitar un servicio necesitas crear una cuenta
+                        o iniciar sesión.
+                    </p>
+
+                </div>
+
+            {% else %}
+
+                <p>
+                    Busca profesionales y personas que ofrecen
+                    los servicios que necesitas.
+                </p>
+
+            {% endif %}
+
+            <!-- FORMULARIO DE BÚSQUEDA -->
+
+            <form method="GET" class="buscador">
+
+                <input
+                    type="text"
+                    name="buscar"
+                    placeholder="Ejemplo: plomero, electricista, abogado..."
+                    value="{{ request.GET.buscar }}"
+                >
+
+                <select name="categoria">
+
+                    <option value="">
+                        Todas las categorías
+                    </option>
+
+                    <option value="plomeria"
+                        {% if request.GET.categoria == "plomeria" %}selected{% endif %}>
+                        Plomería
+                    </option>
+
+                    <option value="electricidad"
+                        {% if request.GET.categoria == "electricidad" %}selected{% endif %}>
+                        Electricidad
+                    </option>
+
+                    <option value="tecnologia"
+                        {% if request.GET.categoria == "tecnologia" %}selected{% endif %}>
+                        Tecnología
+                    </option>
+
+                    <option value="limpieza"
+                        {% if request.GET.categoria == "limpieza" %}selected{% endif %}>
+                        Limpieza
+                    </option>
+
+                    <option value="mascotas"
+                        {% if request.GET.categoria == "mascotas" %}selected{% endif %}>
+                        Mascotas
+                    </option>
+
+                    <option value="abogados"
+                        {% if request.GET.categoria == "abogados" %}selected{% endif %}>
+                        Abogados
+                    </option>
+
+                    <option value="construccion"
+                        {% if request.GET.categoria == "construccion" %}selected{% endif %}>
+                        Construcción
+                    </option>
+
+                </select>
+
+                <button type="submit" class="boton">
+                    🔎 Buscar
+                </button>
+
+            </form>
+
+            <h2>
+                Servicios disponibles
+            </h2>
+
+            {% if servicios %}
+
+                <p>
+                    Se encontraron {{ servicios|length }} servicio(s).
+                </p>
+
+                {% for servicio in servicios %}
+
+                    <div class="servicio">
+
+                        <h3>
+                            {{ servicio.nombre }}
+                        </h3>
+
+                        <p>
+                            <strong>Categoría:</strong>
+                            {{ servicio.get_categoria_display }}
+                        </p>
+
+                        <p>
+                            {{ servicio.descripcion }}
+                        </p>
+
+                        <p>
+                            <strong>Precio:</strong>
+                            ${{ servicio.precio }}
+                        </p>
+
+                        <p>
+                            <strong>Profesional:</strong>
+                            {{ servicio.profesional.nombre }}
+                            {{ servicio.profesional.apellido }}
+                        </p>
+
+                        {% if invitado %}
+
+                            <p style="color: #666; font-weight: bold;">
+                                👀 Inicia sesión o regístrate
+                                para solicitar este servicio.
+                            </p>
+
+                        {% elif servicio.profesional != usuario %}
+
+                            <a
+                                href="{% url 'solicitar_servicio' servicio.id %}"
+                                class="boton"
+                            >
+                                📩 Solicitar servicio
+                            </a>
+
+                        {% else %}
+
+                            <p style="color: #666; font-weight: bold;">
+                                🛠️ Este es tu propio servicio
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="sin-resultados">
+
+                    <h3>
+                        No se encontraron servicios
+                    </h3>
+
+                    <p>
+                        No encontramos servicios relacionados con tu búsqueda.
+                    </p>
+
+                    <p>
+                        Intenta utilizar otra palabra.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+            <!-- ACCIONES PARA INVITADOS -->
+
+            {% if invitado %}
+
+                <div class="acciones">
+
+                    <a href="{% url 'login' %}" class="boton">
+                        🔐 Iniciar sesión
+                    </a>
+
+                    <a href="{% url 'registro' %}" class="boton boton-secundario">
+                        👤 Registrar usuario
+                    </a>
+
+                </div>
+
+            {% endif %}
+
+        </div>
 
     </div>
 
-</div>
-
-
 </body>
-
 </html>

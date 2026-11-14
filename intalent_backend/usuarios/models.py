@@ -146,7 +146,77 @@ class Solicitud(models.Model):
     def __str__(self):
         return f"Solicitud de {self.cliente} - {self.servicio}"
 
+class Mensaje(models.Model):
+    solicitud = models.ForeignKey(
+        Solicitud,
+        on_delete=models.CASCADE,
+        related_name='mensajes'
+    )
+
+    remitente = models.ForeignKey(
+        Usuario,
+        on_delete=models.CASCADE,
+        related_name='mensajes_enviados'
+    )
+
+    contenido = models.TextField()
+
+    fecha_envio = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    leido = models.BooleanField(
+        default=False
+    )
+
+    def __str__(self):
+        return f"Mensaje de {self.remitente} - Solicitud {self.solicitud.id}"
     
+
+class Notificacion(models.Model):
+
+    TIPOS = [
+        ('solicitud', 'Nueva solicitud'),
+        ('aceptada', 'Solicitud aceptada'),
+        ('rechazada', 'Solicitud rechazada'),
+        ('finalizada', 'Servicio finalizado'),
+        ('confirmada', 'Servicio confirmado'),
+    ]
+
+    destinatario = models.ForeignKey(
+        Usuario,
+        on_delete=models.CASCADE,
+        related_name='notificaciones_recibidas'
+    )
+
+    solicitud = models.ForeignKey(
+        Solicitud,
+        on_delete=models.CASCADE,
+        related_name='notificaciones',
+        null=True,
+        blank=True
+    )
+
+    tipo = models.CharField(
+        max_length=20,
+        choices=TIPOS
+    )
+
+    titulo = models.CharField(max_length=150)
+
+    mensaje = models.TextField()
+
+    leida = models.BooleanField(default=False)
+
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-fecha_creacion']
+
+    def __str__(self):
+        return self.titulo
+
+
 class RecuperacionContraseña(models.Model):
 
     usuario = models.ForeignKey(

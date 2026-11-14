@@ -8,6 +8,7 @@
     <title>Registro - InTalent</title>
 
     <style>
+
         body {
             font-family: Arial, sans-serif;
             background-color: #f2f2f2;
@@ -17,11 +18,28 @@
 
         .contenedor {
             width: 400px;
+            max-width: calc(100% - 40px);
             margin: 50px auto;
             background-color: white;
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+        }
+
+        /*BOTÓN VOLVER AL INICIO*/
+
+        .volver-inicio {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #2563eb;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .volver-inicio:hover {
+            color: #1d4ed8;
+            text-decoration: underline;
         }
 
         h1 {
@@ -51,6 +69,11 @@
             border-radius: 5px;
         }
 
+        input:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
         button {
             width: 100%;
             margin-top: 25px;
@@ -66,12 +89,75 @@
         button:hover {
             background-color: #1d4ed8;
         }
+
+        /* SEGURIDAD DE CONTRASEÑA*/
+
+        .seguridad-contenedor {
+            margin-top: 10px;
+        }
+
+        .barra-seguridad {
+            width: 100%;
+            height: 10px;
+            background-color: #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .barra-progreso {
+            width: 0%;
+            height: 100%;
+            background-color: #dc2626;
+            border-radius: 10px;
+            transition: width 0.3s ease, background-color 0.3s ease;
+        }
+
+        .texto-seguridad {
+            margin-top: 7px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .requisitos {
+            margin-top: 12px;
+            padding: 12px;
+            background-color: #f8f8f8;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .requisito {
+            margin: 6px 0;
+            color: #777;
+        }
+
+        .requisito.cumplido {
+            color: #16a34a;
+            font-weight: bold;
+        }
+
+        .requisito.no-cumplido {
+            color: #dc2626;
+        }
+
+        .mensaje-confirmacion {
+            margin-top: 7px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
     </style>
+
 </head>
 
 <body>
 
     <div class="contenedor">
+
+        <!-- VOLVER AL INICIO -->
+        <a href="/inicio/" class="volver-inicio">
+            ← Volver al inicio
+        </a>
 
         <h1>InTalent</h1>
 
@@ -85,7 +171,8 @@
             </p>
         {% endif %}
 
-        <form method="POST" enctype="multipart/form-data">
+        <form method="POST" enctype="multipart/form-data" id="formRegistro">
+
             {% csrf_token %}
 
             <label for="nombre">Nombre</label>
@@ -128,26 +215,100 @@
                 name="foto"
                 accept="image/*"
                 required
->
+            >
 
             <label for="contraseña">Contraseña</label>
-            <input type="password" 
-                name="contraseña" 
-                id="contraseña" 
-                required>
+
+            <input
+                type="password"
+                name="contraseña"
+                id="contraseña"
+                required
+                autocomplete="new-password"
+            >
+
+            <!-- BARRA DE SEGURIDAD -->
+
+            <div class="seguridad-contenedor">
+
+                <div class="barra-seguridad">
+
+                    <div
+                        class="barra-progreso"
+                        id="barraProgreso">
+                    </div>
+
+                </div>
+
+                <div
+                    class="texto-seguridad"
+                    id="textoSeguridad">
+                    Seguridad: escribe una contraseña
+                </div>
+
+            </div>
+
+            <!-- REQUISITOS -->
+
+            <div class="requisitos">
+
+                <div
+                    class="requisito"
+                    id="requisitoLongitud">
+                    ✗ Mínimo 8 caracteres
+                </div>
+
+                <div
+                    class="requisito"
+                    id="requisitoMayuscula">
+                    ✗ Al menos una letra mayúscula
+                </div>
+
+                <div
+                    class="requisito"
+                    id="requisitoMinuscula">
+                    ✗ Al menos una letra minúscula
+                </div>
+
+                <div
+                    class="requisito"
+                    id="requisitoNumero">
+                    ✗ Al menos un número
+                </div>
+
+                <div
+                    class="requisito"
+                    id="requisitoEspecial">
+                    ✗ Al menos un carácter especial
+                </div>
+
+            </div>
+
+            <!-- CONFIRMAR CONTRASEÑA -->
 
             <div class="campo">
-                <label for="confirmar_contraseña">Confirmar contraseña</label>
+
+                <label for="confirmar_contraseña">
+                    Confirmar contraseña
+                </label>
+
                 <input
-                     type="password"
+                    type="password"
                     id="confirmar_contraseña"
                     name="confirmar_contraseña"
                     placeholder="Confirma tu contraseña"
                     required
+                    autocomplete="new-password"
                 >
+
+                <div
+                    class="mensaje-confirmacion"
+                    id="mensajeConfirmacion">
+                </div>
+
             </div>
 
-            
+            <!-- BOTÓN REGISTRAR -->
 
             <button type="submit">
                 Registrarme
@@ -156,6 +317,267 @@
         </form>
 
     </div>
+
+    <script>
+
+        const contraseña =
+            document.getElementById("contraseña");
+
+        const confirmarContraseña =
+            document.getElementById("confirmar_contraseña");
+
+        const barraProgreso =
+            document.getElementById("barraProgreso");
+
+        const textoSeguridad =
+            document.getElementById("textoSeguridad");
+
+        const mensajeConfirmacion =
+            document.getElementById("mensajeConfirmacion");
+
+        const formRegistro =
+            document.getElementById("formRegistro");
+
+        const requisitoLongitud =
+            document.getElementById("requisitoLongitud");
+
+        const requisitoMayuscula =
+            document.getElementById("requisitoMayuscula");
+
+        const requisitoMinuscula =
+            document.getElementById("requisitoMinuscula");
+
+        const requisitoNumero =
+            document.getElementById("requisitoNumero");
+
+        const requisitoEspecial =
+            document.getElementById("requisitoEspecial");
+
+
+        function actualizarRequisito(elemento, cumplido) {
+
+            if (cumplido) {
+
+                elemento.classList.add("cumplido");
+                elemento.classList.remove("no-cumplido");
+
+                elemento.textContent =
+                    "✓ " + elemento.textContent.substring(2);
+
+            } else {
+
+                elemento.classList.remove("cumplido");
+                elemento.classList.add("no-cumplido");
+
+                elemento.textContent =
+                    "✗ " + elemento.textContent.substring(2);
+            }
+        }
+
+
+        function comprobarContraseña() {
+
+            const valor = contraseña.value;
+
+            const tieneLongitud =
+                valor.length >= 8;
+
+            const tieneMayuscula =
+                /[A-Z]/.test(valor);
+
+            const tieneMinuscula =
+                /[a-z]/.test(valor);
+
+            const tieneNumero =
+                /[0-9]/.test(valor);
+
+            const tieneEspecial =
+                /[^A-Za-z0-9]/.test(valor);
+
+
+            actualizarRequisito(
+                requisitoLongitud,
+                tieneLongitud
+            );
+
+            actualizarRequisito(
+                requisitoMayuscula,
+                tieneMayuscula
+            );
+
+            actualizarRequisito(
+                requisitoMinuscula,
+                tieneMinuscula
+            );
+
+            actualizarRequisito(
+                requisitoNumero,
+                tieneNumero
+            );
+
+            actualizarRequisito(
+                requisitoEspecial,
+                tieneEspecial
+            );
+
+
+            let puntos = 0;
+
+            if (tieneLongitud) puntos++;
+            if (tieneMayuscula) puntos++;
+            if (tieneMinuscula) puntos++;
+            if (tieneNumero) puntos++;
+            if (tieneEspecial) puntos++;
+
+
+            if (valor.length === 0) {
+
+                barraProgreso.style.width = "0%";
+                barraProgreso.style.backgroundColor = "#dc2626";
+
+                textoSeguridad.textContent =
+                    "Seguridad: escribe una contraseña";
+
+                textoSeguridad.style.color = "#777";
+
+            } else if (puntos <= 2) {
+
+                barraProgreso.style.width = "33%";
+                barraProgreso.style.backgroundColor = "#dc2626";
+
+                textoSeguridad.textContent =
+                    "Seguridad: 🔴 Poco segura";
+
+                textoSeguridad.style.color = "#dc2626";
+
+            } else if (puntos < 5) {
+
+                barraProgreso.style.width = "66%";
+                barraProgreso.style.backgroundColor = "#f97316";
+
+                textoSeguridad.textContent =
+                    "Seguridad: 🟠 Segura";
+
+                textoSeguridad.style.color = "#f97316";
+
+            } else {
+
+                barraProgreso.style.width = "100%";
+                barraProgreso.style.backgroundColor = "#16a34a";
+
+                textoSeguridad.textContent =
+                    "Seguridad: 🟢 Muy segura";
+
+                textoSeguridad.style.color = "#16a34a";
+            }
+        }
+
+
+        function comprobarCoincidencia() {
+
+            const password =
+                contraseña.value;
+
+            const confirmacion =
+                confirmarContraseña.value;
+
+
+            if (confirmacion.length === 0) {
+
+                mensajeConfirmacion.textContent = "";
+
+                return;
+            }
+
+
+            if (password === confirmacion) {
+
+                mensajeConfirmacion.textContent =
+                    "✓ Las contraseñas coinciden";
+
+                mensajeConfirmacion.style.color =
+                    "#16a34a";
+
+            } else {
+
+                mensajeConfirmacion.textContent =
+                    "✗ Las contraseñas no coinciden";
+
+                mensajeConfirmacion.style.color =
+                    "#dc2626";
+            }
+        }
+
+
+        contraseña.addEventListener(
+            "input",
+            function() {
+
+                comprobarContraseña();
+                comprobarCoincidencia();
+
+            }
+        );
+
+
+        confirmarContraseña.addEventListener(
+            "input",
+            comprobarCoincidencia
+        );
+
+
+        formRegistro.addEventListener(
+            "submit",
+            function(event) {
+
+                const valor =
+                    contraseña.value;
+
+                const cumpleTodos =
+                    valor.length >= 8 &&
+                    /[A-Z]/.test(valor) &&
+                    /[a-z]/.test(valor) &&
+                    /[0-9]/.test(valor) &&
+                    /[^A-Za-z0-9]/.test(valor);
+
+                const coincide =
+                    contraseña.value ===
+                    confirmarContraseña.value;
+
+
+                if (!cumpleTodos) {
+
+                    event.preventDefault();
+
+                    alert(
+                        "La contraseña debe tener mínimo 8 caracteres, " +
+                        "una mayúscula, una minúscula, un número " +
+                        "y un carácter especial."
+                    );
+
+                    contraseña.focus();
+
+                    return;
+                }
+
+
+                if (!coincide) {
+
+                    event.preventDefault();
+
+                    alert(
+                        "Las contraseñas no coinciden."
+                    );
+
+                    confirmarContraseña.focus();
+
+                    return;
+                }
+
+            }
+        );
+
+    </script>
 
 </body>
 

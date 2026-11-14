@@ -1,14 +1,13 @@
+
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Mis solicitudes - InTalent</title>
 
     <style>
-
         * {
             box-sizing: border-box;
         }
@@ -20,20 +19,15 @@
             padding: 0;
         }
 
-
-        /* =========================
-           BARRA SUPERIOR
-        ========================= */
+        /* BARRA SUPERIOR */
 
         .barra-superior {
             background-color: #007bff;
             color: white;
             padding: 15px 20px;
-
             display: flex;
             justify-content: space-between;
             align-items: center;
-
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
         }
 
@@ -51,13 +45,9 @@
         .boton-inicio {
             color: white;
             background-color: rgba(255, 255, 255, 0.15);
-
             padding: 9px 14px;
-
             border-radius: 6px;
-
             text-decoration: none;
-
             font-weight: bold;
         }
 
@@ -69,29 +59,21 @@
             display: flex;
             align-items: center;
             gap: 8px;
-
             color: white;
             text-decoration: none;
-
             font-weight: bold;
         }
 
         .avatar {
             width: 42px;
             height: 42px;
-
             border-radius: 50%;
-
             object-fit: cover;
-
             border: 2px solid white;
-
             background-color: white;
-
             display: flex;
             align-items: center;
             justify-content: center;
-
             font-size: 20px;
         }
 
@@ -99,10 +81,7 @@
             font-size: 15px;
         }
 
-
-        /* =========================
-           CONTENEDOR
-        ========================= */
+        /* CONTENEDOR */
 
         .contenedor {
             width: 90%;
@@ -121,10 +100,7 @@
             margin-bottom: 30px;
         }
 
-
-        /* =========================
-           SOLICITUD
-        ========================= */
+        /* SOLICITUD */
 
         .solicitud {
             background-color: white;
@@ -168,10 +144,7 @@
             color: #6c757d;
         }
 
-
-        /* =========================
-           BOTÓN CANCELAR
-        ========================= */
+        /* BOTÓN CANCELAR */
 
         .boton-cancelar {
             margin-top: 15px;
@@ -188,10 +161,25 @@
             background-color: #b02a37;
         }
 
+        /* BOTÓN CHAT */
 
-        /* =========================
-           SIN SOLICITUDES
-        ========================= */
+        .btn-chat {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-chat:hover {
+            background-color: #0056b3;
+        }
+
+        /* SIN SOLICITUDES */
 
         .sin-solicitudes {
             background-color: white;
@@ -201,10 +189,7 @@
             color: #666;
         }
 
-
-        /* =========================
-           BOTÓN VOLVER
-        ========================= */
+        /* BOTÓN VOLVER */
 
         .boton {
             display: inline-block;
@@ -220,19 +205,23 @@
             background-color: #0056b3;
         }
 
-
-        /* =========================
-           RESPONSIVE
-        ========================= */
+        /* RESPONSIVE */
 
         @media (max-width: 650px) {
-
             .barra-superior {
                 padding: 12px 15px;
+                flex-wrap: wrap;
+                gap: 12px;
             }
 
             .logo {
                 font-size: 21px;
+            }
+
+            .navegacion {
+                gap: 8px;
+                flex-wrap: wrap;
+                justify-content: center;
             }
 
             .usuario-nombre {
@@ -248,20 +237,13 @@
                 width: 94%;
                 margin: 25px auto;
             }
-
         }
-
     </style>
-
 </head>
-
 
 <body>
 
-
-    <!-- =========================
-         BARRA SUPERIOR
-    ========================= -->
+    <!-- BARRA SUPERIOR -->
 
     <div class="barra-superior">
 
@@ -269,25 +251,15 @@
             InTalent
         </div>
 
-
         <div class="navegacion">
 
-            <!-- INICIO -->
-
-            <a
-                href="{% url 'inicio' %}"
-                class="boton-inicio"
-            >
+            <a href="{% url 'inicio' %}" class="boton-inicio">
                 🏠 Inicio
             </a>
 
+            {% include 'includes/notificaciones.html' %}
 
-            <!-- FOTO Y NOMBRE -->
-
-            <a
-                href="{% url 'perfil' %}"
-                class="usuario-enlace"
-            >
+            <a href="{% url 'perfil' %}" class="usuario-enlace">
 
                 {% if usuario.foto %}
 
@@ -305,12 +277,9 @@
 
                 {% endif %}
 
-
                 <span class="usuario-nombre">
-
                     {{ usuario.nombre }}
                     {{ usuario.apellido }}
-
                 </span>
 
             </a>
@@ -319,11 +288,7 @@
 
     </div>
 
-
-
-    <!-- =========================
-         CONTENIDO ORIGINAL
-    ========================= -->
+    <!-- CONTENIDO -->
 
     <div class="contenedor">
 
@@ -331,17 +296,12 @@
             📩 Mis solicitudes
         </h1>
 
-
         <p class="subtitulo">
-
             Solicitudes realizadas por
-
             <strong>
                 {{ usuario.nombre }} {{ usuario.apellido }}
             </strong>
-
         </p>
-
 
         {% if solicitudes %}
 
@@ -353,55 +313,36 @@
                         {{ solicitud.servicio.nombre }}
                     </h2>
 
-
                     <div class="dato">
-
                         <strong>Categoría:</strong>
-
                         {{ solicitud.servicio.get_categoria_display }}
-
                     </div>
 
-
                     <div class="dato">
-
                         <strong>Profesional:</strong>
-
                         {{ solicitud.servicio.profesional.nombre }}
                         {{ solicitud.servicio.profesional.apellido }}
-
                     </div>
 
-
                     <div class="dato">
-
                         <strong>Precio:</strong>
-
                         ${{ solicitud.servicio.precio }}
-
                     </div>
-
 
                     <div class="dato">
-
                         <strong>Fecha de solicitud:</strong>
-
                         {{ solicitud.fecha_solicitud|date:"d/m/Y H:i" }}
-
                     </div>
-
 
                     <div class="dato">
 
                         <strong>Estado:</strong>
-
 
                         {% if solicitud.estado == 'pendiente' %}
 
                             <span class="estado pendiente">
                                 🟡 Pendiente
                             </span>
-
 
                             <div>
 
@@ -424,13 +365,24 @@
 
                             </div>
 
-
                         {% elif solicitud.estado == 'aceptada' %}
 
                             <span class="estado aceptada">
                                 🟢 Aceptada
                             </span>
 
+                            {% if solicitud.id not in calificaciones_realizadas %}
+
+                                <div>
+                                    <a
+                                        href="{% url 'chat' solicitud.id %}"
+                                        class="btn-chat"
+                                    >
+                                        💬 Chat con el profesional
+                                    </a>
+                                </div>
+
+                            {% endif %}
 
                         {% elif solicitud.estado == 'rechazada' %}
 
@@ -438,13 +390,11 @@
                                 🔴 Rechazada
                             </span>
 
-
                         {% elif solicitud.estado == 'finalizada' %}
 
                             <span class="estado finalizada">
                                 🔵 Servicio finalizado
                             </span>
-
 
                             <div style="margin-top: 15px;">
 
@@ -471,15 +421,24 @@
 
                                 </form>
 
-                            </div>
+                                {% if solicitud.id not in calificaciones_realizadas %}
 
+                                    <a
+                                        href="{% url 'chat' solicitud.id %}"
+                                        class="btn-chat"
+                                    >
+                                        💬 Chat con el profesional
+                                    </a>
+
+                                {% endif %}
+
+                            </div>
 
                         {% elif solicitud.estado == 'confirmada' %}
 
                             <span class="estado aceptada">
                                 🟢 Servicio confirmado
                             </span>
-
 
                             {% if solicitud.id in calificaciones_realizadas %}
 
@@ -498,10 +457,18 @@
 
                                 </div>
 
-
                             {% else %}
 
                                 <div style="margin-top: 15px;">
+
+                                    <a
+                                        href="{% url 'chat' solicitud.id %}"
+                                        class="btn-chat"
+                                    >
+                                        💬 Chat con el profesional
+                                    </a>
+
+                                    <br><br>
 
                                     <a
                                         href="{% url 'crear_calificacion' %}"
@@ -522,7 +489,6 @@
 
                             {% endif %}
 
-
                         {% elif solicitud.estado == 'cancelada' %}
 
                             <span class="estado cancelada">
@@ -536,7 +502,6 @@
                 </div>
 
             {% endfor %}
-
 
         {% else %}
 
@@ -554,31 +519,19 @@
 
         {% endif %}
 
-
-        <a
-            href="{% url 'inicio' %}"
-            class="boton"
-        >
+        <a href="{% url 'inicio' %}" class="boton">
             ← Volver al inicio
         </a>
 
     </div>
 
-
-
     <script>
-
         function confirmarCancelacion() {
-
             return confirm(
                 "¿Estás seguro de que deseas cancelar esta solicitud?"
             );
-
         }
-
     </script>
 
-
 </body>
-
 </html>

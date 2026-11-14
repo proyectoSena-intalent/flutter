@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -8,8 +9,11 @@
 
     <title>Mis calificaciones - InTalent</title>
 
-
     <style>
+
+        * {
+            box-sizing: border-box;
+        }
 
         body {
             font-family: Arial, sans-serif;
@@ -17,7 +21,6 @@
             margin: 0;
             padding: 0;
         }
-
 
         /* =========================
            BARRA SUPERIOR
@@ -27,14 +30,12 @@
             width: 100%;
             background-color: #007bff;
             color: white;
-
             padding: 15px 25px;
 
             display: flex;
             justify-content: space-between;
             align-items: center;
-
-            box-sizing: border-box;
+            gap: 15px;
 
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         }
@@ -52,16 +53,11 @@
 
         .boton-inicio {
             display: inline-block;
-
             color: white;
             background-color: rgba(255, 255, 255, 0.15);
-
             padding: 9px 15px;
-
             border-radius: 6px;
-
             text-decoration: none;
-
             font-weight: bold;
         }
 
@@ -73,23 +69,17 @@
             display: flex;
             align-items: center;
             gap: 8px;
-
             color: white;
             text-decoration: none;
-
             font-weight: bold;
         }
 
         .avatar {
             width: 42px;
             height: 42px;
-
             border-radius: 50%;
-
             object-fit: cover;
-
             border: 2px solid white;
-
             background-color: white;
 
             display: flex;
@@ -103,7 +93,6 @@
             font-size: 15px;
         }
 
-
         /* =========================
            CONTENEDOR
         ========================= */
@@ -114,7 +103,6 @@
             margin: 40px auto;
         }
 
-
         /* =========================
            CABECERA
         ========================= */
@@ -122,13 +110,9 @@
         .cabecera {
             background-color: white;
             padding: 25px;
-
             border-radius: 12px;
-
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-
             text-align: center;
-
             margin-bottom: 20px;
         }
 
@@ -140,18 +124,14 @@
             color: #555;
         }
 
-
         /* =========================
            PROMEDIO
         ========================= */
 
         .promedio {
             margin-top: 20px;
-
             padding: 15px;
-
             background-color: #fff8dc;
-
             border-radius: 8px;
         }
 
@@ -160,20 +140,15 @@
             font-weight: bold;
         }
 
-
         /* =========================
            CALIFICACIONES
         ========================= */
 
         .calificacion {
             background-color: white;
-
             padding: 20px;
-
             margin-bottom: 20px;
-
             border-radius: 12px;
-
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
@@ -188,22 +163,16 @@
 
         .comentario {
             background-color: #f8f9fa;
-
             padding: 15px;
-
             border-radius: 8px;
-
             margin-top: 10px;
         }
 
         .fecha {
             color: #777;
-
             font-size: 14px;
-
             margin-top: 10px;
         }
-
 
         /* =========================
            SIN CALIFICACIONES
@@ -211,16 +180,11 @@
 
         .sin-calificaciones {
             background-color: white;
-
             padding: 30px;
-
             border-radius: 12px;
-
             text-align: center;
-
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
-
 
         /* =========================
            RESPONSIVE
@@ -230,10 +194,16 @@
 
             .barra-superior {
                 padding: 12px 15px;
+                flex-wrap: wrap;
             }
 
             .logo {
                 font-size: 21px;
+            }
+
+            .navegacion {
+                gap: 10px;
+                flex-wrap: wrap;
             }
 
             .usuario-nombre {
@@ -256,9 +226,7 @@
 
 </head>
 
-
 <body>
-
 
     <!-- =========================
          BARRA SUPERIOR
@@ -269,7 +237,6 @@
         <div class="logo">
             InTalent
         </div>
-
 
         <div class="navegacion">
 
@@ -282,6 +249,9 @@
                 🏠 Inicio
             </a>
 
+            <!-- NOTIFICACIONES -->
+
+            {% include 'includes/notificaciones.html' %}
 
             <!-- FOTO Y NOMBRE DEL USUARIO -->
 
@@ -306,7 +276,6 @@
 
                 {% endif %}
 
-
                 <span class="usuario-nombre">
 
                     {{ usuario.nombre }}
@@ -320,21 +289,17 @@
 
     </div>
 
-
-
     <!-- =========================
          CONTENIDO ORIGINAL
     ========================= -->
 
     <div class="contenedor">
 
-
         <div class="cabecera">
 
             <h1>
                 ⭐ Mis calificaciones
             </h1>
-
 
             <p class="usuario">
 
@@ -347,7 +312,6 @@
 
             </p>
 
-
             {% if calificaciones %}
 
                 <div class="promedio">
@@ -356,13 +320,11 @@
                         Promedio recibido
                     </div>
 
-
                     <div class="promedio-numero">
 
                         ⭐ {{ promedio }} / 5
 
                     </div>
-
 
                     <div>
 
@@ -375,18 +337,13 @@
 
             {% endif %}
 
-
         </div>
 
-
-
         {% if calificaciones %}
-
 
             {% for calificacion in calificaciones %}
 
                 <div class="calificacion">
-
 
                     <h2>
 
@@ -396,7 +353,6 @@
                         {{ calificacion.calificador.apellido }}
 
                     </h2>
-
 
                     <div class="estrellas">
 
@@ -422,7 +378,6 @@
 
                     </div>
 
-
                     <p>
 
                         <strong>
@@ -432,7 +387,6 @@
                         {{ calificacion.puntuacion }} / 5
 
                     </p>
-
 
                     {% if calificacion.comentario %}
 
@@ -451,13 +405,10 @@
                     {% else %}
 
                         <div class="comentario">
-
                             Sin comentario.
-
                         </div>
 
                     {% endif %}
-
 
                     <div class="fecha">
 
@@ -467,21 +418,17 @@
 
                     </div>
 
-
                 </div>
 
             {% endfor %}
 
-
         {% else %}
-
 
             <div class="sin-calificaciones">
 
                 <h2>
                     📭 Aún no tienes calificaciones
                 </h2>
-
 
                 <p>
 
@@ -492,12 +439,9 @@
 
             </div>
 
-
         {% endif %}
 
-
     </div>
-
 
 </body>
 

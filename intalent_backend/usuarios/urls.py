@@ -22,5 +22,8 @@ urlpatterns = [
     path('cancelar-solicitud/<int:solicitud_id>/',views.cancelar_solicitud,name='cancelar_solicitud'),
     path('solicitudes-recibidas/', views.solicitudes_recibidas, name='solicitudes_recibidas'),
     path('cambiar-estado-solicitud/<int:solicitud_id>/', views.cambiar_estado_solicitud, name='cambiar_estado_solicitud'),
+    path('chat/<int:solicitud_id>/',views.chat,name='chat'),
+    path('notificaciones-chat/',views.notificaciones_chat,name='notificaciones_chat'),
+    path('mensajes-nuevos-chat/<int:solicitud_id>/',views.mensajes_nuevos_chat,name='mensajes_nuevos_chat'),
     
 ]

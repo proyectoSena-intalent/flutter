@@ -1,0 +1,554 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Chat - InTalent</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f2f4f7;
+        }
+
+        /* CONTENEDOR PRINCIPAL */
+        .chat-container {
+            width: 100%;
+            max-width: 700px;
+            height: 100vh;
+            height: 100dvh;
+            margin: 0 auto;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* ENCABEZADO */
+        .chat-header {
+            flex-shrink: 0;
+            background: #1f6feb;
+            color: white;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-volver {
+            color: white;
+            text-decoration: none;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .chat-header-info h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .chat-header-info p {
+            margin: 4px 0 0;
+            font-size: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        /* ÁREA DEL HISTORIAL */
+        .chat-messages {
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 14px;
+            background: #f7f8fa;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            scroll-behavior: smooth;
+        }
+
+        /* FILA DE CADA MENSAJE */
+        .mensaje {
+            display: flex;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            flex-shrink: 0;
+        }
+
+        /* MENSAJES PROPIOS A LA DERECHA */
+        .mensaje-propio {
+            justify-content: flex-end;
+        }
+
+        /* MENSAJES RECIBIDOS A LA IZQUIERDA */
+        .mensaje-ajeno {
+            justify-content: flex-start;
+        }
+
+        /* BURBUJA */
+        .mensaje-contenido {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            width: fit-content;
+            max-width: 70%;
+            min-width: 0;
+            flex: 0 1 auto;
+            padding: 8px 11px;
+            margin: 0;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.35;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+            gap: 3px;
+        }
+
+        /* COLOR DEL MENSAJE PROPIO */
+        .mensaje-propio .mensaje-contenido {
+            background: #d9fdd3;
+            color: #222;
+            border-bottom-right-radius: 4px;
+        }
+
+        /* COLOR DEL MENSAJE RECIBIDO */
+        .mensaje-ajeno .mensaje-contenido {
+            background: #ffffff;
+            color: #222;
+            border: 1px solid #e5e5e5;
+            border-bottom-left-radius: 4px;
+        }
+
+        /* REMITENTE */
+        .mensaje-remitente {
+            display: block;
+            margin: 0;
+            padding: 0;
+            font-size: 11px;
+            font-weight: 600;
+            line-height: 1.2;
+            color: #16805d;
+        }
+
+        /* TEXTO */
+        .mensaje-texto {
+            display: block;
+            width: auto;
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
+            line-height: 1.35;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        /* FECHA Y HORA */
+        .mensaje-hora {
+            display: block;
+            align-self: flex-end;
+            margin: 1px 0 0;
+            padding: 0;
+            font-size: 10px;
+            line-height: 1.2;
+            color: #777;
+            white-space: nowrap;
+        }
+
+        /* SIN MENSAJES */
+        .sin-mensajes {
+            text-align: center;
+            color: #777;
+            margin-top: 35px;
+            font-size: 14px;
+        }
+
+        /* AVISOS */
+        .aviso-cierre,
+        .aviso-inactivo {
+            flex-shrink: 0;
+            padding: 12px;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .aviso-cierre {
+            background: #fff3cd;
+            color: #856404;
+            border-bottom: 1px solid #ffeeba;
+        }
+
+        .aviso-inactivo {
+            background: #e9ecef;
+            color: #495057;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .aviso-cierre strong,
+        .aviso-inactivo strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .aviso-cierre p,
+        .aviso-inactivo p {
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        /* FORMULARIO */
+        .chat-form {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+            background: white;
+            gap: 8px;
+        }
+
+        .chat-input {
+            flex: 1;
+            min-width: 0;
+            height: 42px;
+            border: 1px solid #ccc;
+            border-radius: 22px;
+            padding: 0 14px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .chat-input:focus {
+            border-color: #1f6feb;
+        }
+
+        .btn-enviar {
+            flex-shrink: 0;
+            height: 42px;
+            border: none;
+            background: #1f6feb;
+            color: white;
+            border-radius: 22px;
+            padding: 0 16px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .btn-enviar:hover {
+            background: #1558b0;
+        }
+
+        /* CELULARES */
+        @media (max-width: 600px) {
+
+            .chat-header {
+                padding: 12px;
+            }
+
+            .chat-messages {
+                padding: 10px;
+                gap: 5px;
+            }
+
+            .mensaje-contenido {
+                max-width: 82%;
+                padding: 7px 10px;
+                font-size: 13px;
+                line-height: 1.35;
+            }
+
+            .mensaje-remitente {
+                font-size: 10px;
+            }
+
+            .mensaje-hora {
+                font-size: 9px;
+            }
+
+            .chat-form {
+                padding: 8px;
+                gap: 6px;
+            }
+
+            .chat-input {
+                height: 40px;
+                font-size: 13px;
+                padding: 0 12px;
+            }
+
+            .btn-enviar {
+                height: 40px;
+                padding: 0 13px;
+                font-size: 12px;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class="chat-container">
+
+    <!-- ENCABEZADO -->
+    <header class="chat-header">
+
+        <a href="javascript:history.back()"
+           class="btn-volver"
+           aria-label="Volver">
+            ←
+        </a>
+
+        <div class="chat-header-info">
+            <h2>Chat de servicio</h2>
+            <p>{{ solicitud.servicio.nombre }}</p>
+        </div>
+
+    </header>
+
+    <!-- AVISO CUANDO YA SE CALIFICÓ -->
+    {% if calificacion_realizada %}
+
+        <div class="aviso-cierre">
+            <strong>🔒 Conversación finalizada</strong>
+            <p>
+                Una de las partes ya realizó una calificación.
+                Puedes consultar el historial, pero ya no enviar mensajes.
+            </p>
+        </div>
+
+    {% elif not chat_habilitado %}
+
+        <div class="aviso-inactivo">
+            <strong>Chat no disponible para escribir.</strong>
+            <p>
+                La solicitud todavía no está aceptada
+                o no se encuentra en una etapa habilitada.
+            </p>
+        </div>
+
+    {% endif %}
+
+    <!-- HISTORIAL -->
+    <main
+        class="chat-messages"
+        id="chat-messages"
+        data-ultimo-id="{{ mensajes.last.id|default:0 }}"
+    >
+
+        {% if mensajes %}
+
+            {% for mensaje in mensajes %}
+
+                {% if mensaje.remitente_id == usuario.id %}
+
+                    <!-- MENSAJE PROPIO -->
+                    <div class="mensaje mensaje-propio">
+
+                        <div class="mensaje-contenido">
+
+                            <div class="mensaje-remitente">
+                                Tú
+                            </div>
+
+                            <div class="mensaje-texto">{{ mensaje.contenido }}</div>
+
+                            <div class="mensaje-hora">
+                                {{ mensaje.fecha_envio|date:"d/m/Y H:i" }}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                {% else %}
+
+                    <!-- MENSAJE RECIBIDO -->
+                    <div class="mensaje mensaje-ajeno">
+
+                        <div class="mensaje-contenido">
+
+                            <div class="mensaje-remitente">
+                                {{ mensaje.remitente.nombre }}
+                                {{ mensaje.remitente.apellido }}
+                            </div>
+
+                            <div class="mensaje-texto">{{ mensaje.contenido }}</div>
+
+                            <div class="mensaje-hora">
+                                {{ mensaje.fecha_envio|date:"d/m/Y H:i" }}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                {% endif %}
+
+            {% endfor %}
+
+        {% else %}
+
+            <div class="sin-mensajes">
+                <p>💬 Todavía no hay mensajes.</p>
+
+                {% if chat_habilitado %}
+                    <p>¡Puedes iniciar la conversación!</p>
+                {% endif %}
+            </div>
+
+        {% endif %}
+
+    </main>
+
+    <!-- FORMULARIO PARA ENVIAR MENSAJES -->
+    {% if chat_habilitado %}
+
+        <form method="POST" class="chat-form">
+
+            {% csrf_token %}
+
+            <input
+                type="text"
+                name="contenido"
+                class="chat-input"
+                placeholder="Escribe un mensaje..."
+                autocomplete="off"
+                maxlength="2000"
+                required
+            >
+
+            <button type="submit" class="btn-enviar">
+                Enviar
+            </button>
+
+        </form>
+
+    {% endif %}
+
+</div>
+
+<script>
+
+    const contenedorMensajes = document.getElementById('chat-messages');
+
+    let ultimoId = Number(
+        contenedorMensajes.dataset.ultimoId || 0
+    );
+
+    const urlMensajes = "{% url 'mensajes_nuevos_chat' solicitud.id %}";
+
+    // BAJAR AL ÚLTIMO MENSAJE AL ABRIR
+    contenedorMensajes.scrollTop = contenedorMensajes.scrollHeight;
+
+    async function consultarMensajesNuevos() {
+
+        try {
+
+            const respuesta = await fetch(
+                `${urlMensajes}?desde=${ultimoId}`,
+                {
+                    method: 'GET',
+                    cache: 'no-store',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                }
+            );
+
+            if (!respuesta.ok) {
+                return;
+            }
+
+            const datos = await respuesta.json();
+
+            if (!datos.mensajes || datos.mensajes.length === 0) {
+                return;
+            }
+
+            const estabaAbajo =
+                contenedorMensajes.scrollHeight -
+                contenedorMensajes.scrollTop -
+                contenedorMensajes.clientHeight < 100;
+
+            // ELIMINAR AVISO DE CHAT VACÍO
+            const aviso = contenedorMensajes.querySelector('.sin-mensajes');
+
+            if (aviso) {
+                aviso.remove();
+            }
+
+            datos.mensajes.forEach(mensaje => {
+
+                if (mensaje.id <= ultimoId) {
+                    return;
+                }
+
+                const fila = document.createElement('div');
+
+                fila.className = mensaje.propio
+                    ? 'mensaje mensaje-propio'
+                    : 'mensaje mensaje-ajeno';
+
+                const contenido = document.createElement('div');
+                contenido.className = 'mensaje-contenido';
+
+                const remitente = document.createElement('div');
+                remitente.className = 'mensaje-remitente';
+
+                remitente.textContent = mensaje.propio
+                    ? 'Tú'
+                    : mensaje.remitente_nombre;
+
+                const texto = document.createElement('div');
+                texto.className = 'mensaje-texto';
+                texto.textContent = mensaje.contenido;
+
+                const hora = document.createElement('div');
+                hora.className = 'mensaje-hora';
+                hora.textContent = mensaje.fecha;
+
+                contenido.appendChild(remitente);
+                contenido.appendChild(texto);
+                contenido.appendChild(hora);
+
+                fila.appendChild(contenido);
+
+                contenedorMensajes.appendChild(fila);
+
+                ultimoId = mensaje.id;
+
+            });
+
+            // BAJAR SI EL USUARIO YA ESTABA AL FINAL
+            if (estabaAbajo) {
+
+                contenedorMensajes.scrollTop =
+                    contenedorMensajes.scrollHeight;
+
+            }
+
+        } catch (error) {
+
+            console.error('Error consultando mensajes:', error);
+
+        }
+
+    }
+
+    // CONSULTAR MENSAJES NUEVOS CADA 3 SEGUNDOS
+    setInterval(consultarMensajesNuevos, 3000);
+
+</script>
+
+</body>
+</html>

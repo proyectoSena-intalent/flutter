@@ -1,16 +1,13 @@
+
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Mi perfil - InTalent</title>
 
     <style>
-
         * {
             box-sizing: border-box;
         }
@@ -33,11 +30,19 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 15px;
         }
 
         .logo {
             font-size: 25px;
             font-weight: bold;
+        }
+
+        .acciones-superiores {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
         }
 
         .inicio {
@@ -51,6 +56,19 @@
 
         .inicio:hover {
             background-color: rgba(255,255,255,0.25);
+        }
+
+        .cerrar-sesion {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 10px 16px;
+            border-radius: 8px;
+            background-color: #dc2626;
+        }
+
+        .cerrar-sesion:hover {
+            background-color: #b91c1c;
         }
 
         .contenedor {
@@ -152,45 +170,51 @@
         }
 
         @media (max-width: 600px) {
-
             .barra-superior {
                 padding: 15px;
             }
 
             .barra-contenido {
                 flex-direction: column;
-                gap: 12px;
+                gap: 15px;
+            }
+
+            .acciones-superiores {
+                justify-content: center;
             }
 
             .tarjeta {
                 padding: 25px 20px;
             }
-
         }
-
     </style>
-
 </head>
-
 
 <body>
 
     <div class="barra-superior">
-
         <div class="barra-contenido">
 
             <div class="logo">
                 InTalent
             </div>
 
-            <a href="{% url 'inicio' %}" class="inicio">
-                🏠 Inicio
-            </a>
+            <div class="acciones-superiores">
+
+                <a href="{% url 'inicio' %}" class="inicio">
+                    🏠 Inicio
+                </a>
+
+                {% include 'includes/notificaciones.html' %}
+
+                <a href="{% url 'logout' %}" class="cerrar-sesion">
+                    🚪 Cerrar sesión
+                </a>
+
+            </div>
 
         </div>
-
     </div>
-
 
     <div class="contenedor">
 
@@ -199,39 +223,44 @@
             <div class="cabecera-perfil">
 
                 {% if usuario.foto %}
-    <img src="{{ usuario.foto.url }}" alt="Foto de perfil" class="foto-perfil">
-{% else %}
-    <div class="sin-foto">👤</div>
-{% endif %}
+                    <img src="{{ usuario.foto.url }}"
+                         alt="Foto de perfil"
+                         class="foto-perfil">
+                {% else %}
+                    <div class="sin-foto">👤</div>
+                {% endif %}
 
-<form method="POST" enctype="multipart/form-data" style="margin-top: 15px;">
-    {% csrf_token %}
+                <form method="POST"
+                      enctype="multipart/form-data"
+                      style="margin-top: 15px;">
 
-    <input
-        type="file"
-        name="foto"
-        accept="image/*"
-        required
-    >
+                    {% csrf_token %}
 
-    <br><br>
+                    <input
+                        type="file"
+                        name="foto"
+                        accept="image/*"
+                        required
+                    >
 
-    <button
-        type="submit"
-        style="
-            padding: 10px 18px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 7px;
-            font-weight: bold;
-            cursor: pointer;
-        "
-    >
-        📷 Cambiar foto
-    </button>
-</form>
+                    <br><br>
 
+                    <button
+                        type="submit"
+                        style="
+                            padding: 10px 18px;
+                            background-color: #007bff;
+                            color: white;
+                            border: none;
+                            border-radius: 7px;
+                            font-weight: bold;
+                            cursor: pointer;
+                        "
+                    >
+                        📷 Cambiar foto
+                    </button>
+
+                </form>
 
                 <h1 class="nombre-perfil">
                     {{ usuario.nombre }} {{ usuario.apellido }}
@@ -243,69 +272,43 @@
 
             </div>
 
-
             <div class="dato">
-
                 <strong>📧 Correo electrónico</strong>
-
                 {{ usuario.correo }}
-
             </div>
 
-
             <div class="dato">
-
                 <strong>📱 Teléfono</strong>
-
                 {{ usuario.telefono }}
-
             </div>
 
-
             <div class="dato">
-
                 <strong>👤 Tipo de usuario</strong>
-
                 {{ usuario.get_tipo_usuario_display }}
-
             </div>
 
-
             <div class="dato">
-
                 <strong>🛠️ Estado profesional</strong>
 
                 {% if usuario.es_profesional %}
 
                     {% if usuario.estado_profesional == 'activo' %}
-
                         🟢 Profesional activo
-
                     {% else %}
-
                         🔴 Profesional bloqueado
-
                     {% endif %}
 
                 {% else %}
-
                     ⚪ Solo cliente
-
                 {% endif %}
-
             </div>
-
 
             {% if usuario.es_profesional %}
 
                 <div class="dato">
-
                     <strong>💰 Saldo pendiente</strong>
-
                     ${{ usuario.saldo_pendiente|floatformat:2 }}
-
                 </div>
-
 
                 {% if usuario.saldo_pendiente > 0 %}
 
@@ -323,9 +326,7 @@
                                 font-weight: bold;
                             "
                         >
-
                             💳 Pagar deuda
-
                         </a>
 
                     </div>
@@ -334,24 +335,16 @@
 
             {% endif %}
 
-
             <div class="dato">
-
                 <strong>📅 Fecha de registro</strong>
-
                 {{ usuario.fecha_registro|date:"d/m/Y H:i" }}
-
             </div>
-
 
             {% if usuario.es_profesional %}
 
                 <div class="dato">
-
                     <strong>Estado</strong>
-
                     🟢 Ya eres profesional y puedes ofrecer tus servicios.
-
                 </div>
 
             {% else %}
@@ -360,24 +353,15 @@
                     href="{% url 'activar_profesional' %}"
                     class="boton"
                 >
-
                     🛠️ Convertirme en profesional
-
                 </a>
 
             {% endif %}
 
-
             <br>
 
-
-            <a
-                href="{% url 'inicio' %}"
-                class="volver"
-            >
-
+            <a href="{% url 'inicio' %}" class="volver">
                 ← Volver al inicio
-
             </a>
 
         </div>
@@ -385,5 +369,4 @@
     </div>
 
 </body>
-
 </html>

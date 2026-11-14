@@ -1,0 +1,303 @@
+
+<style>
+    .campana-contenedor {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .campana-boton {
+        width: 44px;
+        height: 44px;
+        border: none;
+        border-radius: 12px;
+        background: transparent;
+        color: white;
+        font-size: 25px;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .campana-boton:hover {
+        background: rgba(255,255,255,0.15);
+    }
+
+    .campana-contador {
+        position: absolute;
+        top: 0;
+        right: 0;
+        min-width: 19px;
+        height: 19px;
+        padding: 2px 5px;
+        border: 2px solid rgba(0,0,0,0.08);
+        border-radius: 20px;
+        background: #ef4444;
+        color: white;
+        font-size: 10px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .campana-menu {
+        display: none;
+        position: absolute;
+        top: 55px;
+        right: 0;
+        width: 350px;
+        max-width: calc(100vw - 30px);
+        background: white;
+        color: #111827;
+        border-radius: 14px;
+        box-shadow: 0 12px 35px rgba(0,0,0,0.20);
+        overflow: hidden;
+        z-index: 1000;
+    }
+
+    .campana-menu.abierto {
+        display: block;
+    }
+
+    .campana-encabezado {
+        padding: 16px;
+        border-bottom: 1px solid #e5e7eb;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .campana-lista {
+        max-height: 360px;
+        overflow-y: auto;
+    }
+
+    .campana-elemento {
+        display: flex;
+        gap: 12px;
+        padding: 14px 16px;
+        text-decoration: none;
+        color: #374151;
+        border-bottom: 1px solid #f0f0f0;
+        transition: background 0.2s;
+    }
+
+    .campana-elemento:hover {
+        background: #f3f6fb;
+    }
+
+    .campana-icono {
+        font-size: 23px;
+        flex-shrink: 0;
+    }
+
+    .campana-detalle {
+        min-width: 0;
+    }
+
+    .campana-detalle strong {
+        display: block;
+        font-size: 13px;
+        color: #111827;
+        margin-bottom: 4px;
+    }
+
+    .campana-detalle p {
+        margin: 0;
+        font-size: 12px;
+        line-height: 1.4;
+        color: #6b7280;
+        overflow-wrap: anywhere;
+    }
+
+    .campana-fecha {
+        display: block;
+        margin-top: 5px;
+        font-size: 10px;
+        color: #9ca3af;
+    }
+
+    .campana-vacia {
+        padding: 25px 15px;
+        text-align: center;
+        color: #9ca3af;
+        font-size: 13px;
+    }
+
+    @media(max-width: 450px) {
+        .campana-menu {
+            right: -100px;
+        }
+    }
+</style>
+
+<div class="campana-contenedor" id="campana-contenedor">
+
+    <button
+        type="button"
+        class="campana-boton"
+        id="campana-boton"
+        aria-label="Notificaciones"
+        aria-expanded="false"
+        title="Notificaciones"
+    >
+        🔔
+
+        <span
+            class="campana-contador"
+            id="campana-contador"
+            style="display:none;"
+        >0</span>
+    </button>
+
+    <div class="campana-menu" id="campana-menu">
+
+        <div class="campana-encabezado">
+            Notificaciones
+        </div>
+
+        <div
+            class="campana-lista"
+            id="campana-lista"
+        >
+            <div class="campana-vacia">
+                Cargando notificaciones...
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+(function () {
+
+    const boton = document.getElementById('campana-boton');
+    const menu = document.getElementById('campana-menu');
+    const contador = document.getElementById('campana-contador');
+    const lista = document.getElementById('campana-lista');
+    const contenedor = document.getElementById('campana-contenedor');
+
+    if (!boton || !menu || !contador || !lista) {
+        return;
+    }
+
+    const urlNotificaciones = "{% url 'notificaciones_chat' %}";
+
+    boton.addEventListener('click', function () {
+
+        const abierto = menu.classList.toggle('abierto');
+
+        boton.setAttribute(
+            'aria-expanded',
+            abierto ? 'true' : 'false'
+        );
+
+        if (abierto) {
+            actualizarNotificaciones();
+        }
+    });
+
+    document.addEventListener('click', function (evento) {
+
+        if (!contenedor.contains(evento.target)) {
+            menu.classList.remove('abierto');
+            boton.setAttribute('aria-expanded', 'false');
+        }
+    });
+
+    function actualizarNotificaciones() {
+
+        fetch(urlNotificaciones, {
+            cache: 'no-store'
+        })
+        .then(function (respuesta) {
+
+            if (!respuesta.ok) {
+                throw new Error('No se pudieron consultar las notificaciones');
+            }
+
+            return respuesta.json();
+        })
+        .then(function (datos) {
+
+            const cantidad = datos.no_leidos || 0;
+
+            contador.textContent = cantidad > 99 ? '99+' : cantidad;
+
+            contador.style.display = cantidad > 0 ? 'flex' : 'none';
+
+            mostrarNotificaciones(datos.notificaciones || []);
+
+        })
+        .catch(function (error) {
+
+            console.error('Error en la campana:', error);
+
+        });
+    }
+
+    function mostrarNotificaciones(notificaciones) {
+
+        lista.replaceChildren();
+
+        if (notificaciones.length === 0) {
+
+            const vacio = document.createElement('div');
+
+            vacio.className = 'campana-vacia';
+            vacio.textContent = 'No tienes notificaciones nuevas.';
+
+            lista.appendChild(vacio);
+
+            return;
+        }
+
+        notificaciones.forEach(function (notificacion) {
+
+            const enlace = document.createElement('a');
+
+            enlace.className = 'campana-elemento';
+            enlace.href = notificacion.url;
+
+            const icono = document.createElement('span');
+
+            icono.className = 'campana-icono';
+            icono.textContent =
+                notificacion.tipo === 'mensaje' ? '💬' : '📋';
+
+            const detalle = document.createElement('div');
+
+            detalle.className = 'campana-detalle';
+
+            const titulo = document.createElement('strong');
+            titulo.textContent = notificacion.titulo;
+
+            const texto = document.createElement('p');
+            texto.textContent = notificacion.texto;
+
+            const fecha = document.createElement('span');
+            fecha.className = 'campana-fecha';
+
+            if (notificacion.fecha) {
+                fecha.textContent = new Date(
+                    notificacion.fecha
+                ).toLocaleString('es-CO');
+            }
+
+            detalle.appendChild(titulo);
+            detalle.appendChild(texto);
+            detalle.appendChild(fecha);
+
+            enlace.appendChild(icono);
+            enlace.appendChild(detalle);
+
+            lista.appendChild(enlace);
+        });
+    }
+
+    actualizarNotificaciones();
+
+    setInterval(actualizarNotificaciones, 5000);
+
+})();
+</script>

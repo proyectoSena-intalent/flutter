@@ -32,8 +32,12 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
     '10.0.2.2',
+    ".trycloudflare.com",
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://lucy-reviewer-adjustments-cylinder.trycloudflare.com",
+]
 
 # Application definition
 

@@ -2,12 +2,165 @@ from django.shortcuts import render, redirect
 from django.views.decorators.cache import never_cache
 from django.contrib.auth.hashers import make_password, check_password
 from django.db import models
-from .models import Usuario, Servicio, Solicitud
+from .models import Usuario, Servicio, Solicitud, Mensaje, Notificacion
+from calificaciones.models import Calificacion
 from .forms import ServicioForm
 
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden, JsonResponse
+from django.db.models import Q, Count
+from django.urls import reverse
+from django.shortcuts import render, redirect, get_object_or_404
 from decimal import Decimal
 
+
+
 COMISION_IN_TALENT = Decimal('0.10')
+
+def contar_mensajes_no_leidos(usuario):
+    estados_chat = ['aceptada', 'finalizada', 'confirmada']
+
+    mensajes = Mensaje.objects.filter(
+        leido=False,
+        solicitud__estado__in=estados_chat
+    ).exclude(
+        remitente_id=usuario.id
+    ).filter(
+        models.Q(solicitud__cliente=usuario) |
+        models.Q(solicitud__servicio__profesional=usuario)
+    ).exclude(
+        solicitud__calificaciones__isnull=False
+    )
+
+    return mensajes.values('id').distinct().count()
+
+
+
+def notificaciones_chat(request):
+
+    usuario_id = request.session.get('usuario_id')
+
+    if not usuario_id:
+        return JsonResponse(
+            {'no_leidos': 0, 'notificaciones': []},
+            status=401
+        )
+
+    usuario = get_object_or_404(
+        Usuario,
+        id=usuario_id
+    )
+
+    # ==========================================
+    # 1. CONTAR MENSAJES NO LEÍDOS
+    # ==========================================
+
+    cantidad_mensajes = contar_mensajes_no_leidos(usuario)
+
+    mensajes = Mensaje.objects.filter(
+        leido=False,
+        solicitud__estado__in=[
+            'aceptada',
+            'finalizada',
+            'confirmada'
+        ]
+    ).exclude(
+        remitente=usuario
+    ).filter(
+        Q(solicitud__cliente=usuario) |
+        Q(solicitud__servicio__profesional=usuario)
+    ).exclude(
+        solicitud__calificaciones__isnull=False
+    ).select_related(
+        'remitente',
+        'solicitud'
+    ).order_by('-fecha_envio')
+
+    # ==========================================
+    # 2. CONSULTAR NOTIFICACIONES DE SOLICITUDES
+    # ==========================================
+
+    notificaciones_bd = Notificacion.objects.filter(
+        destinatario=usuario,
+        leida=False
+    ).select_related(
+        'solicitud'
+    ).order_by('-fecha_creacion')
+
+    cantidad_notificaciones = notificaciones_bd.count()
+
+    # ==========================================
+    # 3. UNIFICAR AMBOS TIPOS DE NOTIFICACIONES
+    # ==========================================
+
+    lista = []
+
+    for notificacion in notificaciones_bd:
+
+        if usuario.es_profesional:
+            url = reverse('solicitudes_recibidas')
+        else:
+            url = reverse('mis_solicitudes')
+
+        lista.append({
+            'tipo': 'solicitud',
+            'id': notificacion.id,
+            'titulo': notificacion.titulo,
+            'texto': notificacion.mensaje,
+            'url': url,
+            'fecha': notificacion.fecha_creacion
+        })
+
+    for mensaje in mensajes:
+
+        lista.append({
+            'tipo': 'mensaje',
+            'id': mensaje.id,
+            'titulo': 'Nuevo mensaje',
+            'texto': (
+                f'{mensaje.remitente.nombre}: '
+                f'{mensaje.contenido[:100]}'
+            ),
+            'url': reverse(
+                'chat',
+                args=[mensaje.solicitud_id]
+            ),
+            'fecha': mensaje.fecha_envio
+        })
+
+    # Ordenar por fecha, del más reciente al más antiguo
+    lista.sort(
+        key=lambda elemento: elemento['fecha'],
+        reverse=True
+    )
+
+    # Mostrar máximo 10 avisos en el desplegable
+    notificaciones_json = []
+
+    for elemento in lista[:10]:
+
+        notificaciones_json.append({
+            'tipo': elemento['tipo'],
+            'id': elemento['id'],
+            'titulo': elemento['titulo'],
+            'texto': elemento['texto'],
+            'url': elemento['url'],
+            'fecha': elemento['fecha'].isoformat()
+        })
+
+    # ==========================================
+    # 4. RESPUESTA JSON
+    # ==========================================
+
+    return JsonResponse({
+        'no_leidos': (
+            cantidad_mensajes +
+            cantidad_notificaciones
+        ),
+        'cantidad_mensajes': cantidad_mensajes,
+        'cantidad_solicitudes': cantidad_notificaciones,
+        'notificaciones': notificaciones_json
+    })
 
 
 def registro(request):
@@ -110,6 +263,7 @@ def login(request):
         {'mensaje': mensaje}
     )
 
+
 @never_cache
 def inicio(request):
 
@@ -118,31 +272,255 @@ def inicio(request):
     if not usuario_id:
         return redirect('login')
 
-    usuario = Usuario.objects.get(id=usuario_id)
+    usuario = get_object_or_404(
+        Usuario,
+        id=usuario_id
+    )
 
     # Contar solicitudes pendientes recibidas
     solicitudes_pendientes = 0
 
     if usuario.es_profesional:
-
         solicitudes_pendientes = Solicitud.objects.filter(
             servicio__profesional=usuario,
             estado='pendiente'
         ).count()
+
+    # Contar mensajes no leídos
+    mensajes_no_leidos = contar_mensajes_no_leidos(usuario)
 
     return render(
         request,
         'inicio.html',
         {
             'usuario': usuario,
-            'solicitudes_pendientes': solicitudes_pendientes
+            'solicitudes_pendientes': solicitudes_pendientes,
+            'mensajes_no_leidos': mensajes_no_leidos,
         }
     )
+
+
 def logout(request):
 
     request.session.flush()
 
-    return redirect('login')
+    response = redirect('inicio')
+
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+
+    return response
+
+
+def chat(request, solicitud_id):
+    usuario_id = request.session.get('usuario_id')
+
+    # Verificar que haya una sesión iniciada
+    if not usuario_id:
+        return redirect('login')
+
+    usuario = get_object_or_404(Usuario, id=usuario_id)
+
+    # Buscar la solicitud y sus participantes
+    solicitud = get_object_or_404(
+        Solicitud.objects.select_related(
+            'cliente',
+            'servicio',
+            'servicio__profesional'
+        ),
+        id=solicitud_id
+    )
+
+    # Verificar que el usuario sea participante
+    es_cliente = solicitud.cliente_id == usuario.id
+
+    es_profesional = (
+        solicitud.servicio.profesional_id == usuario.id
+    )
+
+    if not es_cliente and not es_profesional:
+        return HttpResponseForbidden(
+            "No tienes permiso para acceder a este chat."
+        )
+
+    # Estados en los que el chat puede utilizarse
+    estados_chat = [
+        'aceptada',
+        'finalizada',
+        'confirmada',
+    ]
+
+    # Comprobar si cualquiera de las partes ya calificó
+    calificacion_realizada = Calificacion.objects.filter(
+        solicitud_id=solicitud.id
+    ).exists()
+
+    # El chat permite escribir solo si cumple ambas condiciones
+    chat_habilitado = (
+        solicitud.estado in estados_chat
+        and not calificacion_realizada
+    )
+
+    # Procesar el envío de mensajes en el servidor
+    if request.method == 'POST':
+
+        # Bloquear cualquier intento de escribir
+        # cuando el chat está cerrado
+        if not chat_habilitado:
+            return redirect(
+                'chat',
+                solicitud_id=solicitud.id
+            )
+
+        contenido = request.POST.get(
+            'contenido',
+            ''
+        ).strip()
+
+        if contenido:
+            Mensaje.objects.create(
+                solicitud=solicitud,
+                remitente=usuario,
+                contenido=contenido
+            )
+
+        return redirect(
+            'chat',
+            solicitud_id=solicitud.id
+        )
+
+        # Al abrir la conversación, marcar como leídos
+    # los mensajes recibidos de la otra persona.
+    if request.method == 'GET':
+        Mensaje.objects.filter(
+            solicitud=solicitud,
+            leido=False
+        ).exclude(
+            remitente_id=usuario.id
+        ).update(
+            leido=True
+        )
+
+    # Recuperar el historial completo sin eliminar mensajes
+    mensajes = Mensaje.objects.filter(
+        solicitud=solicitud
+    ).select_related(
+        'remitente'
+    ).order_by(
+        'fecha_envio'
+    )
+
+    return render(
+        request,
+        'admin/usuarios/chat.html',
+        {
+            'usuario': usuario,
+            'solicitud': solicitud,
+            'mensajes': mensajes,
+            'chat_habilitado': chat_habilitado,
+            'calificacion_realizada': calificacion_realizada,
+        }
+    )
+
+from django.http import JsonResponse, HttpResponseForbidden
+from django.utils import timezone
+
+
+def mensajes_nuevos_chat(request, solicitud_id):
+    # Verificar sesión
+    usuario_id = request.session.get('usuario_id')
+
+    if not usuario_id:
+        return JsonResponse(
+            {'error': 'Sesión no iniciada'},
+            status=401
+        )
+
+    usuario = get_object_or_404(Usuario, id=usuario_id)
+
+    # Buscar solicitud y participantes
+    solicitud = get_object_or_404(
+        Solicitud.objects.select_related(
+            'cliente',
+            'servicio',
+            'servicio__profesional'
+        ),
+        id=solicitud_id
+    )
+
+    # Verificar que sea cliente o profesional
+    es_cliente = solicitud.cliente_id == usuario.id
+
+    es_profesional = (
+        solicitud.servicio.profesional_id == usuario.id
+    )
+
+    if not es_cliente and not es_profesional:
+        return JsonResponse(
+            {'error': 'No tienes permiso para consultar este chat'},
+            status=403
+        )
+
+    # Obtener el último ID recibido por el navegador
+    try:
+        ultimo_id = int(request.GET.get('desde', 0))
+    except (TypeError, ValueError):
+        return JsonResponse(
+            {'error': 'Identificador de mensaje inválido'},
+            status=400
+        )
+
+    if ultimo_id < 0:
+        return JsonResponse(
+            {'error': 'Identificador de mensaje inválido'},
+            status=400
+        )
+
+    # Consultar mensajes posteriores al último recibido
+    mensajes = Mensaje.objects.filter(
+        solicitud=solicitud,
+        id__gt=ultimo_id
+    ).select_related(
+        'remitente'
+    ).order_by(
+        'fecha_envio',
+        'id'
+    )
+
+    resultado = []
+
+    for mensaje in mensajes:
+        resultado.append({
+            'id': mensaje.id,
+            'remitente_id': mensaje.remitente_id,
+            'remitente_nombre': (
+                mensaje.remitente.nombre
+                + ' '
+                + mensaje.remitente.apellido
+            ),
+            'contenido': mensaje.contenido,
+            'fecha': timezone.localtime(
+                mensaje.fecha_envio
+            ).strftime('%d/%m/%Y %H:%M'),
+            'propio': mensaje.remitente_id == usuario.id,
+        })
+
+    # Marcar como leídos los mensajes recibidos
+    Mensaje.objects.filter(
+        solicitud=solicitud,
+        id__gt=ultimo_id,
+        leido=False
+    ).exclude(
+        remitente_id=usuario.id
+    ).update(
+        leido=True
+    )
+
+    return JsonResponse({
+        'mensajes': resultado
+    })
+
 
 def buscar_servicios(request):
 
@@ -218,6 +596,8 @@ def ofrecer_servicio(request):
         }
     )
 
+
+@never_cache
 def perfil(request):
 
     usuario_id = request.session.get('usuario_id')
@@ -225,7 +605,7 @@ def perfil(request):
     if not usuario_id:
         return redirect('login')
 
-    usuario = Usuario.objects.get(id=usuario_id)
+    usuario = get_object_or_404(Usuario, id=usuario_id)
 
     # Cambiar foto de perfil
     if request.method == 'POST':
@@ -238,13 +618,45 @@ def perfil(request):
 
         return redirect('perfil')
 
+    # Historial de solicitudes del cliente y del profesional
+    conversaciones = Solicitud.objects.filter(
+        Q(cliente=usuario) |
+        Q(servicio__profesional=usuario)
+    ).select_related(
+        'cliente',
+        'servicio',
+        'servicio__profesional'
+    ).annotate(
+        total_mensajes=Count('mensajes', distinct=True),
+        mensajes_no_leidos=Count(
+            'mensajes',
+            filter=(
+                Q(mensajes__leido=False) &
+                ~Q(mensajes__remitente=usuario)
+            ),
+            distinct=True
+        )
+    ).order_by('-fecha_solicitud')
+
+    # Último mensaje para controlar las notificaciones
+    ultimo_mensaje = Mensaje.objects.filter(
+        solicitud__in=conversaciones
+    ).order_by('-id').values_list(
+        'id',
+        flat=True
+    ).first() or 0
+
     return render(
         request,
         'perfil.html',
         {
-            'usuario': usuario
+            'usuario': usuario,
+            'conversaciones': conversaciones,
+            'mensajes_no_leidos': contar_mensajes_no_leidos(usuario),
+            'ultimo_mensaje_id': ultimo_mensaje,
         }
     )
+
 
 def pagar_deuda(request):
 
@@ -298,7 +710,6 @@ def solicitar_servicio(request, servicio_id):
         return redirect('login')
 
     usuario = Usuario.objects.get(id=usuario_id)
-
     servicio = Servicio.objects.get(id=servicio_id)
 
     # No permitir solicitar el propio servicio
@@ -316,12 +727,25 @@ def solicitar_servicio(request, servicio_id):
         return redirect('mis_solicitudes')
 
     # Crear la solicitud
-    Solicitud.objects.create(
+    solicitud = Solicitud.objects.create(
         cliente=usuario,
         servicio=servicio
     )
 
+    # Notificar al profesional
+    Notificacion.objects.create(
+        destinatario=servicio.profesional,
+        solicitud=solicitud,
+        tipo='solicitud',
+        titulo='Nueva solicitud de servicio',
+        mensaje=(
+            f'{usuario.nombre} ha solicitado tu servicio: '
+            f'{servicio.nombre}.'
+        )
+    )
+
     return redirect('mis_solicitudes')
+
 
 def mis_solicitudes(request):
 
@@ -330,24 +754,61 @@ def mis_solicitudes(request):
     if not usuario_id:
         return redirect('login')
 
-    usuario = Usuario.objects.get(id=usuario_id)
+    usuario = get_object_or_404(
+        Usuario,
+        id=usuario_id
+    )
 
-    solicitudes = Solicitud.objects.filter(
-        cliente=usuario
-    ).select_related(
-        'servicio',
-        'servicio__profesional'
-    ).order_by('-fecha_solicitud')
+    solicitudes = list(
+        Solicitud.objects.filter(
+            cliente=usuario
+        ).select_related(
+            'servicio',
+            'servicio__profesional'
+        ).order_by(
+            '-fecha_solicitud'
+        )
+    )
 
-    # Verificar qué solicitudes ya fueron calificadas
     from calificaciones.models import Calificacion
 
-    calificaciones_realizadas = Calificacion.objects.filter(
-        calificador=usuario
-    ).values_list(
-        'solicitud_id',
-        flat=True
+    # Calificaciones realizadas por el cliente
+    calificaciones_realizadas = set(
+        Calificacion.objects.filter(
+            calificador=usuario
+        ).values_list(
+            'solicitud_id',
+            flat=True
+        )
     )
+
+    # Solicitudes en las que cualquiera de las partes calificó
+    solicitudes_con_calificacion = set(
+        Calificacion.objects.filter(
+            solicitud__in=solicitudes
+        ).values_list(
+            'solicitud_id',
+            flat=True
+        ).distinct()
+    )
+
+    estados_chat = [
+        'aceptada',
+        'finalizada',
+        'confirmada',
+    ]
+
+    # Determinar si cada conversación permite escribir
+    for solicitud in solicitudes:
+
+        solicitud.calificacion_realizada = (
+            solicitud.id in solicitudes_con_calificacion
+        )
+
+        solicitud.chat_habilitado = (
+            solicitud.estado in estados_chat
+            and not solicitud.calificacion_realizada
+        )
 
     return render(
         request,
@@ -355,11 +816,12 @@ def mis_solicitudes(request):
         {
             'usuario': usuario,
             'solicitudes': solicitudes,
-            'calificaciones_realizadas': list(
-                calificaciones_realizadas
-            )
+            'calificaciones_realizadas': calificaciones_realizadas,
+            'solicitudes_con_calificacion': solicitudes_con_calificacion,
         }
     )
+
+
 def solicitudes_recibidas(request):
 
     usuario_id = request.session.get('usuario_id')
@@ -367,27 +829,69 @@ def solicitudes_recibidas(request):
     if not usuario_id:
         return redirect('login')
 
-    usuario = Usuario.objects.get(id=usuario_id)
+    usuario = get_object_or_404(
+        Usuario,
+        id=usuario_id
+    )
 
     if not usuario.es_profesional:
         return redirect('perfil')
 
-    solicitudes = Solicitud.objects.filter(
-        servicio__profesional=usuario
-    ).select_related(
-        'cliente',
-        'servicio'
-    ).order_by('-fecha_solicitud')
-
-    # Verificar cuáles clientes ya fueron calificados
-    from calificaciones.models import Calificacion
-
-    calificaciones_realizadas = Calificacion.objects.filter(
-        calificador=usuario
-    ).values_list(
-        'calificado_id',
-        flat=True
+    solicitudes = list(
+        Solicitud.objects.filter(
+            servicio__profesional=usuario
+        ).select_related(
+            'cliente',
+            'servicio',
+            'servicio__profesional'
+        ).order_by(
+            '-fecha_solicitud'
+        )
     )
+
+    # Obtener los identificadores de las solicitudes
+    ids_solicitudes = [
+        solicitud.id for solicitud in solicitudes
+    ]
+
+    # Solicitudes en las que el profesional ya calificó
+    calificaciones_realizadas = list(
+        Calificacion.objects.filter(
+            calificador=usuario,
+            solicitud_id__in=ids_solicitudes
+        ).values_list(
+            'solicitud_id',
+            flat=True
+        ).distinct()
+    )
+
+    # Solicitudes en las que cualquiera de las partes calificó
+    solicitudes_con_calificacion = list(
+        Calificacion.objects.filter(
+            solicitud_id__in=ids_solicitudes
+        ).values_list(
+            'solicitud_id',
+            flat=True
+        ).distinct()
+    )
+
+    # Determinar si cada chat permite escribir
+    estados_chat = [
+        'aceptada',
+        'finalizada',
+        'confirmada',
+    ]
+
+    for solicitud in solicitudes:
+
+        solicitud.calificacion_realizada = (
+            solicitud.id in solicitudes_con_calificacion
+        )
+
+        solicitud.chat_habilitado = (
+            solicitud.estado in estados_chat
+            and not solicitud.calificacion_realizada
+        )
 
     return render(
         request,
@@ -395,11 +899,11 @@ def solicitudes_recibidas(request):
         {
             'usuario': usuario,
             'solicitudes': solicitudes,
-            'calificaciones_realizadas': list(
-                calificaciones_realizadas
-            )
+            'calificaciones_realizadas': calificaciones_realizadas,
+            'solicitudes_con_calificacion': solicitudes_con_calificacion,
         }
     )
+
 
 def cambiar_estado_solicitud(request, solicitud_id):
 
@@ -413,9 +917,7 @@ def cambiar_estado_solicitud(request, solicitud_id):
     if not usuario.es_profesional:
         return redirect('perfil')
 
-    solicitud = Solicitud.objects.get(
-        id=solicitud_id
-    )
+    solicitud = Solicitud.objects.get(id=solicitud_id)
 
     if solicitud.servicio.profesional != usuario:
         return redirect('solicitudes_recibidas')
@@ -423,8 +925,6 @@ def cambiar_estado_solicitud(request, solicitud_id):
     if request.method == 'POST':
 
         estado = request.POST.get('estado')
-
-        print("ESTADO RECIBIDO:", estado)
 
         if estado in ['aceptada', 'rechazada', 'finalizada']:
 
@@ -451,6 +951,9 @@ def cambiar_estado_solicitud(request, solicitud_id):
                     }
                 )
 
+            # Guardar el estado anterior
+            estado_anterior = solicitud.estado
+
             solicitud.estado = estado
 
             if estado == 'finalizada':
@@ -468,6 +971,36 @@ def cambiar_estado_solicitud(request, solicitud_id):
                 )
 
             solicitud.save()
+
+            # Crear notificación solamente si cambió el estado
+            if estado_anterior != estado:
+
+                mensajes = {
+                    'aceptada': (
+                        'Tu solicitud ha sido aceptada por el profesional.'
+                    ),
+                    'rechazada': (
+                        'El profesional ha rechazado tu solicitud.'
+                    ),
+                    'finalizada': (
+                        'El profesional ha marcado tu servicio como finalizado. '
+                        'Ya puedes confirmar el servicio.'
+                    )
+                }
+
+                titulos = {
+                    'aceptada': 'Solicitud aceptada',
+                    'rechazada': 'Solicitud rechazada',
+                    'finalizada': 'Servicio finalizado'
+                }
+
+                Notificacion.objects.create(
+                    destinatario=solicitud.cliente,
+                    solicitud=solicitud,
+                    tipo=estado,
+                    titulo=titulos[estado],
+                    mensaje=mensajes[estado]
+                )
 
     return redirect('solicitudes_recibidas')
 
@@ -493,6 +1026,7 @@ def cancelar_solicitud(request, solicitud_id):
 
     return redirect('mis_solicitudes')
 
+
 def confirmar_servicio(request, solicitud_id):
 
     usuario_id = request.session.get('usuario_id')
@@ -514,8 +1048,7 @@ def confirmar_servicio(request, solicitud_id):
         # Sumar la comisión pendiente al profesional
         profesional.saldo_pendiente += solicitud.comision_in_talent
 
-        # Mantener al profesional activo hasta que se implemente
-        # el bloqueo por deuda
+        # Mantener al profesional activo
         profesional.estado_profesional = 'activo'
 
         profesional.save()
@@ -524,7 +1057,20 @@ def confirmar_servicio(request, solicitud_id):
         solicitud.estado_pago = 'pendiente'
         solicitud.save()
 
+        # Notificar al profesional
+        Notificacion.objects.create(
+            destinatario=profesional,
+            solicitud=solicitud,
+            tipo='confirmada',
+            titulo='Servicio confirmado',
+            mensaje=(
+                f'El cliente {usuario.nombre} ha confirmado '
+                f'el servicio: {solicitud.servicio.nombre}.'
+            )
+        )
+
     return redirect('mis_solicitudes')
+
 
 def invitado(request):
 

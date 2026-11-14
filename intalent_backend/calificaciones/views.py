@@ -1,6 +1,6 @@
-from django.shortcuts import render, redirect
 from .models import Calificacion
 from usuarios.models import Usuario, Solicitud
+from django.shortcuts import render, redirect, get_object_or_404
 
 
 def crear_calificacion(request):
@@ -10,7 +10,10 @@ def crear_calificacion(request):
     if not usuario_id:
         return redirect('login')
 
-    usuario = Usuario.objects.get(id=usuario_id)
+    usuario = get_object_or_404(
+        Usuario,
+        id=usuario_id
+    )
 
     pendientes = []
 
@@ -80,34 +83,12 @@ def crear_calificacion(request):
 
     if request.method == 'POST':
 
+        solicitud_id = request.POST.get('solicitud_id')
         calificado_id = request.POST.get('calificado')
         puntuacion = request.POST.get('puntuacion')
-        comentario = request.POST.get('comentario')
+        comentario = request.POST.get('comentario', '').strip()
 
-        if not calificado_id or not puntuacion:
-
-            return render(
-                request,
-                'calificaciones.html',
-                {
-                    'usuario': usuario,
-                    'pendientes': pendientes,
-                    'error': 'Debe seleccionar un usuario y una puntuación.'
-                }
-            )
-
-        # Buscar la solicitud correspondiente
-        solicitud_calificada = None
-
-        for pendiente in pendientes:
-
-            if pendiente['persona'].id == int(calificado_id):
-
-                solicitud_calificada = pendiente['solicitud']
-
-                break
-
-        if solicitud_calificada is None:
+        if not solicitud_id or not calificado_id or not puntuacion:
 
             return render(
                 request,
@@ -115,15 +96,81 @@ def crear_calificacion(request):
                 {
                     'usuario': usuario,
                     'pendientes': pendientes,
-                    'error': 'No se encontró la solicitud.'
+                    'error': 'Debe seleccionar una solicitud y una puntuación.'
                 }
             )
 
-        # Crear la calificación asociada a la solicitud
+        # Validar que la puntuación sea de 1 a 5
+        try:
+            puntuacion = int(puntuacion)
+            solicitud_id = int(solicitud_id)
+            calificado_id = int(calificado_id)
+
+        except (ValueError, TypeError):
+
+            return render(
+                request,
+                'calificaciones.html',
+                {
+                    'usuario': usuario,
+                    'pendientes': pendientes,
+                    'error': 'Los datos de la calificación no son válidos.'
+                }
+            )
+
+        if puntuacion not in [1, 2, 3, 4, 5]:
+
+            return render(
+                request,
+                'calificaciones.html',
+                {
+                    'usuario': usuario,
+                    'pendientes': pendientes,
+                    'error': 'La puntuación debe estar entre 1 y 5.'
+                }
+            )
+
+        # Buscar la solicitud exacta entre las pendientes
+        pendiente_seleccionado = next(
+            (
+                pendiente for pendiente in pendientes
+                if pendiente['solicitud'].id == solicitud_id
+                and pendiente['persona'].id == calificado_id
+            ),
+            None
+        )
+
+        if pendiente_seleccionado is None:
+
+            return render(
+                request,
+                'calificaciones.html',
+                {
+                    'usuario': usuario,
+                    'pendientes': pendientes,
+                    'error': 'No tienes permiso para realizar esta calificación.'
+                }
+            )
+
+        solicitud_calificada = pendiente_seleccionado['solicitud']
+        persona_calificada = pendiente_seleccionado['persona']
+
+        # Evitar calificaciones duplicadas
+        ya_existe = Calificacion.objects.filter(
+            solicitud=solicitud_calificada,
+            calificador=usuario,
+            calificado=persona_calificada
+        ).exists()
+
+        if ya_existe:
+
+            return redirect('crear_calificacion')
+
+        # Guardar la calificación
         Calificacion.objects.create(
             solicitud=solicitud_calificada,
             calificador=usuario,
-            calificado_id=calificado_id,
+            calificado=persona_calificada,
             puntuacion=puntuacion,
             comentario=comentario
         )
@@ -139,6 +186,7 @@ def crear_calificacion(request):
             'error': None
         }
     )
+
 def ver_calificaciones(request, usuario_id):
 
     usuario = Usuario.objects.get(id=usuario_id)

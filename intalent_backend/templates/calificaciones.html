@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -9,11 +10,58 @@
 
     <style>
 
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f6f8;
             margin: 0;
             padding: 0;
+            color: #263238;
+        }
+
+        header {
+            background-color: white;
+            padding: 15px 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .logo {
+            color: #087f8c;
+            font-size: 26px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: #37474f;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .nav-links a:hover {
+            color: #087f8c;
+        }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #087f8c;
         }
 
         .contenedor {
@@ -33,10 +81,12 @@
 
         .cabecera h1 {
             margin-bottom: 10px;
+            color: #087f8c;
         }
 
         .usuario {
             color: #555;
+            margin-bottom: 20px;
         }
 
         .pendiente {
@@ -69,7 +119,6 @@
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 6px;
-            box-sizing: border-box;
             font-size: 15px;
         }
 
@@ -78,32 +127,26 @@
             resize: vertical;
         }
 
-        .estrellas {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .estrellas label {
-            margin: 0;
-            cursor: pointer;
-            font-size: 25px;
-        }
-
         .boton {
+            display: inline-block;
             margin-top: 20px;
-            width: 100%;
             padding: 12px;
             border: none;
             border-radius: 6px;
-            background-color: #222;
+            background-color: #087f8c;
             color: white;
             font-size: 16px;
             cursor: pointer;
+            text-decoration: none;
+            text-align: center;
         }
 
         .boton:hover {
-            background-color: #444;
+            background-color: #066873;
+        }
+
+        .boton-enviar {
+            width: 100%;
         }
 
         .mensaje {
@@ -123,11 +166,67 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
+        @media (max-width: 650px) {
+
+            header {
+                flex-wrap: wrap;
+                padding: 15px 4%;
+            }
+
+            .nav-links {
+                gap: 12px;
+            }
+
+            .contenedor {
+                width: 94%;
+                margin: 25px auto;
+            }
+
+            .pendiente {
+                padding: 18px;
+            }
+
+            .logo {
+                font-size: 23px;
+            }
+        }
+
     </style>
 
 </head>
 
 <body>
+
+<header>
+
+    <a href="{% url 'inicio' %}" class="logo">
+        InTalent
+    </a>
+
+    <nav class="nav-links">
+
+        <a href="{% url 'inicio' %}">
+            Inicio
+        </a>
+
+        {% include 'includes/notificaciones.html' %}
+
+        <a href="{% url 'perfil' %}">
+            Mi perfil
+        </a>
+
+        {% if usuario.foto %}
+            <img
+                src="{{ usuario.foto.url }}"
+                alt="Foto de perfil"
+                class="avatar"
+            >
+        {% endif %}
+
+    </nav>
+
+</header>
+
 
 <div class="contenedor">
 
@@ -144,19 +243,13 @@
 
         </p>
 
-        <a href="{% url 'inicio' %}" class="boton">
-            🏠 Inicio
-        </a>
-
     </div>
 
 
     {% if error %}
 
         <div class="mensaje">
-
             {{ error }}
-
         </div>
 
     {% endif %}
@@ -169,10 +262,8 @@
             <div class="pendiente">
 
                 <h2>
-
                     {{ pendiente.persona.nombre }}
                     {{ pendiente.persona.apellido }}
-
                 </h2>
 
                 <p class="rol">
@@ -189,6 +280,11 @@
 
                     {% csrf_token %}
 
+                    <input
+                        type="hidden"
+                        name="solicitud_id"
+                        value="{{ pendiente.solicitud.id }}"
+                    >
 
                     <input
                         type="hidden"
@@ -245,11 +341,9 @@
 
                     <button
                         type="submit"
-                        class="boton"
+                        class="boton boton-enviar"
                     >
-
                         Enviar calificación
-
                     </button>
 
                 </form>
