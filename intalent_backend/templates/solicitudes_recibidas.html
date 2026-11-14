@@ -335,13 +335,18 @@
         comunicarte con ellos y hacer seguimiento a cada servicio.
     </p>
 
-    {% if error_pago %}
+    {% if error_pago or deuda_pendiente %}
         <div class="mensaje mensaje-error">
-            {{ error_pago }}
+            {{ mensaje_pago|default:"No puedes aceptar esta solicitud porque tienes un saldo pendiente con InTalent." }}
+            <div class="acciones" style="margin-top: 10px;">
+                <a href="{% url 'pagar_deuda' %}" class="boton boton-pago" style="background-color: #dc3545; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none;">
+                    Pagar saldo pendiente
+                </a>
+            </div>
         </div>
     {% endif %}
-
     {% if messages %}
+    
         {% for message in messages %}
             <div class="mensaje
                 {% if message.tags == 'error' %}

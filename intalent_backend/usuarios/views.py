@@ -931,18 +931,54 @@ def cambiar_estado_solicitud(request, solicitud_id):
             # Verificar si el profesional tiene deuda pendiente
             if estado == 'aceptada' and usuario.saldo_pendiente > 0:
 
+                solicitudes = list(
+                    Solicitud.objects.filter(
+                        servicio__profesional=usuario
+                    ).select_related(
+                        'cliente',
+                        'servicio',
+                        'servicio__profesional'
+                    ).order_by('-fecha_solicitud')
+                )
+
+                ids_solicitudes = [s.id for s in solicitudes]
+
+                calificaciones_realizadas = list(
+                    Calificacion.objects.filter(
+                        calificador=usuario,
+                        solicitud_id__in=ids_solicitudes
+                    ).values_list(
+                        'solicitud_id',
+                        flat=True
+                    ).distinct()
+                )
+
+                solicitudes_con_calificacion = list(
+                    Calificacion.objects.filter(
+                        solicitud_id__in=ids_solicitudes
+                    ).values_list(
+                        'solicitud_id',
+                        flat=True
+                    ).distinct()
+                )
+
+                estados_chat = ['aceptada', 'finalizada', 'confirmada']
+
+                for sol in solicitudes:
+                    sol.calificacion_realizada = sol.id in solicitudes_con_calificacion
+                    sol.chat_habilitado = (
+                        sol.estado in estados_chat
+                        and not sol.calificacion_realizada
+                    )
+
                 return render(
                     request,
                     'solicitudes_recibidas.html',
                     {
                         'usuario': usuario,
-                        'solicitudes': Solicitud.objects.filter(
-                            servicio__profesional=usuario
-                        ).select_related(
-                            'cliente',
-                            'servicio'
-                        ).order_by('-fecha_solicitud'),
-                        'calificaciones_realizadas': [],
+                        'solicitudes': solicitudes,
+                        'calificaciones_realizadas': calificaciones_realizadas,
+                        'solicitudes_con_calificacion': solicitudes_con_calificacion,
                         'error_pago': True,
                         'mensaje_pago': (
                             'No puedes aceptar esta solicitud porque '
@@ -972,20 +1008,12 @@ def cambiar_estado_solicitud(request, solicitud_id):
 
             solicitud.save()
 
-            # Crear notificación solamente si cambió el estado
             if estado_anterior != estado:
 
                 mensajes = {
-                    'aceptada': (
-                        'Tu solicitud ha sido aceptada por el profesional.'
-                    ),
-                    'rechazada': (
-                        'El profesional ha rechazado tu solicitud.'
-                    ),
-                    'finalizada': (
-                        'El profesional ha marcado tu servicio como finalizado. '
-                        'Ya puedes confirmar el servicio.'
-                    )
+                    'aceptada': 'Tu solicitud ha sido aceptada por el profesional.',
+                    'rechazada': 'El profesional ha rechazado tu solicitud.',
+                    'finalizada': 'El profesional ha marcado tu servicio como finalizado. Ya puedes confirmar el servicio.'
                 }
 
                 titulos = {
