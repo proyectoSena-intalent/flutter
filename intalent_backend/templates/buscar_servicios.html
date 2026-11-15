@@ -408,6 +408,15 @@
 
             {% endif %}
 
+               <!-- Botón Volver -->
+            <a href="{% url 'inicio' %}"
+               onclick="if (window.history.length > 1) { window.history.back(); return false; }"
+               class="btn-volver"
+               style="color: #1f6feb; text-decoration: none; font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; background: rgba(31, 111, 235, 0.1); padding: 6px 14px; border-radius: 20px; margin-bottom: 20px;"
+               aria-label="Volver">
+               <span>←</span> Volver
+            </a>
+
             <!-- FORMULARIO DE BÚSQUEDA -->
 
             <form method="GET" class="buscador">

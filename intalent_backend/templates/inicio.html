@@ -669,21 +669,25 @@
 
             <!-- BUSCADOR -->
 
-            <div class="buscador">
-
-                <div class="buscador-icono">
-                    🔎
-                </div>
-
-                <div class="buscador-texto">
-                    ¿Qué servicio necesitas?
-                </div>
-
-                <a href="{% url 'buscar_servicios' %}" class="boton-buscar">
-                    Buscar servicios
-                </a>
-
-            </div>
+           <!-- BUSCADOR FUNCIONAL -->
+          <form action="{% url 'buscar_servicios' %}" method="GET" class="buscador" style="display: flex; align-items: center; background: #ffffff; border-radius: 30px; padding: 6px 6px 6px 18px; width: 100%; max-width: 520px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
+        
+           <!-- Icono de lupa -->
+          <div class="buscador-icono" style="color: #6c757d; margin-right: 10px; font-size: 16px;">
+            🔍
+          </div>
+        
+          <!-- Campo de texto editable -->
+         <input type="text" 
+               name="buscar" 
+               placeholder="¿Qué servicio necesitas?" 
+               style="border: none; outline: none; flex: 1; font-size: 14px; color: #333; background: transparent;">
+        
+        <!-- Botón de envío -->
+        <button type="submit" class="boton-buscar" style="background: #111111; color: #ffffff; border: none; padding: 10px 22px; border-radius: 24px; font-weight: 600; font-size: 14px; cursor: pointer; transition: background 0.2s;">
+            Buscar servicios
+        </button>
+      </form>
 
         </div>
 
