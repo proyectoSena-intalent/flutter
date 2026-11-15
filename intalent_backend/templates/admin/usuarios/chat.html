@@ -48,6 +48,17 @@
             text-decoration: none;
             font-size: 24px;
             font-weight: bold;
+
+            .btn-volver {
+            color: white;
+            text-decoration: none;
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+           }
         }
 
         .chat-header-info h2 {
@@ -302,10 +313,12 @@
     <!-- ENCABEZADO -->
     <header class="chat-header">
 
-        <a href="javascript:history.back()"
+       <a href="javascript:history.back()"
+           onclick="if (history.length > 1) { history.back(); return false; }"
            class="btn-volver"
+           style="color: white; text-decoration: none; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 6px; background: rgba(255, 255, 255, 0.2); padding: 6px 12px; border-radius: 20px;"
            aria-label="Volver">
-            ←
+            <span>←</span> Volver
         </a>
 
         <div class="chat-header-info">

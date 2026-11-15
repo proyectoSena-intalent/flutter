@@ -759,6 +759,8 @@ def mis_solicitudes(request):
         id=usuario_id
     )
 
+    Notificacion.objects.filter(destinatario=usuario, leida=False).update(leida=True)
+
     solicitudes = list(
         Solicitud.objects.filter(
             cliente=usuario
@@ -836,6 +838,8 @@ def solicitudes_recibidas(request):
 
     if not usuario.es_profesional:
         return redirect('perfil')
+
+    Notificacion.objects.filter(destinatario=usuario, leida=False).update(leida=True)
 
     solicitudes = list(
         Solicitud.objects.filter(
