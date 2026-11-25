@@ -25,9 +25,9 @@ button:hover,.boton:hover,.boton-login:hover,.boton-registro:hover,.boton-inicio
 .contenedor{width:min(1480px,96%)!important;max-width:1480px!important;margin:26px auto!important}
 main.contenedor{padding-bottom:0}
 .hero{position:relative;isolation:isolate;overflow:hidden;border-radius:20px!important;min-height:260px;padding:34px clamp(24px,4vw,54px)!important;box-shadow:0 14px 34px rgba(8,61,137,.16);background:linear-gradient(105deg,#06439a 0%,#0879e8 58%,#80c4ff 100%)!important}
-.hero:before{content:"";position:absolute;z-index:0;top:0;right:0;bottom:0;left:auto;width:49%;background-image:linear-gradient(90deg,#0879e8 0%,rgba(8,121,232,.45) 24%,rgba(8,121,232,0) 58%),url("../img/hero-inicio.webp");background-repeat:no-repeat;background-size:cover;background-position:center 43%;opacity:1;pointer-events:none}
+.hero:before{content:"";position:absolute;z-index:0;top:0;right:0;bottom:0;left:auto;width:49%;background-image:none!important;opacity:0;pointer-events:none}
 .hero.profesional{background:linear-gradient(105deg,#06439a 0%,#0879e8 58%,#80c4ff 100%)!important}
-.hero.profesional:before{background-image:linear-gradient(90deg,#0879e8 0%,rgba(8,121,232,.45) 24%,rgba(8,121,232,0) 58%),url("../img/hero-inicio.webp")}
+.hero.profesional:before{background-image:none!important}
 .hero-contenido{max-width:720px;width:min(58%,720px);position:relative;z-index:1}
 .hero .etiqueta{display:inline-flex;align-items:center;padding:8px 16px;border-radius:30px;background:rgba(255,255,255,.19);border:1px solid rgba(255,255,255,.25);color:#fff;font-weight:700}
 .hero h1{color:#fff!important;font-size:clamp(32px,4vw,54px)!important;line-height:1.08;margin:14px 0 8px!important;letter-spacing:-1.3px}
@@ -95,8 +95,8 @@ img{max-width:100%}
  .barra-superior .logo{font-size:24px!important}
  .contenedor{width:calc(100% - 28px)!important;margin:16px auto!important}
  .hero{min-height:300px;padding:24px 20px!important}
- .hero:before{width:52%;opacity:.34;background-position:60% center;background-image:linear-gradient(90deg,#0879e8 0%,rgba(8,121,232,.62) 30%,rgba(8,121,232,.08) 100%),url("../img/hero-inicio.webp")}
- .hero.profesional:before{background-image:linear-gradient(90deg,#0879e8 0%,rgba(8,121,232,.62) 30%,rgba(8,121,232,.08) 100%),url("../img/hero-inicio.webp")}
+ .hero:before{width:52%;opacity:0;background-image:none!important}
+ .hero.profesional:before{background-image:none!important}
  .hero-contenido{max-width:100%;width:100%}
  .hero h1{font-size:34px!important}
  .buscador{flex-wrap:wrap!important;border-radius:16px!important;padding:10px!important}

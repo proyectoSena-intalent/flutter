@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 {% load static %}
 <html lang="es">
 
@@ -7,963 +6,1019 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-
-<title>Inicio - InTalent</title>
-
-<style>
-
-    * {
-        box-sizing: border-box;
-    }
-
-    body {
-        margin: 0;
-        font-family: Arial, Helvetica, sans-serif;
-        background: #f5f7fb;
-        color: #6e1b38;
-    }
-
-    /* =========================
-       BARRA SUPERIOR
-    ========================= */
-
-    .barra-superior {
-        min-height: 72px;
-        padding: 0 6%;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        color: white;
-        position: relative;
-        z-index: 10;
-    }
-
-    .barra-superior.cliente {
-        background: linear-gradient(135deg, #0066ff, #00a8ff);
-    }
-
-    .barra-superior.profesional {
-        background: linear-gradient(135deg, #087f5b, #20c997);
-    }
-
-    .logo {
-        font-size: 28px;
-        font-weight: 800;
-        letter-spacing: -1px;
-    }
-
-    .logo span {
-        font-weight: 400;
-        opacity: 0.85;
-    }
-
-    .usuario {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-size: 15px;
-        font-weight: 600;
-    }
-
-    .usuario-enlace {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        color: white;
-        text-decoration: none;
-        padding: 6px 10px;
-        border-radius: 12px;
-        transition: 0.2s;
-    }
-
-    .usuario-enlace:hover {
-        background: rgba(255, 255, 255, 0.15);
-    }
-
-    .avatar {
-        width: 42px;
-        height: 42px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 2px solid rgba(255,255,255,0.8);
-        background: rgba(255, 255, 255, 0.2);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 19px;
-    }
-
-  
-
-    /* =========================
-       CONTENEDOR PRINCIPAL
-    ========================= */
-
-    .contenedor {
-        width: 90%;
-        max-width: 1200px;
-        margin: 0 auto;
-        padding-bottom: 50px;
-    }
-
-
-    /* =========================
-       HERO
-    ========================= */
-
-    .hero {
-        margin-top: 35px;
-        padding: 45px;
-        border-radius: 24px;
-        color: white;
-        position: relative;
-        overflow: hidden;
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
-    }
-
-    .hero.cliente {
-        background: linear-gradient(135deg, #005bea, #00c6fb);
-    }
-
-    .hero.profesional {
-        background: linear-gradient(135deg, #087f5b, #38d9a9);
-    }
-
-    .hero::before {
-        content: "";
-        position: absolute;
-        width: 300px;
-        height: 300px;
-        border-radius: 50%;
-        background: rgba(255,255,255,0.08);
-        right: -100px;
-        top: -130px;
-    }
-
-    .hero::after {
-        content: "";
-        position: absolute;
-        width: 180px;
-        height: 180px;
-        border-radius: 50%;
-        background: rgba(255,255,255,0.06);
-        right: 180px;
-        bottom: -100px;
-    }
-
-    .hero-contenido {
-        position: relative;
-        z-index: 2;
-        max-width: 720px;
-    }
-
-    .etiqueta {
-        display: inline-block;
-        padding: 7px 13px;
-        background: rgba(255,255,255,0.16);
-        border: 1px solid rgba(255,255,255,0.2);
-        border-radius: 20px;
-        font-size: 13px;
-        margin-bottom: 15px;
-    }
-
-    .hero h1 {
-        margin: 0 0 12px;
-        font-size: clamp(30px, 5vw, 48px);
-        line-height: 1.1;
-    }
-
-    .hero p {
-        margin: 0;
-        font-size: 17px;
-        line-height: 1.6;
-        opacity: 0.95;
-    }
-
-
-    /* =========================
-       BUSCADOR VISUAL
-    ========================= */
-
-    .buscador {
-        margin-top: 28px;
-        background: white;
-        padding: 8px;
-        border-radius: 14px;
-        display: flex;
-        align-items: center;
-        max-width: 650px;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-    }
-
-    .buscador-icono {
-        font-size: 21px;
-        padding: 0 12px;
-        color: #777;
-    }
-
-    .buscador-texto {
-        flex: 1;
-        color: #777;
-        font-size: 15px;
-    }
-
-    .boton-buscar {
-        text-decoration: none;
-        background: #111827;
-        color: white;
-        padding: 13px 22px;
-        border-radius: 10px;
-        font-weight: bold;
-        transition: 0.2s;
-    }
-
-    .boton-buscar:hover {
-        background: #000;
-        transform: translateY(-1px);
-    }
-
-
-    /* =========================
-       TITULOS
-    ========================= */
-
-    .titulo-seccion {
-        margin-top: 42px;
-        margin-bottom: 18px;
-    }
-
-    .titulo-seccion h2 {
-        margin: 2;
-        font-size: 25px;
-        color: #111827;
-    }
-
-    .titulo-seccion p {
-        margin: 6px 0 0;
-        color: #6b7280;
-    }
-
-
-    /* =========================
-       CATEGORIAS
-    ========================= */
-
-    .categorias {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-        gap: 14px;
-    }
-
-    .categoria {
-        display: block;
-        background: white;
-        border: 3px solid #e5e7eb;
-        border-radius: 16px;
-        padding: 40px 20px;
-        text-align: center;
-        text-decoration: none;
-        cursor: pointer;
-        transition: 0.25s;
-    }
-
-    .categoria:hover,
-    .categoria:focus-visible {
-        transform: translateY(-4px);
-        border-color: #0066ff;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-        outline: none;
-    }
-
-    .categoria-icono {
-        font-size: 30px;
-        margin-bottom: 8px;
-    }
-
-    .categoria span {
-        display: block;
-        font-size: 14px;
-        font-weight: 600;
-        color: #374151;
-    }
-
-
-    /* =========================
-       MENU PRINCIPAL
-    ========================= */
-
-    .menu {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        gap: 20px;
-    }
-
-    .opcion {
-        background: white;
-        padding: 27px;
-        border-radius: 18px;
-        border: 1px solid #e5e7eb;
-        box-shadow: 0 5px 18px rgba(0, 0, 0, 0.05);
-        transition: 0.25s;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .opcion:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 14px 30px rgba(0, 0, 0, 0.10);
-    }
-
-    .icono-opcion {
-        width: 52px;
-        height: 52px;
-        border-radius: 14px;
-        background: #eef4ff;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 25px;
-        margin-bottom: 17px;
-    }
-
-    .opcion h2 {
-        margin: 0 0 10px;
-        font-size: 19px;
-        color: #111827;
-    }
-
-    .opcion p {
-        color: #6b7280;
-        line-height: 1.5;
-        min-height: 48px;
-    }
-
-    .boton {
-        display: inline-block;
-        padding: 11px 18px;
-        margin-top: 12px;
-        background: #0066ff;
-        color: white;
-        text-decoration: none;
-        border-radius: 9px;
-        font-weight: bold;
-        font-size: 14px;
-        transition: 0.2s;
-    }
-
-    .boton:hover {
-        background: #0052cc;
-        transform: translateY(-1px);
-    }
-
-    .cerrar {
-        background: #ef4444;
-    }
-
-    .cerrar:hover {
-        background: #dc2626;
-    }
-
-
-    /* =========================
-       TARJETA PROFESIONAL
-    ========================= */
-
-    .profesional-card {
-        border: 2px solid #b7ead8;
-    }
-
-    .profesional-card .icono-opcion {
-        background: #e6fcf5;
-    }
-
-
-    /* =========================
-       NOTIFICACION
-    ========================= */
-
-    .notificacion {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 25px;
-        height: 25px;
-        padding: 2px 7px;
-        margin-left: 6px;
-        background: #ef4444;
-        color: white;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: bold;
-        vertical-align: middle;
-    }
-
-    /* =========================
-   CAMPANA DE NOTIFICACIONES
-========================= */
-
-.notificaciones {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-.boton-notificaciones {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 44px;
-    height: 44px;
-    color: white;
-    text-decoration: none;
-    border-radius: 12px;
-    font-size: 24px;
-    transition: 0.2s;
-}
-
-.boton-notificaciones:hover {
-    background: rgba(255, 255, 255, 0.15);
-}
-
-.contador-notificaciones {
-    position: absolute;
-    top: 1px;
-    right: 0;
-
-    min-width: 20px;
-    height: 20px;
-
-    padding: 2px 5px;
-
-    background: #ef4444;
-    color: white;
-
-    border: 2px solid #087f5b;
-
-    border-radius: 20px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    font-size: 11px;
-    font-weight: bold;
-}
-
-/* =========================
-   BURBUJA DE CHAT
-========================= */
-
-.boton-chat {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 44px;
-    height: 44px;
-    color: white;
-    text-decoration: none;
-    border-radius: 12px;
-    font-size: 24px;
-    transition: 0.2s;
-}
-
-.boton-chat:hover {
-    background: rgba(255, 255, 255, 0.15);
-}
-
-.contador-chat {
-    position: absolute;
-    top: 0;
-    right: 0;
-    min-width: 20px;
-    height: 20px;
-    padding: 2px 5px;
-    background: #ef4444;
-    color: white;
-    border: 2px solid #0066ff;
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-    font-weight: bold;
-}
-
-.barra-superior.profesional .contador-chat {
-    border-color: #087f5b;
-}
-
-
-    /* =========================
-       PIE
-    ========================= */
-
-    .pie {
-        text-align: center;
-        color: #9ca3af;
-        font-size: 13px;
-        margin-top: 45px;
-    }
-
-
-    /* =========================
-       CELULAR
-    ========================= */
-
-    @media (max-width: 650px) {
+    <title>Inicio - InTalent</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7fb;
+            color: #6e1b38;
+        }
+
+        /* =========================
+           BARRA SUPERIOR
+        ========================= */
 
         .barra-superior {
-            padding: 0 5%;
+            min-height: 72px;
+            padding: 0 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            position: relative;
+            z-index: 10;
+        }
+
+        .barra-superior.cliente {
+            background: linear-gradient(135deg, #0066ff, #00a8ff);
+        }
+
+        .barra-superior.profesional {
+            background: linear-gradient(135deg, #087f5b, #20c997);
         }
 
         .logo {
-            font-size: 24px;
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -1px;
         }
 
-        .usuario-nombre {
-            display: none;
+        .logo span {
+            font-weight: 400;
+            opacity: 0.85;
         }
+
+        .usuario {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .usuario-enlace {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            text-decoration: none;
+            padding: 6px 10px;
+            border-radius: 12px;
+            transition: 0.2s;
+        }
+
+        .usuario-enlace:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255,255,255,0.8);
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 19px;
+        }
+
+        /* =========================
+           CONTENEDOR PRINCIPAL
+        ========================= */
+
+        .contenedor {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-bottom: 50px;
+        }
+
+        /* =========================
+           BANNER HERO
+        ========================= */
 
         .hero {
-            margin-top: 20px;
-            padding: 30px 22px;
-            border-radius: 18px;
+            margin-top: 35px;
+            padding: 40px;
+            border-radius: 24px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+        }
+
+        .hero.cliente {
+            background: linear-gradient(135deg, #005bea, #00c6fb);
+        }
+
+        .hero.profesional {
+            background: linear-gradient(135deg, #087f5b, #38d9a9);
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            right: -100px;
+            top: -130px;
+            pointer-events: none;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+            right: 180px;
+            bottom: -100px;
+            pointer-events: none;
+        }
+
+        /* DISTRIBUCIÓN: TEXTO IZQUIERDA / IMAGEN DERECHA */
+
+        .hero-layout {
+            position: relative;
+            z-index: 2;
+            display: grid;
+            grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+            align-items: center;
+            gap: 35px;
+            width: 100%;
+        }
+
+        .hero-contenido {
+            position: relative;
+            z-index: 2;
+            max-width: 100%;
+            min-width: 0;
+        }
+
+        .hero-imagen {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            width: 100%;
+            min-width: 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-imagen img {
+            display: block;
+            width: 115%;
+            max-width: 470px;
+            height: 330px;
+
+            object-fit: contain;
+            object-position: center;
+
+            background: transparent !important;
+            border: none !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+
+            filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.12));
+
+        }
+
+        .etiqueta {
+            display: inline-block;
+            padding: 7px 13px;
+            background: rgba(255,255,255,0.16);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 20px;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+
+        .hero h1 {
+            margin: 0 0 12px;
+            font-size: clamp(30px, 5vw, 48px);
+            line-height: 1.1;
+            color: white;
         }
 
         .hero p {
-            font-size: 15px;
+            margin: 0;
+            font-size: 17px;
+            line-height: 1.6;
+            opacity: 0.98;
+            color: white;
         }
+
+        /* =========================
+           BUSCADOR
+        ========================= */
 
         .buscador {
-            flex-direction: column;
-            align-items: stretch;
-            padding: 10px;
-            gap: 8px;
+            margin-top: 28px;
+            background: white;
+            padding: 8px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            max-width: 650px;
+            width: 100%;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
 
-        .buscador-texto {
-            padding: 8px;
+        .buscador-icono {
+            font-size: 21px;
+            padding: 0 12px;
+            color: #777;
+        }
+
+        .buscador input {
+            flex: 1;
+            min-width: 0;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            color: #333;
+            background: transparent;
         }
 
         .boton-buscar {
+            text-decoration: none;
+            background: #111827;
+            color: white;
+            padding: 13px 22px;
+            border-radius: 10px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: 0.2s;
+        }
+
+        .boton-buscar:hover {
+            background: #000;
+            transform: translateY(-1px);
+        }
+
+        /* =========================
+           TITULOS
+        ========================= */
+
+        .titulo-seccion {
+            margin-top: 42px;
+            margin-bottom: 18px;
+        }
+
+        .titulo-seccion h2 {
+            margin: 0;
+            font-size: 25px;
+            color: #111827;
+        }
+
+        .titulo-seccion p {
+            margin: 6px 0 0;
+            color: #6b7280;
+        }
+
+        /* =========================
+           CATEGORIAS
+        ========================= */
+
+        .categorias {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 14px;
+        }
+
+        .categoria {
+            display: block;
+            background: white;
+            border: 3px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 40px 20px;
             text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            transition: 0.25s;
         }
 
-        .contenedor {
-            width: 92%;
+        .categoria:hover,
+        .categoria:focus-visible {
+            transform: translateY(-4px);
+            border-color: #0066ff;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            outline: none;
         }
 
-    }
+        .categoria-icono {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
 
-</style>
+        .categoria span {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+        }
 
-<link rel="stylesheet" href="{% static 'css/intalent-ui.css' %}">
+        /* =========================
+           MENU PRINCIPAL
+        ========================= */
+
+        .menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .opcion {
+            background: white;
+            padding: 27px;
+            border-radius: 18px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.05);
+            transition: 0.25s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .opcion:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 14px 30px rgba(0,0,0,0.10);
+        }
+
+        .icono-opcion {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            background: #eef4ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 25px;
+            margin-bottom: 17px;
+        }
+
+        .opcion h2 {
+            margin: 0 0 10px;
+            font-size: 19px;
+            color: #111827;
+        }
+
+        .opcion p {
+            color: #6b7280;
+            line-height: 1.5;
+            min-height: 48px;
+        }
+
+        .boton {
+            display: inline-block;
+            padding: 11px 18px;
+            margin-top: 12px;
+            background: #0066ff;
+            color: white;
+            text-decoration: none;
+            border-radius: 9px;
+            font-weight: bold;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .boton:hover {
+            background: #0052cc;
+            transform: translateY(-1px);
+        }
+
+        .cerrar {
+            background: #ef4444;
+        }
+
+        .cerrar:hover {
+            background: #dc2626;
+        }
+
+        /* =========================
+           TARJETA PROFESIONAL
+        ========================= */
+
+        .profesional-card {
+            border: 2px solid #b7ead8;
+        }
+
+        .profesional-card .icono-opcion {
+            background: #e6fcf5;
+        }
+
+        /* =========================
+           NOTIFICACIONES
+        ========================= */
+
+        .notificacion {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 25px;
+            height: 25px;
+            padding: 2px 7px;
+            margin-left: 6px;
+            background: #ef4444;
+            color: white;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            vertical-align: middle;
+        }
+
+        .notificaciones {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .boton-notificaciones {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 24px;
+            transition: 0.2s;
+        }
+
+        .boton-notificaciones:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        .contador-notificaciones {
+            position: absolute;
+            top: 1px;
+            right: 0;
+            min-width: 20px;
+            height: 20px;
+            padding: 2px 5px;
+            background: #ef4444;
+            color: white;
+            border: 2px solid #087f5b;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        /* =========================
+           CHAT
+        ========================= */
+
+        .boton-chat {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 24px;
+            transition: 0.2s;
+        }
+
+        .boton-chat:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        .contador-chat {
+            position: absolute;
+            top: 0;
+            right: 0;
+            min-width: 20px;
+            height: 20px;
+            padding: 2px 5px;
+            background: #ef4444;
+            color: white;
+            border: 2px solid #0066ff;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .barra-superior.profesional .contador-chat {
+            border-color: #087f5b;
+        }
+
+        /* =========================
+           PIE DE PAGINA
+        ========================= */
+
+        .pie {
+            text-align: center;
+            color: #9ca3af;
+            font-size: 13px;
+            margin-top: 45px;
+        }
+
+        /* =========================
+           TABLET
+        ========================= */
+
+        @media (max-width: 900px) {
+            .hero {
+                padding: 30px;
+            }
+
+            .hero-layout {
+                grid-template-columns: minmax(0, 1fr) minmax(220px, 0.8fr);
+                gap: 20px;
+            }
+
+            .hero-imagen img {
+                height: 230px;
+            }
+        }
+
+        /* =========================
+           CELULAR
+        ========================= */
+
+        @media (max-width: 650px) {
+
+            .barra-superior {
+                padding: 0 5%;
+                gap: 10px;
+            }
+
+            .logo {
+                font-size: 24px;
+            }
+
+            .usuario-nombre {
+                display: none;
+            }
+
+            .contenedor {
+                width: 92%;
+            }
+
+            .hero {
+                margin-top: 20px;
+                padding: 28px 22px;
+                border-radius: 18px;
+            }
+
+            .hero-layout {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .hero-contenido {
+                width: 100%;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .hero p {
+                font-size: 15px;
+            }
+
+            .hero-imagen {
+                justify-content: center;
+            }
+
+            .hero-imagen img {
+                max-width: 280px;
+                height: 190px;
+            }
+
+            .buscador {
+                flex-wrap: wrap;
+                padding: 10px;
+                gap: 8px;
+            }
+
+            .buscador-icono {
+                padding: 0 5px;
+            }
+
+            .buscador input {
+                flex: 1;
+                width: 60%;
+                padding: 8px 2px;
+            }
+
+            .boton-buscar {
+                width: 100%;
+                text-align: center;
+            }
+
+            .categoria {
+                padding: 25px 12px;
+            }
+
+            .menu {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* =========================
+           PANTALLAS MUY PEQUEÑAS
+        ========================= */
+
+        @media (max-width: 380px) {
+            .barra-superior {
+                padding: 0 3%;
+            }
+
+            .logo {
+                font-size: 21px;
+            }
+
+            .hero {
+                padding: 23px 17px;
+            }
+
+            .hero h1 {
+                font-size: 28px;
+            }
+        }
+    </style>
+
+    <link rel="stylesheet" href="{% static 'css/intalent-ui.css' %}">
+
 </head>
 
 <body>
 
-<!-- =========================
-     BARRA SUPERIOR
-========================== -->
+    <!-- =========================
+         BARRA SUPERIOR
+    ========================== -->
 
-<div class="barra-superior {% if usuario.es_profesional %}profesional{% else %}cliente{% endif %}">
+    <div class="barra-superior {% if usuario.es_profesional %}profesional{% else %}cliente{% endif %}">
 
-    <div class="logo">
-    InTalent
-</div>
+        <div class="logo">
+            InTalent
+        </div>
 
-<div style="display: flex; align-items: center; gap: 12px;">
+        <div style="display:flex; align-items:center; gap:12px;">
 
-    <a
-        href="{% url 'inicio' %}"
-        style="
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            padding: 9px 14px;
-            border-radius: 9px;
-            background: rgba(255,255,255,0.15);
-        "
-    >
-        🏠 Inicio
-    </a>
+            <a href="{% url 'inicio' %}"
+               style="color:white; text-decoration:none; font-weight:bold; padding:9px 14px; border-radius:9px; background:rgba(255,255,255,0.15);">
+                🏠 Inicio
+            </a>
 
-    {% include 'includes/notificaciones.html' %}
+            {% include 'includes/notificaciones.html' %}
 
+            <div class="usuario">
 
-    <div class="usuario">
+                <a href="{% url 'perfil' %}" class="usuario-enlace">
 
-        <a
-            href="{% url 'perfil' %}"
-            class="usuario-enlace"
-        >
+                    {% if usuario.foto %}
 
-            {% if usuario.foto %}
+                        <img src="{{ usuario.foto.url }}"
+                             alt="Foto de {{ usuario.nombre }}"
+                             class="avatar">
 
-                <img
-                    src="{{ usuario.foto.url }}"
-                    alt="Foto de {{ usuario.nombre }}"
-                    class="avatar"
-                >
+                    {% else %}
 
-            {% else %}
+                        <div class="avatar">
+                            👤
+                        </div>
 
-                <div class="avatar">
-                    👤
-                </div>
+                    {% endif %}
 
-            {% endif %}
+                    <span class="usuario-nombre">
+                        {{ usuario.nombre }} {{ usuario.apellido }}
+                    </span>
 
-            <span class="usuario-nombre">
-                {{ usuario.nombre }} {{ usuario.apellido }}
-            </span>
+                </a>
 
-        </a>
+            </div>
+
+        </div>
 
     </div>
 
-</div>
+    <main class="contenedor">
 
-</div>
+        <!-- =========================
+             HERO
+        ========================== -->
 
+        <section class="hero {% if usuario.es_profesional %}profesional{% else %}cliente{% endif %}">
 
-<main class="contenedor">
+            <div class="hero-layout">
 
+                <!-- TEXTO A LA IZQUIERDA -->
 
-    <!-- =========================
-         HERO
-    ========================== -->
+                <div class="hero-contenido">
 
-    <section class="hero {% if usuario.es_profesional %}profesional{% else %}cliente{% endif %}">
+                    <span class="etiqueta">
+                        {% if usuario.es_profesional %}
+                            🛠️ Modo profesional
+                        {% else %}
+                            ✨ Tu plataforma de servicios
+                        {% endif %}
+                    </span>
 
-        <div class="hero-contenido">
+                    <h1>
+                        Hola, {{ usuario.nombre }} 👋
+                    </h1>
 
-            <span class="etiqueta">
-                {% if usuario.es_profesional %}
-                    🛠️ Modo profesional
-                {% else %}
-                    ✨ Tu plataforma de servicios
-                {% endif %}
-            </span>
+                    {% if usuario.es_profesional %}
 
-            <h1>
-                Hola, {{ usuario.nombre }} 👋
-            </h1>
+                        <p>
+                            Gestiona tus servicios, atiende las solicitudes
+                            de tus clientes y haz crecer tu actividad con InTalent.
+                        </p>
+
+                    {% else %}
+
+                        <p>
+                            Encuentra personas que pueden ayudarte con el servicio
+                            que necesitas, de forma sencilla y rápida.
+                        </p>
+
+                    {% endif %}
+
+                    <!-- BUSCADOR FUNCIONAL -->
+
+                    <form action="{% url 'buscar_servicios' %}"
+                          method="GET"
+                          class="buscador">
+
+                        <div class="buscador-icono">
+                            🔍
+                        </div>
+
+                        <input type="text"
+                               name="buscar"
+                               placeholder="¿Qué servicio necesitas?">
+
+                        <button type="submit" class="boton-buscar">
+                            Buscar servicios
+                        </button>
+
+                    </form>
+
+                </div>
+
+                <!-- IMAGEN A LA DERECHA PARA AMBOS USUARIOS -->
+
+                <div class="hero-imagen">
+
+                    <img src="{% static 'img/hero-inicio.webp' %}"
+                         alt="Profesionales ofreciendo servicios en InTalent">
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- =========================
+             CATEGORIAS
+        ========================== -->
+
+        <div class="titulo-seccion">
+
+            <h2>Explora servicios</h2>
+
+            <p>
+                Algunas de las categorías disponibles en InTalent.
+            </p>
+
+        </div>
+
+        <div class="categorias">
+
+            <a class="categoria" href="{% url 'buscar_servicios' %}?categoria=plomeria" aria-label="Ver servicios de plomería">
+                <div class="categoria-icono">🔧</div>
+                <span>Plomería</span>
+            </a>
+
+            <a class="categoria" href="{% url 'buscar_servicios' %}?categoria=electricidad" aria-label="Ver servicios de electricidad">
+                <div class="categoria-icono">⚡</div>
+                <span>Electricidad</span>
+            </a>
+
+            <a class="categoria" href="{% url 'buscar_servicios' %}?categoria=tecnologia" aria-label="Ver servicios de tecnología">
+                <div class="categoria-icono">💻</div>
+                <span>Tecnología</span>
+            </a>
+
+            <a class="categoria" href="{% url 'buscar_servicios' %}?categoria=limpieza" aria-label="Ver servicios de limpieza">
+                <div class="categoria-icono">🧹</div>
+                <span>Limpieza</span>
+            </a>
+
+            <a class="categoria" href="{% url 'buscar_servicios' %}?categoria=mascotas" aria-label="Ver servicios para mascotas">
+                <div class="categoria-icono">🐶</div>
+                <span>Mascotas</span>
+            </a>
+
+            <a class="categoria" href="{% url 'buscar_servicios' %}?categoria=abogados" aria-label="Ver servicios de abogados">
+                <div class="categoria-icono">⚖️</div>
+                <span>Abogados</span>
+            </a>
+
+            <a class="categoria" href="{% url 'buscar_servicios' %}?categoria=construccion" aria-label="Ver servicios de construcción">
+                <div class="categoria-icono">🏗️</div>
+                <span>Construcción</span>
+            </a>
+
+        </div>
+
+        <!-- =========================
+             MENU PRINCIPAL
+        ========================== -->
+
+        <div class="menu">
+
+            <!-- BUSCAR -->
+
+            <div class="opcion">
+
+                <div class="icono-opcion">🔎</div>
+
+                <h2>Buscar servicios</h2>
+
+                <p>
+                    Encuentra profesionales y personas que ofrecen
+                    diferentes servicios.
+                </p>
+
+                <a href="{% url 'buscar_servicios' %}" class="boton">
+                    Buscar servicios
+                </a>
+
+            </div>
+
+            <!-- OFRECER -->
+
+            <div class="opcion">
+
+                <div class="icono-opcion">🛠️</div>
+
+                <h2>Ofrecer mis servicios</h2>
+
+                <p>
+                    Publica los servicios que puedes ofrecer
+                    a otras personas.
+                </p>
+
+                <a href="{% url 'ofrecer_servicio' %}" class="boton">
+                    Ofrecer servicio
+                </a>
+
+            </div>
+
+            <!-- PERFIL -->
+
+            <div class="opcion">
+
+                <div class="icono-opcion">👤</div>
+
+                <h2>Mi perfil</h2>
+
+                <p>
+                    Consulta y administra tu información personal.
+                </p>
+
+                <a href="{% url 'perfil' %}" class="boton">
+                    Ver perfil
+                </a>
+
+            </div>
+
+            <!-- MIS SOLICITUDES -->
+
+            <div class="opcion">
+
+                <div class="icono-opcion">📋</div>
+
+                <h2>Mis solicitudes</h2>
+
+                <p>
+                    Consulta los servicios que has solicitado.
+                </p>
+
+                <a href="{% url 'mis_solicitudes' %}" class="boton">
+                    Ver solicitudes
+                </a>
+
+            </div>
+
+            <!-- SOLICITUDES PROFESIONAL -->
 
             {% if usuario.es_profesional %}
 
+            <div class="opcion profesional-card">
+
+                <div class="icono-opcion">📥</div>
+
+                <h2>
+                    Solicitudes recibidas
+
+                    {% if solicitudes_pendientes > 0 %}
+                        <span class="notificacion">
+                            {{ solicitudes_pendientes }}
+                        </span>
+                    {% endif %}
+
+                </h2>
+
                 <p>
-                    Gestiona tus servicios, atiende las solicitudes
-                    de tus clientes y haz crecer tu actividad con InTalent.
+                    Consulta y gestiona las solicitudes que recibes
+                    de tus clientes.
                 </p>
 
-            {% else %}
+                <a href="{% url 'solicitudes_recibidas' %}" class="boton">
+                    Ver solicitudes
+                </a>
 
-                <p>
-                    Encuentra personas que pueden ayudarte con el servicio
-                    que necesitas, de forma sencilla y rápida.
-                </p>
+            </div>
 
             {% endif %}
 
+            <!-- CALIFICACIONES -->
 
-            <!-- BUSCADOR -->
+            <div class="opcion">
 
-           <!-- BUSCADOR FUNCIONAL -->
-          <form action="{% url 'buscar_servicios' %}" method="GET" class="buscador" style="display: flex; align-items: center; background: #ffffff; border-radius: 30px; padding: 6px 6px 6px 18px; width: 100%; max-width: 520px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
-        
-           <!-- Icono de lupa -->
-          <div class="buscador-icono" style="color: #6c757d; margin-right: 10px; font-size: 16px;">
-            🔍
-          </div>
-        
-          <!-- Campo de texto editable -->
-         <input type="text" 
-               name="buscar" 
-               placeholder="¿Qué servicio necesitas?" 
-               style="border: none; outline: none; flex: 1; font-size: 14px; color: #333; background: transparent;">
-        
-        <!-- Botón de envío -->
-        <button type="submit" class="boton-buscar" style="background: #111111; color: #ffffff; border: none; padding: 10px 22px; border-radius: 24px; font-weight: 600; font-size: 14px; cursor: pointer; transition: background 0.2s;">
-            Buscar servicios
-        </button>
-      </form>
+                <div class="icono-opcion">⭐</div>
 
-        </div>
+                <h2>Calificaciones</h2>
 
-    </section>
+                <p>
+                    Consulta las calificaciones y opiniones
+                    de tus servicios.
+                </p>
 
+                <a href="{% url 'ver_calificaciones' usuario.id %}" class="boton">
+                    Mis calificaciones
+                </a>
 
-    <!-- =========================
-         CATEGORIAS
-    ========================== -->
-
-    <div class="titulo-seccion">
-
-        <h2>
-            Explora servicios
-        </h2>
-
-        <p>
-            Algunas de las categorías disponibles en InTalent.
-        </p>
-
-    </div>
-
-
-    <div class="categorias">
-
-        <a class="categoria" href="{% url 'buscar_servicios' %}?categoria=plomeria" aria-label="Ver servicios de plomería">
-            <div class="categoria-icono">🔧</div>
-            <span>Plomería</span>
-        </a>
-
-        <a class="categoria" href="{% url 'buscar_servicios' %}?categoria=electricidad" aria-label="Ver servicios de electricidad">
-            <div class="categoria-icono">⚡</div>
-            <span>Electricidad</span>
-        </a>
-
-        <a class="categoria" href="{% url 'buscar_servicios' %}?categoria=tecnologia" aria-label="Ver servicios de tecnología">
-            <div class="categoria-icono">💻</div>
-            <span>Tecnología</span>
-        </a>
-
-        <a class="categoria" href="{% url 'buscar_servicios' %}?categoria=limpieza" aria-label="Ver servicios de limpieza">
-            <div class="categoria-icono">🧹</div>
-            <span>Limpieza</span>
-        </a>
-
-        <a class="categoria" href="{% url 'buscar_servicios' %}?categoria=mascotas" aria-label="Ver servicios para mascotas">
-            <div class="categoria-icono">🐶</div>
-            <span>Mascotas</span>
-        </a>
-
-        <a class="categoria" href="{% url 'buscar_servicios' %}?categoria=abogados" aria-label="Ver servicios de abogados">
-            <div class="categoria-icono">⚖️</div>
-            <span>Abogados</span>
-        </a>
-
-        <a class="categoria" href="{% url 'buscar_servicios' %}?categoria=construccion" aria-label="Ver servicios de construcción">
-            <div class="categoria-icono">🏗️</div>
-            <span>Construcción</span>
-        </a>
-
-    </div>
-
-
-    <div class="menu">
-
-
-        <!-- BUSCAR -->
-
-        <div class="opcion">
-
-            <div class="icono-opcion">
-                🔎
             </div>
 
-            <h2>
-                Buscar servicios
-            </h2>
+            <!-- CERRAR SESION -->
 
-            <p>
-                Encuentra profesionales y personas que ofrecen
-                diferentes servicios.
-            </p>
+            <div class="opcion">
 
-            <a href="{% url 'buscar_servicios' %}" class="boton">
-                Buscar servicios
-            </a>
+                <div class="icono-opcion">🚪</div>
 
-        </div>
+                <h2>Cerrar sesión</h2>
 
+                <p>
+                    Salir de tu cuenta de InTalent.
+                </p>
 
-        <!-- OFRECER -->
+                <a href="{% url 'logout' %}" class="boton cerrar">
+                    Cerrar sesión
+                </a>
 
-        <div class="opcion">
-
-            <div class="icono-opcion">
-                🛠️
             </div>
 
-            <h2>
-                Ofrecer mis servicios
-            </h2>
-
-            <p>
-                Publica los servicios que puedes ofrecer
-                a otras personas.
-            </p>
-
-            <a href="{% url 'ofrecer_servicio' %}" class="boton">
-                Ofrecer servicio
-            </a>
-
         </div>
 
+        <!-- =========================
+             PIE DE PAGINA
+        ========================== -->
 
-        <!-- PERFIL -->
-
-        <div class="opcion">
-
-            <div class="icono-opcion">
-                👤
-            </div>
-
-            <h2>
-                Mi perfil
-            </h2>
-
-            <p>
-                Consulta y administra tu información personal.
-            </p>
-
-            <a href="{% url 'perfil' %}" class="boton">
-                Ver perfil
-            </a>
-
+        <div class="pie">
+            InTalent · Conectando personas con servicios
         </div>
 
+    </main>
 
-        <!-- MIS SOLICITUDES -->
+    <script>
+        window.addEventListener('pageshow', function (event) {
 
-        <div class="opcion">
+            if (event.persisted) {
+                window.location.reload();
+            }
 
-            <div class="icono-opcion">
-                📋
-            </div>
-
-            <h2>
-                Mis solicitudes
-            </h2>
-
-            <p>
-                Consulta los servicios que has solicitado.
-            </p>
-
-            <a href="{% url 'mis_solicitudes' %}" class="boton">
-                Ver solicitudes
-            </a>
-
-        </div>
-
-
-        <!-- SOLICITUDES PROFESIONAL -->
-
-        {% if usuario.es_profesional %}
-
-        <div class="opcion profesional-card">
-
-            <div class="icono-opcion">
-                📥
-            </div>
-
-            <h2>
-
-                Solicitudes recibidas
-
-                {% if solicitudes_pendientes > 0 %}
-
-                    <span class="notificacion">
-                        {{ solicitudes_pendientes }}
-                    </span>
-
-                {% endif %}
-
-            </h2>
-
-            <p>
-                Consulta y gestiona las solicitudes que recibes
-                de tus clientes.
-            </p>
-
-            <a href="{% url 'solicitudes_recibidas' %}" class="boton">
-                Ver solicitudes
-            </a>
-
-        </div>
-
-        {% endif %}
-
-
-        <!-- CALIFICACIONES -->
-
-        <div class="opcion">
-
-            <div class="icono-opcion">
-                ⭐
-            </div>
-
-            <h2>
-                Calificaciones
-            </h2>
-
-            <p>
-                Consulta las calificaciones y opiniones
-                de tus servicios.
-            </p>
-
-            <a href="{% url 'ver_calificaciones' usuario.id %}" class="boton">
-                Mis calificaciones
-            </a>
-
-        </div>
-
-
-        <!-- CERRAR SESION -->
-
-        <div class="opcion">
-
-            <div class="icono-opcion">
-                🚪
-            </div>
-
-            <h2>
-                Cerrar sesión
-            </h2>
-
-            <p>
-                Salir de tu cuenta de InTalent.
-            </p>
-
-            <a href="{% url 'logout' %}" class="boton cerrar">
-                Cerrar sesión
-            </a>
-
-        </div>
-
-    </div>
-
-
-    <!-- =========================
-         PIE
-    ========================== -->
-
-    <div class="pie">
-
-        InTalent · Conectando personas con servicios
-
-    </div>
-
-
-</main>
-
-
-<script>
-
-    window.addEventListener('pageshow', function (event) {
-
-        if (event.persisted) {
-            window.location.reload();
-        }
-
-    });
-
-</script>
-
+        });
+    </script>
 
 </body>
-
 </html>

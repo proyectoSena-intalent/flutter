@@ -1,3 +1,4 @@
+
 from django.shortcuts import redirect
 from django.urls import resolve
 
@@ -9,10 +10,14 @@ class AutenticacionMiddleware:
 
     def __call__(self, request):
 
+        # Permitir todas las rutas del administrador de Django
+        if request.path_info.startswith('/admin/'):
+            return self.get_response(request)
+
         # Obtener la ruta actual
         nombre_url = resolve(request.path_info).url_name
 
-        # Rutas que pueden utilizarse sin iniciar sesión
+        # Rutas públicas de InTalent
         rutas_publicas = [
             'login',
             'registro',
@@ -20,14 +25,13 @@ class AutenticacionMiddleware:
             'api_login',
             'recuperar_contraseña',
             'restablecer_contrasena',
-            'admin:login',
         ]
 
-        # Si la ruta es pública, permitir el acceso
+        # Permitir rutas públicas
         if nombre_url in rutas_publicas:
             return self.get_response(request)
 
-        # Verificar si existe una sesión de usuario
+        # Verificar sesión personalizada de InTalent
         usuario_id = request.session.get('usuario_id')
 
         # Si no existe sesión, enviar al login

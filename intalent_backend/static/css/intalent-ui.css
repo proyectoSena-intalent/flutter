@@ -25,7 +25,7 @@ button:hover,.boton:hover,.boton-login:hover,.boton-registro:hover,.boton-inicio
 .contenedor{width:min(1480px,96%)!important;max-width:1480px!important;margin:26px auto!important}
 main.contenedor{padding-bottom:0}
 .hero{position:relative;isolation:isolate;overflow:hidden;border-radius:20px!important;min-height:260px;padding:34px clamp(24px,4vw,54px)!important;box-shadow:0 14px 34px rgba(8,61,137,.16);background:linear-gradient(105deg,#06439a 0%,#0879e8 48%,#80c4ff 100%)!important}
-.hero:before{content:"";position:absolute;z-index:-1;inset:0;background-image:linear-gradient(90deg,rgba(5,53,125,.12) 0%,rgba(5,53,125,.02) 55%,rgba(5,53,125,0) 100%),url("../img/hero-inicio.webp");background-repeat:no-repeat;background-size:cover;background-position:center 43%;opacity:.98}
+.hero:before{content:"";position:absolute;z-index:-1;inset:0;background-image:none!important;pointer-events:none}
 .hero.profesional{background:linear-gradient(110deg,#087f5b,#20a878)!important}
 .hero.profesional:before{background-image:radial-gradient(circle at 80% 20%,rgba(255,255,255,.16),transparent 28%)}
 .hero-contenido{max-width:720px;position:relative;z-index:1}
@@ -95,7 +95,7 @@ img{max-width:100%}
  .barra-superior .logo{font-size:24px!important}
  .contenedor{width:calc(100% - 28px)!important;margin:16px auto!important}
  .hero{min-height:300px;padding:24px 20px!important}
- .hero:before{opacity:.28;background-position:60% center}
+ .hero:before{opacity:0;background-image:none!important}
  .hero-contenido{max-width:100%}
  .hero h1{font-size:34px!important}
  .buscador{flex-wrap:wrap!important;border-radius:16px!important;padding:10px!important}
