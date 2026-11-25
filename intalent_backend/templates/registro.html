@@ -9,7 +9,6 @@
     <title>Registro - InTalent</title>
 
     <style>
-
         body {
             font-family: Arial, sans-serif;
             background-color: #f2f2f2;
@@ -26,8 +25,6 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
         }
-
-        /*BOTÓN VOLVER AL INICIO*/
 
         .volver-inicio {
             display: inline-block;
@@ -91,7 +88,52 @@
             background-color: #1d4ed8;
         }
 
-        /* SEGURIDAD DE CONTRASEÑA*/
+        /* CAMPOS DE CONTRASEÑA */
+
+        .campo-password {
+            position: relative;
+            width: 100%;
+        }
+
+        .campo-password input {
+            padding-right: 48px;
+        }
+
+        .boton-ojo {
+            position: absolute;
+            top: 50%;
+            right: 8px;
+            transform: translateY(-50%);
+            width: 34px;
+            height: 34px;
+            margin: 0;
+            padding: 5px;
+            background: transparent;
+            border: none;
+            color: #555;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .boton-ojo:hover {
+            background: #f0f4ff;
+            border-radius: 5px;
+            color: #2563eb;
+        }
+
+        .boton-ojo svg {
+            width: 21px;
+            height: 21px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* SEGURIDAD DE CONTRASEÑA */
 
         .seguridad-contenedor {
             margin-top: 10px;
@@ -146,17 +188,15 @@
             font-size: 13px;
             font-weight: bold;
         }
-
     </style>
 
-<link rel="stylesheet" href="{% static 'css/intalent-ui.css' %}">
+    <link rel="stylesheet" href="{% static 'css/intalent-ui.css' %}">
 </head>
 
 <body>
 
     <div class="contenedor">
 
-        <!-- VOLVER AL INICIO -->
         <a href="/inicio/" class="volver-inicio">
             ← Volver al inicio
         </a>
@@ -178,39 +218,18 @@
             {% csrf_token %}
 
             <label for="nombre">Nombre</label>
-            <input
-                type="text"
-                id="nombre"
-                name="nombre"
-                required
-            >
+            <input type="text" id="nombre" name="nombre" required>
 
             <label for="apellido">Apellido</label>
-            <input
-                type="text"
-                id="apellido"
-                name="apellido"
-                required
-            >
+            <input type="text" id="apellido" name="apellido" required>
 
             <label for="correo">Correo electrónico</label>
-            <input
-                type="email"
-                id="correo"
-                name="correo"
-                required
-            >
+            <input type="email" id="correo" name="correo" required>
 
             <label for="telefono">Teléfono</label>
-            <input
-                type="tel"
-                id="telefono"
-                name="telefono"
-                required
-            >
+            <input type="tel" id="telefono" name="telefono" required>
 
             <label for="foto">Foto de perfil</label>
-
             <input
                 type="file"
                 id="foto"
@@ -219,32 +238,44 @@
                 required
             >
 
+            <!-- CONTRASEÑA -->
+
             <label for="contraseña">Contraseña</label>
 
-            <input
-                type="password"
-                name="contraseña"
-                id="contraseña"
-                required
-                autocomplete="new-password"
-            >
+            <div class="campo-password">
+
+                <input
+                    type="password"
+                    name="contraseña"
+                    id="contraseña"
+                    required
+                    autocomplete="new-password"
+                >
+
+                <button
+                    type="button"
+                    class="boton-ojo"
+                    id="mostrarPassword"
+                    aria-label="Mostrar contraseña"
+                    aria-pressed="false"
+                >
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                </button>
+
+            </div>
 
             <!-- BARRA DE SEGURIDAD -->
 
             <div class="seguridad-contenedor">
 
                 <div class="barra-seguridad">
-
-                    <div
-                        class="barra-progreso"
-                        id="barraProgreso">
-                    </div>
-
+                    <div class="barra-progreso" id="barraProgreso"></div>
                 </div>
 
-                <div
-                    class="texto-seguridad"
-                    id="textoSeguridad">
+                <div class="texto-seguridad" id="textoSeguridad">
                     Seguridad: escribe una contraseña
                 </div>
 
@@ -254,33 +285,23 @@
 
             <div class="requisitos">
 
-                <div
-                    class="requisito"
-                    id="requisitoLongitud">
+                <div class="requisito" id="requisitoLongitud">
                     ✗ Mínimo 8 caracteres
                 </div>
 
-                <div
-                    class="requisito"
-                    id="requisitoMayuscula">
+                <div class="requisito" id="requisitoMayuscula">
                     ✗ Al menos una letra mayúscula
                 </div>
 
-                <div
-                    class="requisito"
-                    id="requisitoMinuscula">
+                <div class="requisito" id="requisitoMinuscula">
                     ✗ Al menos una letra minúscula
                 </div>
 
-                <div
-                    class="requisito"
-                    id="requisitoNumero">
+                <div class="requisito" id="requisitoNumero">
                     ✗ Al menos un número
                 </div>
 
-                <div
-                    class="requisito"
-                    id="requisitoEspecial">
+                <div class="requisito" id="requisitoEspecial">
                     ✗ Al menos un carácter especial
                 </div>
 
@@ -294,19 +315,33 @@
                     Confirmar contraseña
                 </label>
 
-                <input
-                    type="password"
-                    id="confirmar_contraseña"
-                    name="confirmar_contraseña"
-                    placeholder="Confirma tu contraseña"
-                    required
-                    autocomplete="new-password"
-                >
+                <div class="campo-password">
 
-                <div
-                    class="mensaje-confirmacion"
-                    id="mensajeConfirmacion">
+                    <input
+                        type="password"
+                        id="confirmar_contraseña"
+                        name="confirmar_contraseña"
+                        placeholder="Confirma tu contraseña"
+                        required
+                        autocomplete="new-password"
+                    >
+
+                    <button
+                        type="button"
+                        class="boton-ojo"
+                        id="mostrarConfirmacion"
+                        aria-label="Mostrar confirmación de contraseña"
+                        aria-pressed="false"
+                    >
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                    </button>
+
                 </div>
+
+                <div class="mensaje-confirmacion" id="mensajeConfirmacion"></div>
 
             </div>
 
@@ -322,8 +357,7 @@
 
     <script>
 
-        const contraseña =
-            document.getElementById("contraseña");
+        const contraseña = document.getElementById("contraseña");
 
         const confirmarContraseña =
             document.getElementById("confirmar_contraseña");
@@ -356,72 +390,94 @@
             document.getElementById("requisitoEspecial");
 
 
-        function actualizarRequisito(elemento, cumplido) {
+        // ICONOS PARA MOSTRAR Y OCULTAR CONTRASEÑAS
 
-            if (cumplido) {
+        const iconoOjo = `
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"/>
+                <circle cx="12" cy="12" r="3"/>
+            </svg>
+        `;
 
-                elemento.classList.add("cumplido");
-                elemento.classList.remove("no-cumplido");
+        const iconoOjoCerrado = `
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M3 3l18 18"/>
+                <path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"/>
+                <path d="M9.9 5.2A11 11 0 0 1 12 5c6.4 0 10 7 10 7a15 15 0 0 1-3 3.8"/>
+                <path d="M6.2 6.2C3.5 8 2 12 2 12s3.6 7 10 7c1.2 0 2.3-.2 3.3-.6"/>
+            </svg>
+        `;
 
-                elemento.textContent =
-                    "✓ " + elemento.textContent.substring(2);
 
-            } else {
+        function configurarOjo(input, boton) {
 
-                elemento.classList.remove("cumplido");
-                elemento.classList.add("no-cumplido");
+            boton.addEventListener("click", function() {
 
-                elemento.textContent =
-                    "✗ " + elemento.textContent.substring(2);
-            }
+                const mostrar = input.type === "password";
+
+                input.type = mostrar ? "text" : "password";
+
+                boton.innerHTML = mostrar
+                    ? iconoOjoCerrado
+                    : iconoOjo;
+
+                boton.setAttribute(
+                    "aria-label",
+                    mostrar ? "Ocultar contraseña" : "Mostrar contraseña"
+                );
+
+                boton.setAttribute("aria-pressed", String(mostrar));
+
+                input.focus();
+
+            });
+
         }
 
+
+        configurarOjo(
+            contraseña,
+            document.getElementById("mostrarPassword")
+        );
+
+        configurarOjo(
+            confirmarContraseña,
+            document.getElementById("mostrarConfirmacion")
+        );
+
+
+        // ACTUALIZAR REQUISITOS
+
+        function actualizarRequisito(elemento, cumplido) {
+
+            const textoOriginal = elemento.textContent.substring(2).trim();
+
+            elemento.classList.toggle("cumplido", cumplido);
+            elemento.classList.toggle("no-cumplido", !cumplido);
+
+            elemento.textContent =
+                (cumplido ? "✓ " : "✗ ") + textoOriginal;
+
+        }
+
+
+        // COMPROBAR SEGURIDAD
 
         function comprobarContraseña() {
 
             const valor = contraseña.value;
 
-            const tieneLongitud =
-                valor.length >= 8;
+            const tieneLongitud = valor.length >= 8;
+            const tieneMayuscula = /[A-Z]/.test(valor);
+            const tieneMinuscula = /[a-z]/.test(valor);
+            const tieneNumero = /[0-9]/.test(valor);
+            const tieneEspecial = /[^A-Za-z0-9]/.test(valor);
 
-            const tieneMayuscula =
-                /[A-Z]/.test(valor);
-
-            const tieneMinuscula =
-                /[a-z]/.test(valor);
-
-            const tieneNumero =
-                /[0-9]/.test(valor);
-
-            const tieneEspecial =
-                /[^A-Za-z0-9]/.test(valor);
-
-
-            actualizarRequisito(
-                requisitoLongitud,
-                tieneLongitud
-            );
-
-            actualizarRequisito(
-                requisitoMayuscula,
-                tieneMayuscula
-            );
-
-            actualizarRequisito(
-                requisitoMinuscula,
-                tieneMinuscula
-            );
-
-            actualizarRequisito(
-                requisitoNumero,
-                tieneNumero
-            );
-
-            actualizarRequisito(
-                requisitoEspecial,
-                tieneEspecial
-            );
-
+            actualizarRequisito(requisitoLongitud, tieneLongitud);
+            actualizarRequisito(requisitoMayuscula, tieneMayuscula);
+            actualizarRequisito(requisitoMinuscula, tieneMinuscula);
+            actualizarRequisito(requisitoNumero, tieneNumero);
+            actualizarRequisito(requisitoEspecial, tieneEspecial);
 
             let puntos = 0;
 
@@ -430,7 +486,6 @@
             if (tieneMinuscula) puntos++;
             if (tieneNumero) puntos++;
             if (tieneEspecial) puntos++;
-
 
             if (valor.length === 0) {
 
@@ -472,54 +527,49 @@
 
                 textoSeguridad.style.color = "#16a34a";
             }
+
         }
 
 
+        // COMPROBAR COINCIDENCIA
+
         function comprobarCoincidencia() {
 
-            const password =
-                contraseña.value;
-
-            const confirmacion =
-                confirmarContraseña.value;
-
+            const password = contraseña.value;
+            const confirmacion = confirmarContraseña.value;
 
             if (confirmacion.length === 0) {
 
                 mensajeConfirmacion.textContent = "";
-
                 return;
-            }
 
+            }
 
             if (password === confirmacion) {
 
                 mensajeConfirmacion.textContent =
                     "✓ Las contraseñas coinciden";
 
-                mensajeConfirmacion.style.color =
-                    "#16a34a";
+                mensajeConfirmacion.style.color = "#16a34a";
 
             } else {
 
                 mensajeConfirmacion.textContent =
                     "✗ Las contraseñas no coinciden";
 
-                mensajeConfirmacion.style.color =
-                    "#dc2626";
+                mensajeConfirmacion.style.color = "#dc2626";
+
             }
+
         }
 
 
-        contraseña.addEventListener(
-            "input",
-            function() {
+        contraseña.addEventListener("input", function() {
 
-                comprobarContraseña();
-                comprobarCoincidencia();
+            comprobarContraseña();
+            comprobarCoincidencia();
 
-            }
-        );
+        });
 
 
         confirmarContraseña.addEventListener(
@@ -528,59 +578,51 @@
         );
 
 
-        formRegistro.addEventListener(
-            "submit",
-            function(event) {
+        // VALIDACIÓN ANTES DE REGISTRAR
 
-                const valor =
-                    contraseña.value;
+        formRegistro.addEventListener("submit", function(event) {
 
-                const cumpleTodos =
-                    valor.length >= 8 &&
-                    /[A-Z]/.test(valor) &&
-                    /[a-z]/.test(valor) &&
-                    /[0-9]/.test(valor) &&
-                    /[^A-Za-z0-9]/.test(valor);
+            const valor = contraseña.value;
 
-                const coincide =
-                    contraseña.value ===
-                    confirmarContraseña.value;
+            const cumpleTodos =
+                valor.length >= 8 &&
+                /[A-Z]/.test(valor) &&
+                /[a-z]/.test(valor) &&
+                /[0-9]/.test(valor) &&
+                /[^A-Za-z0-9]/.test(valor);
 
+            const coincide =
+                contraseña.value === confirmarContraseña.value;
 
-                if (!cumpleTodos) {
+            if (!cumpleTodos) {
 
-                    event.preventDefault();
+                event.preventDefault();
 
-                    alert(
-                        "La contraseña debe tener mínimo 8 caracteres, " +
-                        "una mayúscula, una minúscula, un número " +
-                        "y un carácter especial."
-                    );
+                alert(
+                    "La contraseña debe tener mínimo 8 caracteres, " +
+                    "una mayúscula, una minúscula, un número " +
+                    "y un carácter especial."
+                );
 
-                    contraseña.focus();
-
-                    return;
-                }
-
-
-                if (!coincide) {
-
-                    event.preventDefault();
-
-                    alert(
-                        "Las contraseñas no coinciden."
-                    );
-
-                    confirmarContraseña.focus();
-
-                    return;
-                }
+                contraseña.focus();
+                return;
 
             }
-        );
+
+            if (!coincide) {
+
+                event.preventDefault();
+
+                alert("Las contraseñas no coinciden.");
+
+                confirmarContraseña.focus();
+                return;
+
+            }
+
+        });
 
     </script>
 
 </body>
-
 </html>
