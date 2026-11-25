@@ -1,16 +1,27 @@
+
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.shortcuts import redirect
 
 
 urlpatterns = [
+    # Panel de administración
     path('admin/', admin.site.urls),
+
+    # Página principal: redirige al inicio de sesión
+    path('', lambda request: redirect('login')),
+
+    # Rutas de usuarios
     path('', include('usuarios.urls')),
+
+    # Rutas de calificaciones
     path('calificaciones/', include('calificaciones.urls')),
 ]
 
 
+# Archivos multimedia en entorno local
 if settings.DEBUG:
     urlpatterns += static(
         settings.MEDIA_URL,
