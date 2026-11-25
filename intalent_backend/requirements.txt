@@ -6,3 +6,5 @@ psycopg[binary]==3.3.9
 Pillow==12.3.0
 python-dotenv==1.2.3
 mysqlclient==2.3.0; platform_system == "Windows"
+cloudinary==1.47.0
+django-cloudinary-storage==0.3.0

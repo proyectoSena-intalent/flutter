@@ -7,10 +7,17 @@ from django.core.exceptions import ImproperlyConfigured
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Variables de entorno: local en Proyecto_Sena/.env
+# ==========================================================
+# VARIABLES DE ENTORNO
+# ==========================================================
+
+# Archivo .env local en Proyecto_Sena/.env
 load_dotenv(BASE_DIR.parent / ".env")
 
-# Seguridad
+# ==========================================================
+# SEGURIDAD
+# ==========================================================
+
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 if not SECRET_KEY:
@@ -29,11 +36,17 @@ ALLOWED_HOSTS = [
 
 CSRF_TRUSTED_ORIGINS = [
     origin.strip()
-    for origin in os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
+    for origin in os.getenv(
+        "CSRF_TRUSTED_ORIGINS",
+        ""
+    ).split(",")
     if origin.strip()
 ]
 
-# Aplicaciones
+# ==========================================================
+# APLICACIONES
+# ==========================================================
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -41,11 +54,31 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Almacenamiento de fotografías en Cloudinary
+    'cloudinary_storage',
+    'cloudinary',
+
+    # Aplicaciones de InTalent
     'usuarios',
     'calificaciones',
 ]
 
-# Middleware
+# ==========================================================
+# CONFIGURACIÓN DE CLOUDINARY
+# ==========================================================
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
+    'SECURE': True,
+}
+
+# ==========================================================
+# MIDDLEWARE
+# ==========================================================
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -59,6 +92,10 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'config.urls'
+
+# ==========================================================
+# PLANTILLAS
+# ==========================================================
 
 TEMPLATES = [
     {
@@ -77,9 +114,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# Bases de datos
-# Si existe DATABASE_URL, utiliza PostgreSQL (Neon).
-# Si no existe, utiliza MySQL (Laragon).
+# ==========================================================
+# BASES DE DATOS
+# ==========================================================
+
+# Producción: PostgreSQL en Neon
+# Desarrollo local: MySQL en Laragon
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
@@ -105,7 +145,10 @@ else:
         }
     }
 
-# Validación de contraseñas
+# ==========================================================
+# VALIDACIÓN DE CONTRASEÑAS
+# ==========================================================
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -121,41 +164,93 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Idioma y zona horaria
+# ==========================================================
+# IDIOMA Y ZONA HORARIA
+# ==========================================================
+
 LANGUAGE_CODE = 'es-co'
+
 TIME_ZONE = 'America/Bogota'
 
 USE_I18N = True
 USE_TZ = True
 
-# Archivos estáticos
+# ==========================================================
+# ARCHIVOS ESTÁTICOS
+# ==========================================================
+
 STATIC_URL = '/static/'
+
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
-STORAGES = {
-    'default': {
-        'BACKEND': 'django.core.files.storage.FileSystemStorage',
-    },
-    'staticfiles': {
-        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
-    },
-}
+# ==========================================================
+# ALMACENAMIENTO DE ARCHIVOS
+# ==========================================================
 
-# Archivos multimedia
+if not DEBUG:
+
+    # Comprobar credenciales de Cloudinary
+    cloudinary_variables = [
+        'CLOUDINARY_CLOUD_NAME',
+        'CLOUDINARY_API_KEY',
+        'CLOUDINARY_API_SECRET',
+    ]
+
+    faltantes = [
+        variable
+        for variable in cloudinary_variables
+        if not os.getenv(variable)
+    ]
+
+    if faltantes:
+        raise ImproperlyConfigured(
+            f"Faltan variables de Cloudinary: {', '.join(faltantes)}"
+        )
+
+    # PRODUCCIÓN: fotografías en Cloudinary
+    STORAGES = {
+        'default': {
+            'BACKEND': 'cloudinary_storage.storage.MediaCloudinaryStorage',
+        },
+        'staticfiles': {
+            'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+        },
+    }
+
+else:
+
+    # LOCAL: fotografías en el computador
+    STORAGES = {
+        'default': {
+            'BACKEND': 'django.core.files.storage.FileSystemStorage',
+        },
+        'staticfiles': {
+            'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+        },
+    }
+
 MEDIA_URL = '/media/'
+
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Correo
+# ==========================================================
+# CORREO
+# ==========================================================
+
 MAILERS = {
     'default': {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
 
-# Seguridad para producción
+# ==========================================================
+# CONFIGURACIÓN DE SEGURIDAD PARA PRODUCCIÓN
+# ==========================================================
+
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 if not DEBUG:
